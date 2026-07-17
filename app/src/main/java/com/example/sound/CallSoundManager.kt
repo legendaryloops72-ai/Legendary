@@ -700,18 +700,13 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
 
         // Sirens Section Local Assets Fallbacks
         "صفارة إنذار الشرطة" to "sounds/vehicles/police.mp3",
-        "صفارة إنذار الإسعاف" to "sounds/police_calls/ambulance_siren.ogg",
+        "صفارة إنذار الإسعاف" to "sounds/vehicles/ambulance.mp3",
         "صفارة إنذار الإطفاء" to "sounds/vehicles/police.mp3",
         "إنذار غارات جوية" to "sounds/vehicles/police.mp3",
         "إنذار نووي خطير" to "sounds/vehicles/police.mp3",
         "بوق سفينة عملاقة" to "sounds/vehicles/forklift.mp3",
-        "إنذار الحريق المنزلي" to "sounds/police_calls/alert.ogg",
-        "إنذار الإخلاء السريع" to "sounds/vehicles/police.mp3",
-        
-        // Police Calls - New Sounds
-        "رنين الهاتف" to "sounds/police_calls/phone_ring.ogg",
-        "تنبيه" to "sounds/police_calls/alert.ogg",
-        "صفارة الإسعاف" to "sounds/police_calls/ambulance_siren.ogg"
+        "إنذار الحريق المنزلي" to "sounds/vehicles/police.mp3",
+        "إنذار الإخلاء السريع" to "sounds/vehicles/police.mp3"
     )
 
     fun playAudioFromAsset(assetPath: String, onStart: () -> Unit = {}, onComplete: () -> Unit = {}, onError: () -> Unit = {}) {
