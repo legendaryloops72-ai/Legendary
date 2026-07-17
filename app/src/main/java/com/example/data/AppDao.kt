@@ -26,7 +26,22 @@ interface AppDao {
 
     @Update
     suspend fun updateTask(task: KidTask)
+
+    @androidx.room.Delete
+    suspend fun deleteTask(task: KidTask)
     
     @Query("UPDATE child_profile SET totalStars = totalStars + :stars WHERE id = 1")
     suspend fun addStars(stars: Int)
+
+    @Query("SELECT bestScore FROM game_scores WHERE gameId = :gameId")
+    fun getBestScore(gameId: String): Flow<Int?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveBestScore(score: GameScore)
 }
+
+@androidx.room.Entity(tableName = "game_scores")
+data class GameScore(
+    @androidx.room.PrimaryKey val gameId: String,
+    val bestScore: Int
+)

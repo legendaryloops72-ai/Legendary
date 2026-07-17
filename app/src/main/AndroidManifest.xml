@@ -4,6 +4,11 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
+    <attribution android:tag="@string/empty" android:label="@string/app_name" />
+    <attribution android:tag="audioPlayback" android:label="@string/app_name" />
 
     <application
         android:allowBackup="true"
@@ -14,10 +19,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
-        
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
 
         <activity
             android:name=".MainActivity"
@@ -28,6 +29,30 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- رابط الدعوة المخصص: kidspolice://call/{caller} -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="kidspolice" />
+            </intent-filter>
+
+            <!-- روابط الويب لخدمة AI Studio و Google Cloud Run لتجربة المكالمات والمعلق والدعوات -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                
+                <data android:host="*.run.app" />
+                <data android:host="ais-pre-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app" />
+                <data android:host="ais-dev-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app" />
+                
+                <data android:pathPrefix="/call" />
             </intent-filter>
         </activity>
     </application>

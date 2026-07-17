@@ -12,5 +12,10 @@ class AppRepository(private val appDao: AppDao) {
     
     suspend fun insertTask(task: KidTask) = appDao.insertTask(task)
     
+    suspend fun deleteTask(task: KidTask) = appDao.deleteTask(task)
+    
     suspend fun addStars(stars: Int) = appDao.addStars(stars)
+
+    fun getBestScore(gameId: String): Flow<Int?> = appDao.getBestScore(gameId)
+    suspend fun saveBestScore(score: GameScore) = appDao.saveBestScore(score)
 }
