@@ -670,7 +670,10 @@ fun StoriesScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                     )
 
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         items(illustratedStories) { story ->
                             Card(
                                 modifier = Modifier
@@ -731,7 +734,10 @@ fun StoriesScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                     )
 
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         items(storyTopics) { topic ->
                             StoryTopicCard(topic) {
                                 viewModel.generateStory(topic.title)
@@ -739,6 +745,13 @@ fun StoriesScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                         }
                     }
                 }
+
+                // AdMob Banner Ad
+                AdBanner(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                )
             }
         }
     }

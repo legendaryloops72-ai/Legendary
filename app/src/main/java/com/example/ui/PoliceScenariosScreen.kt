@@ -227,7 +227,7 @@ fun PoliceScenariosScreen(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 8.dp)
                 ) {
                     items(scenarios) { scenario ->
                         ScenarioCard(
@@ -239,6 +239,13 @@ fun PoliceScenariosScreen(
                         )
                     }
                 }
+
+                // AdMob Banner Ad
+                AdBanner(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
             }
         }
     }

@@ -136,7 +136,7 @@ fun CallHubScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.weight(1f)
                 ) {
                     items(characters) { character ->
                         CallHubCard(character) {
@@ -148,6 +148,12 @@ fun CallHubScreen(
                         }
                     }
                 }
+
+                AdBanner(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                )
             }
         }
     }

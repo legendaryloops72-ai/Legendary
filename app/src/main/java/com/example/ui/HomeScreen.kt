@@ -635,11 +635,17 @@ fun HomeScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                val itemModifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    val itemModifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
                 
                 // 1. الرئيسية
                 NavigationDrawerItem(
@@ -833,8 +839,7 @@ fun HomeScreen(
                     modifier = itemModifier,
                     colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
                 )
-                
-                Spacer(modifier = Modifier.weight(1f))
+                }
                 
                 Text(
                     text = "شرطة الأطفال وأبطال الغد 👮✨",
@@ -1119,6 +1124,14 @@ fun HomeScreen(
                         }
                     }
                 }
+                
+                // AdMob Banner Ad
+                AdBanner(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    adUnitId = "ca-app-pub-3940256099942544/6300978111" // Test ID by default, replace with real Ad Unit ID when ready
+                )
             }
         }
     }

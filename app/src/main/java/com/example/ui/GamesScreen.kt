@@ -233,8 +233,9 @@ fun GamesScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp),
+                    .weight(1f)
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -266,6 +267,12 @@ fun GamesScreen(
                     )
                 }
             }
+
+            AdBanner(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            )
         }
     }
 }

@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.google.android.gms.ads.MobileAds
 import com.example.data.AppDatabase
 import com.example.data.AppRepository
 import com.example.ui.*
@@ -25,6 +26,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize AdMob
+        try {
+            MobileAds.initialize(this) {}
+            // Preload interstitial ad on startup
+            com.example.ui.AdManager.loadInterstitial(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         
         val database = try {
             Room.databaseBuilder(

@@ -89,6 +89,7 @@ dependencies {
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.firebase.auth)
+  implementation(libs.play.services.ads)
   implementation(libs.retrofit)
   implementation(libs.retrofit.converter.serialization)
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
