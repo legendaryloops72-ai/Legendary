@@ -143,7 +143,7 @@ fun PuzzlePiece(id: Int) {
     // We use different crops of the same image to simulate puzzle pieces
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.captain_didi),
+            painter = painterResource(id = com.example.R.drawable.captain_didi),
             contentDescription = "Piece",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,

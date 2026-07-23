@@ -1,8 +1,8 @@
 {
   "name": "شرطة الأطفال",
   "packageName": "com.aistudio.kidspolice.abcd",
-  "versionCode": 16,
-  "versionName": "1.6.0",
+  "versionCode": 18,
+  "versionName": "1.8.0",
   "description": "تطبيق شرطة الأطفال التربوي التفاعلي للمكالمات الوهمية والقصص والألعاب والمهام التربوية والأصوات المميزة.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

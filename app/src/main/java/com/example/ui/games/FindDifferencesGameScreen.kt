@@ -81,7 +81,7 @@ fun FindDifferencesGameScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                         .border(4.dp, Color.White, RoundedCornerShape(16.dp))
                 ) {
                     Image(
-                        painter = painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.splash_image),
+                        painter = painterResource(id = com.example.R.drawable.splash_image),
                         contentDescription = "Original",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -97,7 +97,7 @@ fun FindDifferencesGameScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                         .border(4.dp, Color(0xFFEA580C), RoundedCornerShape(16.dp))
                 ) {
                     Image(
-                        painter = painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.splash_image),
+                        painter = painterResource(id = com.example.R.drawable.splash_image),
                         contentDescription = "Difference",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop

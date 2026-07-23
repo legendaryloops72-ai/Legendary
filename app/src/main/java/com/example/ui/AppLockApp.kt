@@ -119,7 +119,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.MainActivity
-import com.aistudio.kidspolice.abcd.R
+import com.example.R
 import com.example.data.AppInfo
 import com.example.data.AppLockPreferences
 import com.example.data.IntruderRecord

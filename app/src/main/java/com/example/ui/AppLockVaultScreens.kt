@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
-import com.aistudio.kidspolice.abcd.R
+import com.example.R
 import com.example.data.VaultMediaItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

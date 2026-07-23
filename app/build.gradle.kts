@@ -8,15 +8,17 @@ plugins {
 }
 
 android {
-  namespace = "com.aistudio.kidspolice.abcd"
+  namespace = "com.example"
   compileSdk = 36
 
   defaultConfig {
-    applicationId = "com.aistudio.kidspolice.abcd" // applicationId "com.aistudio.kidspolice.abcd"
+    applicationId = "com.aistudio.kidspolice.abcd"
     minSdk = 26
     targetSdk = 36
-    versionCode = 16 // versionCode 16
-    versionName = "1.6.0" // versionName "1.6.0"
+    versionCode = 18
+    versionName = "1.8.0"
+    // versionCode 18
+    // versionName "1.8.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }

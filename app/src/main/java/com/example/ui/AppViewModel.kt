@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-import com.aistudio.kidspolice.abcd.BuildConfig
+import com.example.BuildConfig
 import com.example.data.*
 
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
