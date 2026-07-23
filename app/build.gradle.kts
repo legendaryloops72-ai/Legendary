@@ -15,8 +15,8 @@ android {
     applicationId = "com.aistudio.kidspolice.abcd"
     minSdk = 26
     targetSdk = 36
-    versionCode = 18
-    versionName = "1.8.0"
+    versionCode = 25
+    versionName = "2.0.0"
     // versionCode 18
     // versionName "1.8.0"
 
