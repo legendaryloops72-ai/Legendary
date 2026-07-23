@@ -38,6 +38,32 @@ interface AppDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveBestScore(score: GameScore)
+
+    // عمليات الخزانة الآمنة (Safe Vault)
+    @Query("SELECT * FROM vault_media_items ORDER BY dateAdded DESC")
+    fun getAllVaultItems(): Flow<List<VaultMediaItem>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertVaultItem(item: VaultMediaItem): Long
+
+    @androidx.room.Delete
+    suspend fun deleteVaultItem(item: VaultMediaItem)
+
+    @Query("SELECT * FROM vault_media_items WHERE id = :id LIMIT 1")
+    suspend fun getVaultItemById(id: Long): VaultMediaItem?
+
+    // عمليات سيلفي الدخيل (Intruder Selfie)
+    @Query("SELECT * FROM intruder_records ORDER BY timestamp DESC")
+    fun getAllIntruderRecords(): Flow<List<IntruderRecord>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertIntruderRecord(record: IntruderRecord): Long
+
+    @androidx.room.Delete
+    suspend fun deleteIntruderRecord(record: IntruderRecord)
+
+    @Query("DELETE FROM intruder_records")
+    suspend fun deleteAllIntruderRecords()
 }
 
 @androidx.room.Entity(tableName = "game_scores")

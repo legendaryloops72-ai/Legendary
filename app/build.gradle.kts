@@ -8,15 +8,15 @@ plugins {
 }
 
 android {
-  namespace = "com.example"
-  compileSdk { version = release(36) { minorApiLevel = 1 } }
+  namespace = "com.aistudio.kidspolice.abcd"
+  compileSdk = 36
 
   defaultConfig {
-    applicationId = "com.aistudio.kidspolice.abcd"
+    applicationId = "com.aistudio.kidspolice.abcd" // applicationId "com.aistudio.kidspolice.abcd"
     minSdk = 26
-    targetSdk = 35
-    versionCode = 13
-    versionName = "1.3.0"
+    targetSdk = 36
+    versionCode = 16 // versionCode 16
+    versionName = "1.6.0" // versionName "1.6.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -79,7 +79,12 @@ dependencies {
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.core.ktx)
+  implementation("androidx.biometric:biometric:1.1.0")
   implementation("androidx.fragment:fragment-ktx:1.8.6")
+  implementation(libs.androidx.camera.core)
+  implementation(libs.androidx.camera.camera2)
+  implementation(libs.androidx.camera.lifecycle)
+  implementation(libs.androidx.camera.view)
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.lifecycle.viewmodel.compose)

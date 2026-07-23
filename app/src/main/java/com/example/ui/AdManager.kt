@@ -13,8 +13,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 object AdManager {
     private const val TAG = "AdManager"
     
-    // Default AdMob test Interstitial Ad ID
-    private const val INTERSTITIAL_TEST_ID = "ca-app-pub-3940256099942544/1033173712"
+    // Production AdMob Interstitial Ad ID
+    private const val INTERSTITIAL_ID = "ca-app-pub-4760027279848820/8312965208"
     
     private var mInterstitialAd: InterstitialAd? = null
     private var isAdLoading = false
@@ -22,7 +22,7 @@ object AdManager {
     /**
      * Preloads an interstitial ad to be displayed later.
      */
-    fun loadInterstitial(context: Context, adUnitId: String = INTERSTITIAL_TEST_ID) {
+    fun loadInterstitial(context: Context, adUnitId: String = INTERSTITIAL_ID) {
         if (mInterstitialAd != null || isAdLoading) return
         
         isAdLoading = true

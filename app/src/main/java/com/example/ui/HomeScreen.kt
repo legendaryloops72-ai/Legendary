@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import com.example.sound.CallSoundManager
+import com.aistudio.kidspolice.abcd.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -978,7 +979,7 @@ fun HomeScreen(
                                 .scale(1.02f)
                         ) {
                             Image(
-                                painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.kids_police_splash_1783935509010),
+                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.kids_police_splash_1783935509010),
                                 contentDescription = "Kids Police Superhero",
                                 modifier = Modifier
                                     .size(110.dp)
@@ -1038,7 +1039,7 @@ fun HomeScreen(
                             KidsMainCard(
                                 title = "الأصوات",
                                 subtitle = "أصوات الحيوانات والمركبات",
-                                imageRes = com.example.R.drawable.img_dash_sounds_1783955804158,
+                                imageRes = R.drawable.img_dash_sounds_1783955804158,
                                 backgroundColor = Color(0xFFFDF2F8),
                                 accentColor = Color(0xFFDB2777),
                                 modifier = Modifier.weight(1f)
@@ -1051,7 +1052,7 @@ fun HomeScreen(
                             KidsMainCard(
                                 title = "الأبطال الخارقون",
                                 subtitle = "عالم الأبطال المذهل",
-                                imageRes = com.example.R.drawable.img_dash_heroes_1783955818726,
+                                imageRes = R.drawable.img_dash_heroes_1783955818726,
                                 backgroundColor = Color(0xFFFFF7ED),
                                 accentColor = Color(0xFFEA580C),
                                 modifier = Modifier.weight(1f)
@@ -1069,7 +1070,7 @@ fun HomeScreen(
                             KidsMainCard(
                                 title = "المكالمات",
                                 subtitle = "تحدث مع أصدقائك الموجهين",
-                                imageRes = com.example.R.drawable.img_dash_calls_1783955830382,
+                                imageRes = R.drawable.img_dash_calls_1783955830382,
                                 backgroundColor = Color(0xFFF0FDF4),
                                 accentColor = Color(0xFF16A34A),
                                 modifier = Modifier.weight(1f)
@@ -1082,7 +1083,7 @@ fun HomeScreen(
                             KidsMainCard(
                                 title = "الألعاب والمرح",
                                 subtitle = "ألعاب، اختبارات وتلوين",
-                                imageRes = com.example.R.drawable.img_dash_games_1783955841991,
+                                imageRes = R.drawable.img_dash_games_1783955841991,
                                 backgroundColor = Color(0xFFEFF6FF),
                                 accentColor = Color(0xFF2563EB),
                                 modifier = Modifier.weight(1f)
@@ -1100,7 +1101,7 @@ fun HomeScreen(
                             KidsMainCard(
                                 title = "قصص ممتعة",
                                 subtitle = "قصص تعليمية وتفاعلية",
-                                imageRes = com.example.R.drawable.dash_stories_icon_1784050441881,
+                                imageRes = R.drawable.dash_stories_icon_1784050441881,
                                 backgroundColor = Color(0xFFF0F9FF),
                                 accentColor = Color(0xFF0284C7),
                                 modifier = Modifier.weight(1f)
@@ -1113,7 +1114,7 @@ fun HomeScreen(
                             KidsMainCard(
                                 title = "مهامي",
                                 subtitle = "جدول المهام اليومية للأبطال",
-                                imageRes = com.example.R.drawable.img_dash_heroes_1783955818726, // Using heroes as fallback for now
+                                imageRes = R.drawable.img_dash_heroes_1783955818726, // Using heroes as fallback for now
                                 backgroundColor = Color(0xFFFEF2F2),
                                 accentColor = Color(0xFFDC2626),
                                 modifier = Modifier.weight(1f)

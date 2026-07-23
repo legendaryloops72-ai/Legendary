@@ -5,17 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.google.android.gms.ads.MobileAds
 import com.example.data.AppDatabase
 import com.example.data.AppRepository
 import com.example.ui.*
@@ -23,196 +18,234 @@ import com.example.ui.games.*
 import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
-        // Initialize AdMob
-        try {
-            MobileAds.initialize(this) {}
-            // Preload interstitial ad on startup
-            com.example.ui.AdManager.loadInterstitial(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        
-        val database = try {
-            Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java,
-                "kids_police_db_v2"
-            )
-            .fallbackToDestructiveMigration(true)
-            .build()
-        } catch (e: Throwable) {
-            Room.inMemoryDatabaseBuilder(
-                applicationContext,
-                AppDatabase::class.java
-            ).build()
-        }
 
-        val repository = AppRepository(database.appDao())
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "app_database"
+        ).fallbackToDestructiveMigration().build()
+        
+        val repository = AppRepository(db.appDao())
         val factory = AppViewModelFactory(repository)
 
         setContent {
             MyApplicationTheme {
-                val navController = rememberNavController()
-                val viewModel: AppViewModel = viewModel(factory = factory)
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    val appViewModel: AppViewModel = viewModel(factory = factory)
+                    
+                    var currentScreen by rememberSaveable { mutableStateOf("splash") }
+                    var selectedCallType by rememberSaveable { mutableStateOf("police") }
 
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = "splash"
-                    ) {
-                        composable("splash") {
-                            SplashScreen(onSplashFinished = {
-                                navController.navigate("home") {
-                                    popUpTo("splash") { inclusive = true }
-                                    launchSingleTop = true
+                    when (currentScreen) {
+                        "splash" -> {
+                            SplashScreen(
+                                onSplashFinished = {
+                                    currentScreen = "home"
                                 }
-                            })
+                            )
                         }
-                        composable("home") {
+                        "setup" -> {
+                            SetupScreen(
+                                viewModel = appViewModel,
+                                onComplete = {
+                                    currentScreen = "home"
+                                }
+                            )
+                        }
+                        "home" -> {
                             HomeScreen(
-                                viewModel = viewModel,
-                                onNavigateToTasks = { navController.navigate("tasks") },
-                                onNavigateToQuizzes = { navController.navigate("quizzes") },
-                                onNavigateToSettings = { navController.navigate("settings") },
-                                onSimulateCall = { caller ->
-                                    navController.navigate("call/$caller")
+                                viewModel = appViewModel,
+                                onNavigateToTasks = { currentScreen = "tasks" },
+                                onNavigateToQuizzes = { currentScreen = "quiz" },
+                                onNavigateToSettings = { currentScreen = "settings" },
+                                onSimulateCall = { callId ->
+                                    selectedCallType = callId
+                                    currentScreen = "fake_call"
                                 },
-                                onNavigateToHeroesUniverse = { navController.navigate("heroes-universe") },
-                                onNavigateToSoundsUniverse = { navController.navigate("sounds-universe") },
-                                onNavigateToPrivacy = { navController.navigate("privacy") },
-                                onNavigateToColoring = { navController.navigate("coloring") },
-                                onNavigateToGames = { navController.navigate("games") },
-                                onNavigateToStories = { navController.navigate("stories") },
-                                onNavigateToPoliceScenarios = { navController.navigate("police-scenarios") },
-                                onNavigateToCallHub = { navController.navigate("call-hub") },
-                                onNavigateToRewards = { navController.navigate("rewards") }
+                                onNavigateToHeroesUniverse = { currentScreen = "heroes" },
+                                onNavigateToSoundsUniverse = { currentScreen = "sounds" },
+                                onNavigateToPrivacy = { currentScreen = "privacy" },
+                                onNavigateToColoring = { currentScreen = "coloring" },
+                                onNavigateToGames = { currentScreen = "games" },
+                                onNavigateToStories = { currentScreen = "stories" },
+                                onNavigateToPoliceScenarios = { currentScreen = "police_scenarios" },
+                                onNavigateToCallHub = { currentScreen = "call_hub" },
+                                onNavigateToRewards = { currentScreen = "rewards" }
                             )
                         }
-                        composable("call-hub") {
-                            CallHubScreen(
-                                onNavigateToPoliceScenarios = { navController.navigate("police-scenarios") },
-                                onNavigateToCall = { caller ->
-                                    navController.navigate("call/$caller")
-                                },
-                                onBack = { navController.popBackStack() }
-                            )
-                        }
-                        composable("police-scenarios") {
+                        "police_scenarios" -> {
                             PoliceScenariosScreen(
-                                viewModel = viewModel,
-                                onNavigateToCall = { scenarioType ->
-                                    navController.navigate("call/$scenarioType")
+                                viewModel = appViewModel,
+                                onNavigateToCall = { callId ->
+                                    selectedCallType = callId
+                                    currentScreen = "fake_call"
                                 },
-                                onBack = { navController.popBackStack() }
+                                onBack = { currentScreen = "home" }
                             )
                         }
-                        composable("coloring") {
-                            ColoringScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("stories") {
-                            StoriesScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("games") {
-                            GamesScreen(
-                                viewModel = viewModel,
-                                onBack = { navController.popBackStack() },
-                                onNavigateToMemoryGame = { navController.navigate("game-memory") },
-                                onNavigateToColorTapGame = { navController.navigate("game-color-tap") },
-                                onNavigateToNumberOrderGame = { navController.navigate("game-number-order") },
-                                onNavigateToShapeMatchGame = { navController.navigate("game-shape-match") },
-                                onNavigateToAlphabetGame = { navController.navigate("game-alphabet") },
-                                onNavigateToBubblePopGame = { navController.navigate("game-bubble-pop") },
-                                onNavigateToFindDifferencesGame = { navController.navigate("game-find-differences") },
-                                onNavigateToPuzzleGame = { navController.navigate("game-puzzle") }
+                        "call_hub" -> {
+                            CallHubScreen(
+                                onNavigateToPoliceScenarios = { currentScreen = "police_scenarios" },
+                                onNavigateToCall = { callId ->
+                                    selectedCallType = callId
+                                    currentScreen = "fake_call"
+                                },
+                                onBack = { currentScreen = "home" }
                             )
                         }
-                        composable("game-memory") {
-                            MemoryMatchGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
+                        "fake_call" -> {
+                            FakeCallScreen(
+                                callerType = selectedCallType,
+                                viewModel = appViewModel,
+                                onEndCall = { currentScreen = "home" }
+                            )
                         }
-                        composable("game-color-tap") {
-                            ColorTapGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
+                        "tasks" -> {
+                            TasksScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
+                            )
                         }
-                        composable("game-number-order") {
-                            NumberOrderGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
+                        "quiz" -> {
+                            QuizScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
+                            )
                         }
-                        composable("game-shape-match") {
-                            ShapeMatchGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("game-alphabet") {
-                            AlphabetGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("game-bubble-pop") {
-                            BubblePopGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("game-find-differences") {
-                            FindDifferencesGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("game-puzzle") {
-                            SimplePuzzleGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("heroes-universe") {
-                            SuperHeroesScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("sounds-universe") {
-                            SoundsUniverseScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("quizzes") {
-                            QuizScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("tasks") {
-                            TasksScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("settings") {
+                        "settings" -> {
                             SettingsScreen(
-                                viewModel = viewModel,
-                                onBack = { navController.popBackStack() },
-                                onShowPrivacyPolicy = { navController.navigate("privacy") },
-                                onNavigateToParentDashboard = { navController.navigate("parent-dashboard") }
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" },
+                                onShowPrivacyPolicy = { currentScreen = "privacy" },
+                                onNavigateToParentDashboard = { currentScreen = "parent_dashboard" }
                             )
                         }
-                        composable("parent-dashboard") {
+                        "parent_dashboard" -> {
                             ParentDashboardScreen(
-                                viewModel = viewModel,
-                                onBack = { navController.popBackStack() }
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "settings" }
                             )
                         }
-                        composable("rewards") {
-                            RewardsScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
-                        }
-                        composable("privacy") {
-                            PrivacyPolicyScreen(onAccept = { navController.popBackStack() })
-                        }
-                        composable(
-                            route = "call/{caller}",
-                            deepLinks = listOf(
-                                androidx.navigation.navDeepLink {
-                                    uriPattern = "https://ais-pre-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app/call/{caller}"
-                                },
-                                androidx.navigation.navDeepLink {
-                                    uriPattern = "https://ais-dev-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app/call/{caller}"
-                                },
-                                androidx.navigation.navDeepLink {
-                                    uriPattern = "http://ais-pre-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app/call/{caller}"
-                                },
-                                androidx.navigation.navDeepLink {
-                                    uriPattern = "http://ais-dev-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app/call/{caller}"
-                                },
-                                androidx.navigation.navDeepLink {
-                                    uriPattern = "kidspolice://call/{caller}"
-                                }
+                        "heroes" -> {
+                            HeroesUniverseScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
                             )
-                        ) { backStackEntry ->
-                            val caller = backStackEntry.arguments?.getString("caller") ?: "police"
-                            FakeCallScreen(callerType = caller, viewModel = viewModel, onEndCall = { 
-                                navController.popBackStack() 
-                            })
+                        }
+                        "sounds" -> {
+                            SoundsUniverseScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
+                            )
+                        }
+                        "privacy" -> {
+                            PrivacyPolicyScreen(
+                                onAccept = { currentScreen = "home" }
+                            )
+                        }
+                        "coloring" -> {
+                            ColoringScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
+                            )
+                        }
+                        "games" -> {
+                            GamesScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" },
+                                onNavigateToMemoryGame = { currentScreen = "game_memory" },
+                                onNavigateToColorTapGame = { currentScreen = "game_colortap" },
+                                onNavigateToNumberOrderGame = { currentScreen = "game_numberorder" },
+                                onNavigateToShapeMatchGame = { currentScreen = "game_shapematch" },
+                                onNavigateToAlphabetGame = { currentScreen = "game_alphabet" },
+                                onNavigateToBubblePopGame = { currentScreen = "game_bubblepop" },
+                                onNavigateToFindDifferencesGame = { currentScreen = "game_finddiff" },
+                                onNavigateToPuzzleGame = { currentScreen = "game_puzzle" }
+                            )
+                        }
+                        "game_memory" -> {
+                            MemoryMatchGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_colortap" -> {
+                            ColorTapGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_numberorder" -> {
+                            NumberOrderGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_shapematch" -> {
+                            ShapeMatchGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_alphabet" -> {
+                            AlphabetGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_bubblepop" -> {
+                            BubblePopGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_finddiff" -> {
+                            FindDifferencesGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "game_puzzle" -> {
+                            SimplePuzzleGameScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "games" }
+                            )
+                        }
+                        "stories" -> {
+                            StoriesScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
+                            )
+                        }
+                        "rewards" -> {
+                            RewardsScreen(
+                                viewModel = appViewModel,
+                                onBack = { currentScreen = "home" }
+                            )
+                        }
+                        else -> {
+                            HomeScreen(
+                                viewModel = appViewModel,
+                                onNavigateToTasks = { currentScreen = "tasks" },
+                                onNavigateToQuizzes = { currentScreen = "quiz" },
+                                onNavigateToSettings = { currentScreen = "settings" },
+                                onSimulateCall = { callId ->
+                                    selectedCallType = callId
+                                    currentScreen = "fake_call"
+                                },
+                                onNavigateToHeroesUniverse = { currentScreen = "heroes" },
+                                onNavigateToSoundsUniverse = { currentScreen = "sounds" },
+                                onNavigateToPrivacy = { currentScreen = "privacy" },
+                                onNavigateToColoring = { currentScreen = "coloring" },
+                                onNavigateToGames = { currentScreen = "games" },
+                                onNavigateToStories = { currentScreen = "stories" },
+                                onNavigateToPoliceScenarios = { currentScreen = "police_scenarios" },
+                                onNavigateToCallHub = { currentScreen = "call_hub" },
+                                onNavigateToRewards = { currentScreen = "rewards" }
+                            )
                         }
                     }
                 }

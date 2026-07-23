@@ -207,7 +207,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
                     .padding(8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = com.example.R.drawable.kids_police_splash_1783935509010),
+                    painter = painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.kids_police_splash_1783935509010),
                     contentDescription = "Mascot",
                     modifier = Modifier
                         .size(240.dp)

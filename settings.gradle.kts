@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Kids Police"
+rootProject.name = "KidsPolice"
 
 include(":app")

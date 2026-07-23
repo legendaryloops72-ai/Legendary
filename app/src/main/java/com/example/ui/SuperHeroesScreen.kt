@@ -92,7 +92,7 @@ fun SuperHeroesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.superheroes_banner_1783979147767),
+                        painter = androidx.compose.ui.res.painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.superheroes_banner_1783979147767),
                         contentDescription = "Superheroes Banner",
                         modifier = Modifier
                             .fillMaxWidth()
