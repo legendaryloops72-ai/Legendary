@@ -21,18 +21,6 @@ interface AppDao {
     @Query("SELECT * FROM tasks")
     fun getAllTasks(): Flow<List<KidTask>>
 
-    @Query("SELECT * FROM badges")
-    fun getAllBadges(): Flow<List<BadgeItem>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertBadge(badge: BadgeItem)
-
-    @Update
-    suspend fun updateBadge(badge: BadgeItem)
-
-    @Query("UPDATE badges SET isUnlocked = 1, currentProgress = requiredCount WHERE id = :badgeId")
-    suspend fun unlockBadge(badgeId: String)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: KidTask)
 

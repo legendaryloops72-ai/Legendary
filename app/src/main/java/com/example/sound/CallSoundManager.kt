@@ -51,9 +51,9 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
                 tts?.setLanguage(Locale.getDefault())
             } else {
                 isTtsInitialized = true
-                // Setup natural human speech pitch and cadence
-                tts?.setPitch(1.0f)
-                tts?.setSpeechRate(0.95f)
+                // Setup sweet pitch appropriate for kids
+                tts?.setPitch(1.1f)
+                tts?.setSpeechRate(0.85f) // Gentle speaking pace for kids
             }
 
             tts?.setOnUtteranceProgressListener(object : android.speech.tts.UtteranceProgressListener() {
@@ -644,159 +644,69 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
 
 
     val localAssetMap = mapOf(
-        // Animals (50+)
-        "قطة" to "sounds/animals/cat.mp3",
-        "هريرة صغيرة" to "sounds/animals/cat.mp3",
-        "كلب" to "sounds/animals/dog.wav",
-        "جرو صغير" to "sounds/animals/dog.wav",
-        "أسد" to "sounds/animals/lion.mp3",
-        "نمر" to "sounds/animals/tiger.wav",
-        "فيل" to "sounds/animals/bull.mp3",
-        "حصان" to "sounds/animals/horse.wav",
+        // Animals
         "بقرة" to "sounds/animals/bull.mp3",
         "خروف" to "sounds/animals/sheep.wav",
-        "عصفور" to "sounds/downloaded/تغريد العصافير.ogg",
-        "بطة" to "sounds/animals/duck.wav",
-        "قرد" to "sounds/animals/monkey.mp3",
-        "ذئب" to "sounds/animals/fox.mp3",
-        "ديك" to "sounds/animals/rooster.mp3",
-        "ضفدع" to "sounds/animals/frog.mp3",
-        "بطريق" to "sounds/animals/duck.wav",
-        "نحلة" to "sounds/animals/insect.mp3",
-        "بومة" to "sounds/animals/crow.aiff",
-        "كنغر" to "sounds/animals/donkey.mp3",
-        "حوت" to "sounds/animals/alligator.mp3",
-        "أرنب" to "sounds/animals/fox.mp3",
         "ماعز" to "sounds/animals/goat.mp3",
-        "دب" to "sounds/animals/bear.wav",
-        "باندا" to "sounds/animals/bear.wav",
-        "ثعلب" to "sounds/animals/fox.mp3",
-        "كوالا" to "sounds/animals/monkey.mp3",
-        "فأر" to "sounds/animals/bat.mp3",
-        "كتكوت" to "sounds/animals/rooster.mp3",
-        "زرافة" to "sounds/animals/camel.mp3",
-        "حمار وحشي" to "sounds/animals/donkey.mp3",
-        "جمل" to "sounds/animals/camel.mp3",
-        "قنفذ" to "sounds/animals/insect.mp3",
-        "سنجاب" to "sounds/animals/monkey.mp3",
-        "فراشة" to "sounds/animals/insect.mp3",
-        "سرطان البحر" to "sounds/animals/alligator2.mp3",
-        "فهد" to "sounds/animals/tiger.wav",
-        "غزال" to "sounds/animals/goat2.wav",
-        "أخطبوط" to "sounds/animals/alligator.mp3",
-        "حلزون" to "sounds/animals/insect.mp3",
-        "خفاش" to "sounds/animals/bat.mp3",
-        "خرتيت" to "sounds/animals/bull.mp3",
-        "سيد قشطة" to "sounds/animals/bull.mp3",
+        "ديك" to "sounds/animals/rooster.mp3",
+        "حصان" to "sounds/animals/horse.wav",
         "حمار" to "sounds/animals/donkey.mp3",
-        "فلامنجو" to "sounds/animals/crow.aiff",
-        "ببغاء" to "sounds/animals/crow.aiff",
-        "نسر" to "sounds/animals/crow.aiff",
-        "دلفين" to "sounds/animals/duck.wav",
+        "حمار وحشي" to "sounds/animals/donkey.mp3",
+        "قطة" to "sounds/animals/cat.mp3",
+        "كلب" to "sounds/animals/dog.wav",
+        "أسد" to "sounds/animals/lion.mp3",
+        "نمر" to "sounds/animals/tiger.wav",
+        "فيل" to "sounds/animals/elephant.mp3",
+        "قرد" to "sounds/animals/monkey.mp3",
+        "دب" to "sounds/animals/bear.wav",
+        "ثعلب" to "sounds/animals/fox.mp3",
         "غراب" to "sounds/animals/crow.aiff",
+        "بطة" to "sounds/animals/duck.wav",
         "تمساح" to "sounds/animals/alligator.mp3",
-        "ثعبان" to "sounds/animals/snake.wav",
+        "خفاش" to "sounds/animals/bat.mp3",
+        "جمل" to "sounds/animals/camel.mp3",
+        "ضفدع" to "sounds/animals/frog.mp3",
+        "نحلة" to "sounds/animals/insect.mp3",
         "ديك رومي" to "sounds/animals/turkey.mp3",
-        "دجاجة" to "sounds/animals/rooster.mp3",
-        "خنزير" to "sounds/animals/bull.mp3",
-        "وحيد القرن السحري" to "sounds/downloaded/وحيد القرن السحري.ogg",
-        "تنين طائر" to "sounds/animals/bear.wav",
+        "ثعبان" to "sounds/animals/snake.wav",
+        
+        // Dynamic additions mapped to existing local files
+        "هريرة صغيرة" to "sounds/animals/cat.mp3",
+        "جرو صغير" to "sounds/animals/dog.wav",
+        "وحيد القرن السحري" to "sounds/animals/horse.wav",
         "ديناصور عملاق" to "sounds/animals/tiger.wav",
-        "سلحفاة حكيمة" to "sounds/animals/alligator2.mp3",
-        "هامستر كيوت" to "sounds/animals/fox.mp3",
-
-        // Vehicles
-        "سيارة" to "sounds/vehicles/car.mp3",
-        "سيارة رياضية" to "sounds/vehicles/car.mp3",
-        "سيارة شرطة" to "sounds/vehicles/police.mp3",
-        "سيارة إسعاف" to "sounds/vehicles/ambulance.mp3",
-        "شاحنة كبيرة" to "sounds/vehicles/forklift.mp3",
-        "دراجة نارية" to "sounds/vehicles/motorcycle.mp3",
-        "قطار" to "sounds/vehicles/train.mp3",
-        "طائرة" to "sounds/vehicles/helicopter.mp3",
-        "هليكوبتر" to "sounds/vehicles/helicopter.mp3",
-        "سفينة" to "sounds/sirens/ship_horn.ogg",
-        "صاروخ فضائي" to "sounds/vehicles/rocket.mp3",
-        "سيارة إطفاء" to "sounds/vehicles/ambulance.mp3",
-        "دراجة هوائية" to "sounds/sirens/school_bell.ogg",
+        "تنين طائر" to "sounds/animals/bear.wav",
+        
+        // Extra category fallbacks to real sounds
         "جرار زراعي" to "sounds/vehicles/forklift.mp3",
         "حافلة مدرسية" to "sounds/vehicles/car.mp3",
         "غواصة مائية" to "sounds/sirens/submarine_siren.ogg",
-        "سيارة كرتونية" to "sounds/downloaded/سيارة كرتونية.wav",
-        "حوامة سريعة" to "sounds/vehicles/motorcycle.mp3",
+        "حوامة سريعة" to "sounds/vehicles/helicopter.mp3",
         "منطاد طائر" to "sounds/vehicles/rocket.mp3",
-
-        // Heroes
-        "طيران خارق" to "sounds/vehicles/rocket.mp3",
-        "إطلاق طاقة" to "sounds/downloaded/مضغ فقع الفقاعة.wav",
-        "قفزة قوية" to "sounds/downloaded/وحيد القرن السحري.ogg",
-        "سرعة البرق" to "sounds/vehicles/motorcycle.mp3",
-        "درع طاقة" to "sounds/sirens/nuclear_alarm.wav",
-        "شعاع ليزر" to "sounds/sirens/submarine_siren.ogg",
-        "ضربة كرتونية" to "sounds/downloaded/العطس الكوميدي.ogg",
-        "بوابة سحرية" to "sounds/downloaded/وحيد القرن السحري.ogg",
-        "روبوت بطل" to "sounds/downloaded/منبه الطاولة.ogg",
-        "بطل الجليد" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
-        "بطل النار" to "sounds/downloaded/غلاية الماء.ogg",
-        "بطل الرياح" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
-        "قبضة حديدية" to "sounds/sirens/train_horn.ogg",
-        "تخاطر ذهني" to "sounds/downloaded/منبه الطاولة.ogg",
-
-        // Tools
-        "ماكينة حلاقة" to "sounds/vehicles/forklift.mp3",
-        "صعق كهربائي" to "sounds/sirens/nuclear_alarm.wav",
-        "مكنسة كهربائية" to "sounds/vehicles/forklift.mp3",
-        "خلاط كهربائي" to "sounds/downloaded/غلاية الماء.ogg",
-        "كاميرا تصوير" to "sounds/downloaded/منبه الطاولة.ogg",
-        "جرس الباب" to "sounds/sirens/school_bell.ogg",
-        "آلة موسيقية" to "sounds/downloaded/وحيد القرن السحري.ogg",
-        "صوت روبوت" to "sounds/downloaded/منبه الطاولة.ogg",
-        "منبه الطاولة" to "sounds/downloaded/منبه الطاولة.ogg",
-        "غلاية الماء" to "sounds/downloaded/غلاية الماء.ogg",
-        "مطركة الخشب" to "sounds/downloaded/بوق المهرج.wav",
-        "مقص الأوراق" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
-        "مجفف الشعر" to "sounds/vehicles/forklift.mp3",
-
-        // Nature
-        "صوت المطر" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
-        "صوت الرياح" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
-        "صوت الرعد" to "sounds/sirens/ship_horn.ogg",
-        "صوت النهر" to "sounds/downloaded/صوت غابة استوائية.ogg",
-        "صوت أمواج البحر" to "sounds/downloaded/صوت غابة استوائية.ogg",
-        "تغريد العصافير" to "sounds/downloaded/تغريد العصافير.ogg",
-        "حفيف أوراق الشجر" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
         "طقطقة النار" to "sounds/downloaded/حفيف أوراق الشجر.ogg",
         "صوت شلال المياه" to "sounds/downloaded/صوت غابة استوائية.ogg",
-        "صوت غابة استوائية" to "sounds/downloaded/صوت غابة استوائية.ogg",
+        
+        // Vehicles
+        "سيارة" to "sounds/vehicles/car.mp3",
+        "سيارة رياضية" to "sounds/vehicles/car.mp3",
+        "دراجة نارية" to "sounds/vehicles/motorcycle.mp3",
+        "سيارة إسعاف" to "sounds/vehicles/ambulance.mp3",
+        "سيارة شرطة" to "sounds/vehicles/police.mp3",
+        "قطار" to "sounds/vehicles/train.mp3",
+        "صاروخ فضائي" to "sounds/vehicles/rocket.mp3",
+        "طائرة" to "sounds/vehicles/helicopter.mp3", // fallback
+        "هليكوبتر" to "sounds/vehicles/helicopter.mp3",
+        "شاحنة كبيرة" to "sounds/vehicles/forklift.mp3",
 
-        // Funny
-        "ضحكة كرتونية" to "sounds/downloaded/ضحكة الساحرة الشريرة.ogg",
-        "زحلقة كوميدية" to "sounds/downloaded/بوق المهرج.wav",
-        "قفزة يمبروك" to "sounds/downloaded/وحيد القرن السحري.ogg",
-        "صوت كائن فضائي" to "sounds/downloaded/منبه الطاولة.ogg",
-        "بالونة تنفجر" to "sounds/downloaded/مضغ فقع الفقاعة.wav",
-        "العطس الكوميدي" to "sounds/downloaded/العطس الكوميدي.ogg",
-        "مضغ فقع الفقاعة" to "sounds/downloaded/مضغ فقع الفقاعة.wav",
-        "شخير مضحك" to "sounds/downloaded/شخير مضحك.ogg",
-        "بوق المهرج" to "sounds/downloaded/بوق المهرج.wav",
-        "تثاؤب كسول" to "sounds/downloaded/شخير مضحك.ogg",
-        "ضحكة الساحرة الشريرة" to "sounds/downloaded/ضحكة الساحرة الشريرة.ogg",
-
-        // Sirens
-        "صفارة إنذار الشرطة" to "sounds/sirens/police_siren.ogg",
-        "صفارة إنذار الإسعاف" to "sounds/sirens/ambulance_siren.wav",
-        "صفارة إنذار الإطفاء" to "sounds/sirens/evacuation_alarm.ogg",
-        "إنذار غارات جوية" to "sounds/sirens/air_raid_siren.wav",
-        "إنذار نووي خطير" to "sounds/sirens/nuclear_alarm.wav",
-        "بوق سفينة عملاقة" to "sounds/sirens/ship_horn.ogg",
-        "إنذار الحريق المنزلي" to "sounds/sirens/car_alarm.ogg",
-        "إنذار الإخلاء السريع" to "sounds/sirens/evacuation_alarm.ogg",
-        "إنذار الغواصة" to "sounds/sirens/submarine_siren.ogg",
-        "بوق القطار القديم" to "sounds/sirens/train_horn.ogg",
-        "إنذار سرقة السيارة" to "sounds/sirens/car_alarm.ogg",
-        "بوق الشاحنة الرياضية" to "sounds/vehicles/forklift.mp3",
-        "جرس المدرسة القديم" to "sounds/sirens/school_bell.ogg",
-        "إنذار الفضاء المثير" to "sounds/sirens/nuclear_alarm.wav"
+        // Sirens Section Local Assets Fallbacks
+        "صفارة إنذار الشرطة" to "sounds/vehicles/police.mp3",
+        "صفارة إنذار الإسعاف" to "sounds/vehicles/ambulance.mp3",
+        "صفارة إنذار الإطفاء" to "sounds/vehicles/police.mp3",
+        "إنذار غارات جوية" to "sounds/vehicles/police.mp3",
+        "إنذار نووي خطير" to "sounds/vehicles/police.mp3",
+        "بوق سفينة عملاقة" to "sounds/vehicles/forklift.mp3",
+        "إنذار الحريق المنزلي" to "sounds/vehicles/police.mp3",
+        "إنذار الإخلاء السريع" to "sounds/vehicles/police.mp3"
     )
 
     fun playAudioFromAsset(assetPath: String, onStart: () -> Unit = {}, onComplete: () -> Unit = {}, onError: () -> Unit = {}) {
@@ -817,10 +727,11 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
                     val mp = MediaPlayer()
                     mediaPlayer = mp
                     
-                    val afd = try {
-                        context.assets.openFd(assetPath)
+                    var afd: AssetFileDescriptor? = null
+                    try {
+                        afd = context.assets.openFd(assetPath)
                     } catch (e: Exception) {
-                        null
+                        Log.d("CallSoundManager", "Direct FD access failed, falling back to temp file: $assetPath")
                     }
 
                     if (afd != null) {
@@ -846,6 +757,11 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
                                 .build()
                         )
                         
+                        setOnPreparedListener { 
+                            it.start()
+                            onStart()
+                        }
+                        
                         setOnCompletionListener { completedMp ->
                             synchronized(this@CallSoundManager) {
                                 if (mediaPlayer == completedMp) {
@@ -864,12 +780,77 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
                             true
                         }
                         
-                        prepare()
-                        start()
-                        onStart()
+                        prepareAsync()
                     }
                 } catch (e: Exception) {
                     Log.e("CallSoundManager", "Error playing local asset: $assetPath", e)
+                    onError()
+                }
+            }
+        }
+    }
+
+    fun playAudioFromUrl(url: String, onStart: () -> Unit = {}, onComplete: () -> Unit = {}, onError: () -> Unit = {}) {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            synchronized(this) {
+                if (isReleased) return@post
+                try {
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    mediaPlayer = null
+                } catch (e: Exception) {
+                    Log.e("CallSoundManager", "mediaPlayer reset error: ${e.message}")
+                }
+
+                try {
+                    val mp = MediaPlayer()
+                    mediaPlayer = mp
+                    mp.apply {
+                        setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .build()
+                        )
+                        setDataSource(url)
+                        setOnPreparedListener { preparedMp ->
+                            synchronized(this@CallSoundManager) {
+                                if (!isReleased && mediaPlayer == preparedMp) {
+                                    try {
+                                        preparedMp.start()
+                                        onStart()
+                                    } catch (ex: Exception) {
+                                        Log.e("CallSoundManager", "MediaPlayer start error: ${ex.message}")
+                                        onError()
+                                    }
+                                } else {
+                                    try {
+                                        preparedMp.release()
+                                    } catch (e: Exception) {}
+                                }
+                            }
+                        }
+                        setOnCompletionListener { completedMp ->
+                            synchronized(this@CallSoundManager) {
+                                if (mediaPlayer == completedMp) {
+                                    onComplete()
+                                }
+                            }
+                        }
+                        setOnErrorListener { errorMp, what, extra ->
+                            Log.e("CallSoundManager", "MediaPlayer error: what=$what, extra=$extra")
+                            synchronized(this@CallSoundManager) {
+                                if (mediaPlayer == errorMp) {
+                                    onError()
+                                }
+                            }
+                            true
+                        }
+                        prepareAsync()
+                    }
+                } catch (e: Exception) {
+                    Log.e("CallSoundManager", "playAudioFromUrl error: ${e.message}")
                     onError()
                 }
             }
@@ -888,6 +869,7 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
         }
     }
 
+
     fun playKidsRealisticSound(soundName: String, description: String) {
         if (isReleased) return
         stopRingtone()
@@ -895,20 +877,144 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
         stopAudio()
 
         val trimmedName = soundName.trim()
-        val assetPath = localAssetMap[trimmedName] ?: "sounds/animals/cat.mp3"
+        var assetPath = localAssetMap[trimmedName]
 
-        playAudioFromAsset(
-            assetPath = assetPath,
-            onStart = {
-                Log.d("CallSoundManager", "Instant playing for: $trimmedName ($assetPath)")
-            },
-            onComplete = {
-                // Completed playback cleanly with no AI TTS interference
-            },
-            onError = {
-                Log.e("CallSoundManager", "Error playing: $assetPath")
-            }
+        // 1. Dynamic lookup in sirens
+        val sirenBaseNames = mapOf(
+            "صفارة إنذار الشرطة" to "police_siren",
+            "صفارة إنذار الإسعاف" to "ambulance_siren",
+            "صفارة إنذار الإطفاء" to "fire_truck_siren",
+            "إنذار غارات جوية" to "air_raid_siren",
+            "إنذار نووي خطير" to "nuclear_alarm",
+            "بوق سفينة عملاقة" to "ship_horn",
+            "إنذار الحريق المنزلي" to "smoke_alarm",
+            "إنذار الإخلاء السريع" to "evacuation_alarm",
+            "إنذار الغواصة" to "submarine_siren",
+            "بوق القطار القديم" to "train_horn",
+            "إنذار سرقة السيارة" to "car_alarm",
+            "بوق الشاحنة الرياضية" to "truck_horn",
+            "جرس المدرسة القديم" to "school_bell",
+            "إنذار الفضاء المثير" to "space_alarm"
         )
+        val sirenBase = sirenBaseNames[trimmedName]
+        if (sirenBase != null) {
+            try {
+                val sirenFiles = context.assets.list("sounds/sirens") ?: emptyArray()
+                val matchedFile = sirenFiles.firstOrNull { it.substringBefore('.') == sirenBase }
+                if (matchedFile != null) {
+                    assetPath = "sounds/sirens/$matchedFile"
+                    Log.d("CallSoundManager", "Dynamically found siren asset: $assetPath")
+                }
+            } catch (e: Exception) {
+                Log.e("CallSoundManager", "Error listing sirens asset: ${e.message}")
+            }
+        }
+
+        // 2. Dynamic lookup in extra downloaded sounds
+        if (assetPath == null) {
+            try {
+                val downloadedFiles = context.assets.list("sounds/downloaded") ?: emptyArray()
+                val matchedFile = downloadedFiles.firstOrNull { it.substringBefore('.') == trimmedName }
+                if (matchedFile != null) {
+                    assetPath = "sounds/downloaded/$matchedFile"
+                    Log.d("CallSoundManager", "Dynamically found downloaded asset: $assetPath")
+                }
+            } catch (e: Exception) {
+                Log.e("CallSoundManager", "Error listing downloaded asset: ${e.message}")
+            }
+        }
+
+        val onStartAction = {
+            Log.d("CallSoundManager", "Started playing sound for: $trimmedName")
+            Unit
+        }
+        val onCompleteAction = {
+            if (!isReleased && isTtsInitialized) {
+                tts?.setPitch(1.1f)
+                tts?.setSpeechRate(0.85f)
+                val comment = "سمعنا الآن صوت $soundName: $description"
+                tts?.speak(comment, TextToSpeech.QUEUE_FLUSH, null, "KIDS_ANIMAL_COMMENTARY_ID")
+            }
+        }
+        
+        if (assetPath != null) {
+            playAudioFromAsset(
+                assetPath = assetPath,
+                onStart = onStartAction,
+                onComplete = onCompleteAction,
+                onError = {
+                    Log.e("CallSoundManager", "Missing file: $assetPath, attempting URL fallback")
+                    Unit
+                    playFallbackUrl(trimmedName, description, onStartAction, onCompleteAction)
+                }
+            )
+        } else {
+            playFallbackUrl(trimmedName, description, onStartAction, onCompleteAction)
+        }
+    }
+
+    private fun playFallbackUrl(trimmedName: String, description: String, onStartAction: () -> Unit, onCompleteAction: () -> Unit) {
+        val url = realSoundUrls[trimmedName]
+        if (url != null) {
+            playAudioFromUrl(
+                url = url,
+                onStart = onStartAction,
+                onComplete = onCompleteAction,
+                onError = {
+                    Log.e("CallSoundManager", "Online playing failed for $trimmedName, starting local fallback")
+                    Unit
+                    playLocalFallbackSound(trimmedName, description)
+                }
+            )
+        } else {
+            playLocalFallbackSound(trimmedName, description)
+        }
+    }
+
+    private fun playLocalFallbackSound(soundName: String, description: String) {
+        val mappedSynthType = when (soundName) {
+            "أسد", "نمر", "فهد" -> "lion"
+            "كلب" -> "dog"
+            "عصفور", "كتكوت", "ببغاء" -> "bird"
+            "قطة" -> "cat"
+            "جرس الباب" -> "bell"
+            "سيارة شرطة" -> "siren"
+            "سيارة رياضية" -> "car_or_sports"
+            "مكنسة كهربائية" -> "vacuum"
+            "ضربة كرتونية", "ضحكة كرتونية", "زحلقة كوميدية", "بالونة تنفجر" -> "funny"
+            else -> "general"
+        }
+        
+        // Removed AI synth sound playback to make it sound strictly realistic/natural
+        // playSynthSound(mappedSynthType)
+        
+        Thread {
+            try {
+                val (imitation, pitch, rate) = getRealisticOnomatopoeia(soundName)
+                
+                if (!isReleased && isTtsInitialized) {
+                    tts?.setPitch(pitch)
+                    tts?.setSpeechRate(rate)
+                    tts?.speak(imitation, TextToSpeech.QUEUE_FLUSH, null, "KIDS_ANIMAL_IMITATION_ID")
+                }
+                
+                val delayDuration = when (soundName) {
+                    "نحلة", "ثعبان" -> 2000L
+                    "أسد", "نمر", "فهد", "ذئب", "حمار" -> 2200L
+                    else -> 1500L
+                }
+                Thread.sleep(delayDuration)
+                
+                if (!isReleased && isTtsInitialized) {
+                    tts?.setPitch(1.1f)
+                    tts?.setSpeechRate(0.85f)
+                    val comment = "$soundName: $description"
+                    tts?.speak(comment, TextToSpeech.QUEUE_ADD, null, "KIDS_ANIMAL_COMMENTARY_ID")
+                }
+            } catch (e: Exception) {
+                Log.e("CallSoundManager", "playLocalFallbackSound thread error: ${e.message}")
+            }
+        }.start()
     }
 
     fun release() {

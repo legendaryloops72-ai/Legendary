@@ -1484,7 +1484,7 @@ fun BalloonPopGame(soundManager: CallSoundManager, viewModel: AppViewModel) {
                             .size(65.dp)
                             .clickable {
                                 // Pop sound and animations
-                                soundManager.playAudioFromAsset("sounds/downloaded/مضغ فقع الفقاعة.wav")
+                                soundManager.playAudioFromUrl("https://www.soundjay.com/cartoon/sounds/balloon-pop-01.mp3")
                                 balloon.isPopped = true
                                 score++
                                 viewModel.awardQuizStars(2)

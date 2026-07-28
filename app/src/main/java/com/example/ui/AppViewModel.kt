@@ -34,20 +34,6 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
             initialValue = emptyList()
         )
 
-    val badges: StateFlow<List<BadgeItem>> = repository.allBadges
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
-    private val _newUnlockedBadge = MutableStateFlow<BadgeItem?>(null)
-    val newUnlockedBadge = _newUnlockedBadge.asStateFlow()
-
-    fun dismissUnlockedBadge() {
-        _newUnlockedBadge.value = null
-    }
-
     init {
         // تهيئة الملف الافتراضي تلقائياً لكي يفتح للطفل فوراً دون حواجز
         viewModelScope.launch {
@@ -56,23 +42,6 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
                 if (exist == null) {
                     repository.saveProfile(ChildProfile(id = 1, name = "البطل الصغير", totalStars = 15))
                     addInitialTasks()
-                }
-                // Initialize default badges if none exist
-                val existingBadges = repository.allBadges.firstOrNull()
-                if (existingBadges.isNullOrEmpty()) {
-                    val defaultBadges = listOf(
-                        BadgeItem("badge_first_task", "نجم البداية", "أكمل أول مهمة تربوية بنجاح", "🌟", true, "tasks", 1, 1),
-                        BadgeItem("badge_morning_hero", "البطل المنظم", "استيقظ ورتب سريره بانتظام", "🛏️", false, "tasks", 1, 0),
-                        BadgeItem("badge_clean_teeth", "طبيب الأسنان الصغير", "حافظ على نظافة أسنانه وابتسامته البيضاء", "🪥", false, "tasks", 1, 0),
-                        BadgeItem("badge_reader", "قارئ المستقبل", "أتم قراءة القصص المفيدة في المكتبة", "📚", false, "stories", 2, 0),
-                        BadgeItem("badge_artist", "فنان الألوان", "شارك في تلوين ورسم اللوحات المبدعة", "🎨", false, "coloring", 1, 0),
-                        BadgeItem("badge_gamer", "عبقري الألعاب", "أتقن ألعاب التركيز والتفكير والذاكرة", "🎮", false, "games", 1, 0),
-                        BadgeItem("badge_helper", "مساعد العائلة البار", "ساعد ماما وبابا في البيت بكل حب", "❤️", false, "tasks", 1, 0),
-                        BadgeItem("badge_stars_25", "نجم الـ 25 نجمة", "جمع 25 نجمة ذهبية من المهام والتحديات", "🏆", false, "stars", 25, 15),
-                        BadgeItem("badge_police_hero", "حارس السلوك الأمثل", "استمع لنصائح الشرطي سامر والجهات الأمنية", "🛡️", true, "general", 1, 1),
-                        BadgeItem("badge_superhero", "بطل الأبطال الخارقين", "أكمل جميع المهام اليومية والتربوية", "🚀", false, "tasks", 5, 0)
-                    )
-                    defaultBadges.forEach { repository.insertBadge(it) }
                 }
             } catch (e: Exception) {
                 android.util.Log.e("AppViewModel", "Database profile init failed: ${e.message}", e)
@@ -97,7 +66,6 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
             if (!task.isCompleted) {
                 repository.updateTask(task.copy(isCompleted = true))
                 repository.addStars(task.starsReward)
-                checkAndUnlockBadges()
             }
         }
     }
@@ -105,33 +73,6 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
     fun awardQuizStars(stars: Int) {
         viewModelScope.launch {
             repository.addStars(stars)
-            checkAndUnlockBadges()
-        }
-    }
-
-    fun checkAndUnlockBadges() {
-        viewModelScope.launch {
-            val currentProfile = profile.value
-            val currentTasks = tasks.value
-            val currentBadges = badges.value
-
-            val completedCount = currentTasks.count { it.isCompleted }
-            val stars = currentProfile?.totalStars ?: 0
-
-            suspend fun unlock(id: String) {
-                val b = currentBadges.find { it.id == id }
-                if (b != null && !b.isUnlocked) {
-                    repository.unlockBadge(id)
-                    _newUnlockedBadge.value = b
-                }
-            }
-
-            if (completedCount >= 1) unlock("badge_first_task")
-            if (completedCount >= 2) unlock("badge_morning_hero")
-            if (completedCount >= 3) unlock("badge_clean_teeth")
-            if (completedCount >= 4) unlock("badge_helper")
-            if (completedCount >= currentTasks.size && currentTasks.isNotEmpty()) unlock("badge_superhero")
-            if (stars >= 25) unlock("badge_stars_25")
         }
     }
 
