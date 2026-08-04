@@ -1,4 +1,4 @@
-sed -i 's/import androidx.compose.material.icons.filled.ArrowBack/import androidx.compose.material.icons.filled.ArrowBack\nimport androidx.compose.material.icons.filled.PlayArrow\nimport androidx.compose.material.icons.filled.Stop\nimport android.speech.tts.TextToSpeech\nimport androidx.compose.ui.platform.LocalContext\nimport java.util.Locale/' app/src/main/java/com/example/ui/StoriesScreen.kt
+sed -i 's/import androidx.compose.material.icons.filled.ArrowBack/import androidx.compose.material.icons.filled.ArrowBack\nimport androidx.compose.material.icons.filled.PlayArrow\nimport androidx.compose.material.icons.filled.Stop\nimport android.speech.tts.TextToSpeech\nimport androidx.compose.ui.platform.LocalContext\nimport java.util.Locale/' app/src/main/java/com.aistudio.kidspolice.abcd/ui/StoriesScreen.kt
 
 sed -i '/val generatedStory by viewModel.generatedStory.collectAsStateWithLifecycle()/a \
 \
@@ -24,5 +24,5 @@ sed -i '/val generatedStory by viewModel.generatedStory.collectAsStateWithLifecy
             tts?.stop()\
             isSpeaking = false\
         }\
-    }' app/src/main/java/com/example/ui/StoriesScreen.kt
+    }' app/src/main/java/com.aistudio.kidspolice.abcd/ui/StoriesScreen.kt
 

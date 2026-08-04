@@ -1,6 +1,6 @@
 import re
 
-with open('app/src/main/java/com/example/sound/CallSoundManager.kt', 'r') as f:
+with open('app/src/main/java/com.aistudio.kidspolice.abcd/sound/CallSoundManager.kt', 'r') as f:
     content = f.read()
 
 # Replace Log.d(...) with Log.d(...); Unit
@@ -10,5 +10,5 @@ content = content.replace('Log.e("CallSoundManager", "Online playing failed for 
 content = content.replace('Log.d("CallSoundManager", "Started playing sound online for: $trimmedName")', 'Log.d("CallSoundManager", "Started playing sound online for: $trimmedName")\n                    Unit')
 
 
-with open('app/src/main/java/com/example/sound/CallSoundManager.kt', 'w') as f:
+with open('app/src/main/java/com.aistudio.kidspolice.abcd/sound/CallSoundManager.kt', 'w') as f:
     f.write(content)

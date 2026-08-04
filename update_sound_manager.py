@@ -1,6 +1,6 @@
 import re
 
-with open('app/src/main/java/com/example/sound/CallSoundManager.kt', 'r') as f:
+with open('app/src/main/java/com.aistudio.kidspolice.abcd/sound/CallSoundManager.kt', 'r') as f:
     content = f.read()
 
 # Add the localAssetMap
@@ -169,5 +169,5 @@ play_kids_realistic_sound = """
 
 content = re.sub(r'    fun playKidsRealisticSound\(soundName: String, description: String\).*?private fun playLocalFallbackSound', play_kids_realistic_sound + "\n    private fun playLocalFallbackSound", content, flags=re.DOTALL)
 
-with open('app/src/main/java/com/example/sound/CallSoundManager.kt', 'w') as f:
+with open('app/src/main/java/com.aistudio.kidspolice.abcd/sound/CallSoundManager.kt', 'w') as f:
     f.write(content)

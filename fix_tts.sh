@@ -22,5 +22,5 @@ sed -i '/DisposableEffect(context) {/,/    }/c \
             textToSpeech?.stop()\
             textToSpeech?.shutdown()\
         }\
-    }' app/src/main/java/com/example/ui/StoriesScreen.kt
+    }' app/src/main/java/com.aistudio.kidspolice.abcd/ui/StoriesScreen.kt
 

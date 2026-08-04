@@ -4,20 +4,21 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.google.devtools.ksp)
   alias(libs.plugins.roborazzi)
-  alias(libs.plugins.secrets)
+  // alias(libs.plugins.secrets)
 }
 
 android {
-  namespace = "com.example"
-  compileSdk { version = release(36) { minorApiLevel = 1 } }
+  namespace = "com.aistudio.kidspolice.abcd"
+  compileSdk = 36
 
   defaultConfig {
     applicationId = "com.aistudio.kidspolice.abcd"
-    minSdk = 26
-    targetSdk = 36
-    versionCode = 15
-    versionName = "1.5.0"
+    minSdk = 24
+    targetSdk = 35
+    versionCode = 40
+    versionName = "1.0.40"
 
+    buildConfigField("String", "GEMINI_API_KEY", "\"${System.getenv("GEMINI_API_KEY") ?: ""}\"")
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -42,80 +43,86 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("release")
+      signingConfig = signingConfigs.getByName("debugConfig")
     }
     debug {
       signingConfig = signingConfigs.getByName("debugConfig")
     }
   }
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
+
   buildFeatures {
     compose = true
     buildConfig = true
   }
-  testOptions { unitTests { isIncludeAndroidResources = true } }
+
+  packaging {
+    resources {
+      excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    }
+  }
 }
 
-// Configure the Secrets Gradle Plugin to use .env and .env.example files
-// to match the convention used in Web projects.
-secrets {
-  propertiesFileName = ".env"
-  defaultPropertiesFileName = ".env.example"
-}
-
-// Some unused dependencies are commented out below instead of being removed.
-// This makes it easy to add them back in the future if needed.
 dependencies {
-  implementation(platform(libs.androidx.compose.bom))
-  implementation(platform(libs.firebase.bom))
+  implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.lifecycle.runtime.ktx)
+  implementation(libs.androidx.lifecycle.viewmodel.compose)
+  implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.activity.compose)
-  implementation(libs.androidx.compose.material.icons.core)
-  implementation(libs.androidx.compose.material.icons.extended)
-  implementation(libs.androidx.compose.material3)
+  implementation(platform(libs.androidx.compose.bom))
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.tooling.preview)
-  implementation(libs.androidx.core.ktx)
-  implementation("androidx.biometric:biometric:1.1.0")
-  implementation("androidx.fragment:fragment-ktx:1.8.6")
-  implementation(libs.androidx.camera.core)
+  implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.material.icons.core)
+  implementation(libs.androidx.compose.material.icons.extended)
+  implementation(libs.androidx.navigation.compose)
+  implementation(libs.androidx.room.runtime)
+  implementation(libs.androidx.room.ktx)
+  ksp(libs.androidx.room.compiler)
+  implementation(libs.androidx.biometric)
+  implementation(libs.coil.compose)
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.converter.serialization)
+  implementation(libs.converter.moshi)
+  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.kotlinx.coroutines.android)
+  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.accompanist.permissions)
+  implementation(libs.play.services.location)
   implementation(libs.androidx.camera.camera2)
   implementation(libs.androidx.camera.lifecycle)
   implementation(libs.androidx.camera.view)
-  implementation(libs.androidx.lifecycle.runtime.compose)
-  implementation(libs.androidx.lifecycle.runtime.ktx)
-  implementation(libs.androidx.lifecycle.viewmodel.compose)
-  implementation(libs.androidx.navigation.compose)
-  implementation(libs.androidx.room.ktx)
-  implementation(libs.androidx.room.runtime)
-  implementation(libs.kotlinx.coroutines.android)
-  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.androidx.camera.core)
+  implementation(libs.logging.interceptor)
+  implementation(libs.okhttp)
+  implementation(libs.moshi.kotlin)
+  ksp(libs.moshi.kotlin.codegen)
+  implementation(libs.androidx.datastore.preferences)
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.ai)
   implementation(libs.firebase.auth)
   implementation(libs.play.services.ads)
-  implementation(libs.retrofit)
-  implementation(libs.retrofit.converter.serialization)
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-  implementation("com.squareup.okhttp3:okhttp:4.12.0")
-  implementation(libs.coil.compose)
-  testImplementation(libs.androidx.compose.ui.test.junit4)
-  testImplementation(libs.androidx.core)
-  testImplementation(libs.androidx.junit)
+
   testImplementation(libs.junit)
+  testImplementation(libs.androidx.junit)
+  testImplementation(libs.androidx.espresso.core)
   testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.androidx.core)
+  testImplementation(libs.androidx.runner)
   testImplementation(libs.robolectric)
   testImplementation(libs.roborazzi)
   testImplementation(libs.roborazzi.compose)
   testImplementation(libs.roborazzi.junit.rule)
+
+  androidTestImplementation(libs.androidx.junit)
+  androidTestImplementation(libs.androidx.espresso.core)
   androidTestImplementation(platform(libs.androidx.compose.bom))
   androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-  androidTestImplementation(libs.androidx.espresso.core)
-  androidTestImplementation(libs.androidx.junit)
-  androidTestImplementation(libs.androidx.runner)
-  debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
-  "ksp"(libs.androidx.room.compiler)
-  "ksp"(libs.moshi.kotlin.codegen)
+  debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

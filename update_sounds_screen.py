@@ -1,6 +1,6 @@
 import re
 
-with open('app/src/main/java/com/example/ui/SoundsUniverseScreen.kt', 'r') as f:
+with open('app/src/main/java/com.aistudio.kidspolice.abcd/ui/SoundsUniverseScreen.kt', 'r') as f:
     content = f.read()
 
 # Add missing animals
@@ -21,5 +21,5 @@ missing_vehicles = """            Triple("سيارة", "🚗", "صوت محرك 
 
 content = content.replace('            Triple("صاروخ فضائي", "🚀", "صوت انطلاق الصاروخ الفضائي الخارق نحو النجوم")', '            Triple("صاروخ فضائي", "🚀", "صوت انطلاق الصاروخ الفضائي الخارق نحو النجوم"),\n' + missing_vehicles.rstrip('\n'))
 
-with open('app/src/main/java/com/example/ui/SoundsUniverseScreen.kt', 'w') as f:
+with open('app/src/main/java/com.aistudio.kidspolice.abcd/ui/SoundsUniverseScreen.kt', 'w') as f:
     f.write(content)

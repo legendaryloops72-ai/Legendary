@@ -68,12 +68,12 @@
         </activity>
 
         <service
-            android:name="com.example.service.AppLockService"
+            android:name="com.aistudio.kidspolice.abcd.service.AppLockService"
             android:enabled="true"
             android:exported="false"/>
 
         <receiver
-            android:name="com.example.service.BootReceiver"
+            android:name="com.aistudio.kidspolice.abcd.service.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -82,7 +82,7 @@
         </receiver>
 
         <receiver
-            android:name="com.example.service.AppLockDeviceAdminReceiver"
+            android:name="com.aistudio.kidspolice.abcd.service.AppLockDeviceAdminReceiver"
             android:label="حماية إلغاء التثبيت"
             android:description="@string/device_admin_description"
             android:permission="android.permission.BIND_DEVICE_ADMIN"

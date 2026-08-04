@@ -24,4 +24,4 @@ sed -i '/item {/a \
                                                 tint = Color(0xFF3B82F6)\
                                             )\
                                         }\
-                                    }' app/src/main/java/com/example/ui/StoriesScreen.kt
+                                    }' app/src/main/java/com.aistudio.kidspolice.abcd/ui/StoriesScreen.kt
