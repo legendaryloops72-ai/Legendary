@@ -15,8 +15,8 @@ android {
     applicationId = "com.aistudio.kidspolice.abcd"
     minSdk = 24
     targetSdk = 35
-    versionCode = 40
-    versionName = "1.0.40"
+    versionCode = 19
+    versionName = "0.0.19"
 
     buildConfigField("String", "GEMINI_API_KEY", "\"${System.getenv("GEMINI_API_KEY") ?: ""}\"")
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -129,4 +129,17 @@ dependencies {
   androidTestImplementation(libs.androidx.compose.ui.test.junit4)
   debugImplementation(libs.androidx.compose.ui.tooling)
   debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+
+tasks.register<Copy>("copyReleaseOutputsToBuildOutputs") {
+  val rootDirFile = rootProject.projectDir
+  from(layout.buildDirectory.file("outputs/apk/release/app-release.apk"))
+  from(layout.buildDirectory.file("outputs/bundle/release/app-release.aab"))
+  into(rootDirFile.resolve(".build-outputs"))
+}
+
+tasks.configureEach {
+  if (name == "assembleRelease" || name == "bundleRelease") {
+    finalizedBy("copyReleaseOutputsToBuildOutputs")
+  }
 }
