@@ -1028,6 +1028,11 @@ class CallSoundManager(private val context: Context) : TextToSpeech.OnInitListen
             }
             tts = null
             try {
+                toneGenerator?.stopTone()
+            } catch (e: Exception) {
+                Log.e("CallSoundManager", "ToneGenerator stop failed: ${e.message}")
+            }
+            try {
                 toneGenerator?.release()
             } catch (e: Exception) {
                 Log.e("CallSoundManager", "ToneGenerator release failed: ${e.message}")

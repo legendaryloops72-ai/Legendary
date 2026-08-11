@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import com.aistudio.kidspolice.abcd.data.PoliceVehicle
 import com.aistudio.kidspolice.abcd.data.policeVehicles
 
@@ -92,7 +94,6 @@ fun PoliceVehicleCard(vehicle: PoliceVehicle, onClick: () -> Unit) {
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Placeholder for image. Will be replaced by an Image component loaded via Coil when assets are added.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,15 +103,22 @@ fun PoliceVehicleCard(vehicle: PoliceVehicle, onClick: () -> Unit) {
             ) {
                 val context = LocalContext.current
                 val imageResId = remember(vehicle.imageAssetPath) {
-                    context.resources.getIdentifier(vehicle.imageAssetPath, "drawable", context.packageName)
+                    try {
+                        context.resources.getIdentifier(vehicle.imageAssetPath, "drawable", context.packageName)
+                    } catch (e: Exception) {
+                        0
+                    }
                 }
                 
-                if (imageResId != 0) {
-                    androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(id = imageResId),
+                var isImageError by remember { mutableStateOf(false) }
+                
+                if (imageResId != 0 && !isImageError) {
+                    AsyncImage(
+                        model = imageResId,
                         contentDescription = vehicle.name,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                        contentScale = ContentScale.Fit,
+                        onError = { isImageError = true }
                     )
                 } else {
                     Icon(
@@ -144,7 +152,46 @@ fun PoliceCarDetailScreen(
     vehicleId: Int,
     onNavigateBack: () -> Unit
 ) {
-    val vehicle = policeVehicles.find { it.id == vehicleId } ?: return
+    val vehicle = remember(vehicleId) {
+        policeVehicles.find { it.id == vehicleId }
+    }
+
+    if (vehicle == null) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("خطأ في البيانات") },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "رجوع")
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF1E3A8A),
+                        titleContentColor = Color.White,
+                        navigationIconContentColor = Color.White
+                    )
+                )
+            },
+            containerColor = Color(0xFFF3F4F6)
+        ) { padding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "عذرًا، لم يتم العثور على تفاصيل هذه المركبة.",
+                    fontSize = 18.sp,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+        return
+    }
 
     Scaffold(
         topBar = {
@@ -181,15 +228,22 @@ fun PoliceCarDetailScreen(
             ) {
                 val context = LocalContext.current
                 val imageResId = remember(vehicle.imageAssetPath) {
-                    context.resources.getIdentifier(vehicle.imageAssetPath, "drawable", context.packageName)
+                    try {
+                        context.resources.getIdentifier(vehicle.imageAssetPath, "drawable", context.packageName)
+                    } catch (e: Exception) {
+                        0
+                    }
                 }
                 
-                if (imageResId != 0) {
-                    androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(id = imageResId),
+                var isImageError by remember { mutableStateOf(false) }
+                
+                if (imageResId != 0 && !isImageError) {
+                    AsyncImage(
+                        model = imageResId,
                         contentDescription = vehicle.name,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                        contentScale = ContentScale.Fit,
+                        onError = { isImageError = true }
                     )
                 } else {
                     Icon(

@@ -159,7 +159,7 @@ fun FakeCallScreen(
             ) {
                 // التحكم وخيارات المشاركة للدعوة لتجربة المعلق البطل
                 IconButton(onClick = {
-                    val shareUrl = "https://ais-pre-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app/call/$callerType"
+                    val shareUrl = "https://play.google.com/store/apps/details?id=com.aistudio.kidspolice.abcd"
                     val sendIntent = android.content.Intent().apply {
                         action = android.content.Intent.ACTION_SEND
                         putExtra(

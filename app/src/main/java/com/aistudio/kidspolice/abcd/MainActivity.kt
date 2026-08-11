@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
+import com.google.android.gms.ads.MobileAds
 import com.aistudio.kidspolice.abcd.data.AppDatabase
 import com.aistudio.kidspolice.abcd.data.AppRepository
 import com.aistudio.kidspolice.abcd.ui.*
@@ -22,6 +23,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Initialize Google Mobile Ads SDK
+        MobileAds.initialize(this) {}
 
         val db = Room.databaseBuilder(
             applicationContext,

@@ -14,11 +14,10 @@ android {
   defaultConfig {
     applicationId = "com.aistudio.kidspolice.abcd"
     minSdk = 24
-    targetSdk = 35
-    versionCode = 19
-    versionName = "0.0.19"
+    targetSdk = 36
+    versionCode = 21
+    versionName = "21.0"
 
-    buildConfigField("String", "GEMINI_API_KEY", "\"${System.getenv("GEMINI_API_KEY") ?: ""}\"")
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -41,7 +40,8 @@ android {
   buildTypes {
     release {
       isCrunchPngs = false
-      isMinifyEnabled = false
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       if (System.getenv("KEYSTORE_PATH") != null) {
         signingConfig = signingConfigs.getByName("release")
@@ -108,7 +108,7 @@ dependencies {
   ksp(libs.moshi.kotlin.codegen)
   implementation(libs.androidx.datastore.preferences)
   implementation(platform(libs.firebase.bom))
-  implementation(libs.firebase.ai)
+  implementation(libs.firebase.vertexai)
   implementation(libs.firebase.auth)
   implementation(libs.play.services.ads)
 
@@ -141,5 +141,19 @@ tasks.register<Copy>("copyReleaseOutputsToBuildOutputs") {
 tasks.configureEach {
   if (name == "assembleRelease" || name == "bundleRelease") {
     finalizedBy("copyReleaseOutputsToBuildOutputs")
+  }
+}
+
+gradle.taskGraph.whenReady {
+  val hasReleaseTask = allTasks.any { it.name.contains("Release") }
+  if (hasReleaseTask) {
+    val keystorePath = System.getenv("KEYSTORE_PATH")
+    val storePassword = System.getenv("STORE_PASSWORD")
+    val keyPassword = System.getenv("KEY_PASSWORD")
+    if (keystorePath.isNullOrEmpty() || storePassword.isNullOrEmpty() || keyPassword.isNullOrEmpty()) {
+      println("\n********************************************************************************")
+      println("تحذير: يتم التوقيع بمفتاح debug - لا يصلح للرفع على Google Play")
+      println("********************************************************************************\n")
+    }
   }
 }
