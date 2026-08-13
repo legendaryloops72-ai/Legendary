@@ -40,6 +40,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 
 // 👮 1. رسم الشرطي البطل الصغير مع تفاصيل واقعية وعيون برّاقة
 @Composable
@@ -576,7 +579,7 @@ fun HomeScreen(
         label = "WaveOffset"
     )
 
-    val childName = profile?.name ?: "علي"
+    val childName = profile?.name ?: "حسن"
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -620,7 +623,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "${profile?.totalStars ?: 27}",
+                            text = "${profile?.totalStars ?: 448}",
                             color = Color(0xFFFFDE59),
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp
@@ -698,32 +701,6 @@ fun HomeScreen(
                     colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
                 )
 
-                // المفضلة
-                NavigationDrawerItem(
-                    icon = { Text("⭐", fontSize = 20.sp) },
-                    label = { Text("لوحاتي المفضلة", color = Color.White, fontWeight = FontWeight.Bold) },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        onNavigateToColoring()
-                    },
-                    modifier = itemModifier,
-                    colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
-                )
-
-                // الرسمات الأخيرة
-                NavigationDrawerItem(
-                    icon = { Text("🕒", fontSize = 20.sp) },
-                    label = { Text("رسماتي الأخيرة", color = Color.White, fontWeight = FontWeight.Bold) },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        onNavigateToColoring()
-                    },
-                    modifier = itemModifier,
-                    colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
-                )
-
                 // 2. المهام (Missions)
                 NavigationDrawerItem(
                     icon = { Text("🏆", fontSize = 20.sp) },
@@ -789,44 +766,6 @@ fun HomeScreen(
                     colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
                 )
 
-                // 6. مشاركة التطبيق (Share App)
-                NavigationDrawerItem(
-                    icon = { Text("📤", fontSize = 20.sp) },
-                    label = { Text("مشاركة التطبيق", color = Color.White, fontWeight = FontWeight.Bold) },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        val sendIntent = android.content.Intent().apply {
-                            action = android.content.Intent.ACTION_SEND
-                            putExtra(android.content.Intent.EXTRA_TEXT, "حمل تطبيق شرطة الأطفال الآن واستمتع! https://play.google.com/store/apps/details?id=com.aistudio.kidspolice.abcd")
-                            type = "text/plain"
-                        }
-                        val shareIntent = android.content.Intent.createChooser(sendIntent, "مشاركة عبر")
-                        context.startActivity(shareIntent)
-                    },
-                    modifier = itemModifier,
-                    colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
-                )
-
-                // 7. تقييم التطبيق (Rate App)
-                NavigationDrawerItem(
-                    icon = { Text("⭐", fontSize = 20.sp) },
-                    label = { Text("تقييم التطبيق", color = Color.White, fontWeight = FontWeight.Bold) },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        val uri = android.net.Uri.parse("market://details?id=com.aistudio.kidspolice.abcd")
-                        val goToMarket = android.content.Intent(android.content.Intent.ACTION_VIEW, uri)
-                        try {
-                            context.startActivity(goToMarket)
-                        } catch (e: android.content.ActivityNotFoundException) {
-                            context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://play.google.com/store/apps/details?id=com.aistudio.kidspolice.abcd")))
-                        }
-                    },
-                    modifier = itemModifier,
-                    colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
-                )
-
                 // 8. الإعدادات (Settings)
                 NavigationDrawerItem(
                     icon = { Text("⚙️", fontSize = 20.sp) },
@@ -864,13 +803,13 @@ fun HomeScreen(
                         val w = size.width
                         val h = size.height
                         
-                        // Premium deep space cosmic gradient background
+                        // Deep space cosmic gradient background matching Version 19
                         drawRect(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFF030C24), // Deep Space Midnight Blue
-                                    Color(0xFF08102A),
-                                    Color(0xFF030C24)
+                                    Color(0xFF030A1C), // Midnight Space Blue
+                                    Color(0xFF08122C),
+                                    Color(0xFF030A1C)
                                 )
                             )
                         )
@@ -889,7 +828,6 @@ fun HomeScreen(
                             drawPath(path, color = Color(0xFFFBBF24).copy(alpha = alpha))
                         }
 
-                        // 1. Draw glowing twinkling stars at safe, spread out spots
                         drawSparkle(w * 0.12f, h * 0.12f, 15f * twinkleScale, 0.82f)
                         drawSparkle(w * 0.88f, h * 0.08f, 20f * (2f - twinkleScale), 0.75f)
                         drawSparkle(w * 0.78f, h * 0.35f, 12f * twinkleScale, 0.90f)
@@ -897,7 +835,6 @@ fun HomeScreen(
                         drawSparkle(w * 0.92f, h * 0.65f, 22f * twinkleScale, 0.85f)
                         drawSparkle(w * 0.15f, h * 0.85f, 14f * (2f - twinkleScale), 0.80f)
 
-                        // 2. Draw subtle cosmic dust / nebula effect instead of clouds for space theme
                         fun drawNebula(cx: Float, cy: Float, scale: Float) {
                             val nebulaColor = Color(0xFF38BDF8).copy(alpha = 0.15f)
                             drawCircle(nebulaColor, radius = 120f * scale, center = Offset(cx, cy))
@@ -907,7 +844,7 @@ fun HomeScreen(
                         drawNebula(w * 0.75f - cloudDrift, h * 0.75f, 1.5f)
                     }
             ) {
-                // ------------------ Pinned Top Custom Notification/Greeting Bar ------------------
+                // Top Custom Header Bar matching Version 19
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -916,213 +853,213 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Menu slide button on left (Tactile 3D Soft UI styling with gentle scale feedback)
+                    // Menu button on Right (in RTL)
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .scale(1.03f)
-                            .clip(androidx.compose.foundation.shape.CircleShape)
+                            .clip(CircleShape)
                             .background(Color.White)
                             .clickable {
                                 scope.launch { drawerState.open() }
                             }
-                            .border(androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFEFF6FF)), androidx.compose.foundation.shape.CircleShape),
+                            .border(BorderStroke(2.dp, Color(0xFFE2E8F0)), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Menu,
                             contentDescription = "عرض القائمة",
-                            tint = Color(0xFF3B82F6),
+                            tint = Color(0xFF2563EB),
                             modifier = Modifier.size(24.dp)
                         )
                     }
 
-                    // Points Badge on right: glowing white rounded capsule with soft gold outline and twinkling pulse scale!
+                    // Points Badge on Left (in RTL): ⭐ 448
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .scale(twinkleScale)
                             .clip(RoundedCornerShape(22.dp))
                             .background(Color.White)
-                            .border(androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFFBBF24).copy(alpha = 0.6f)), RoundedCornerShape(22.dp))
+                            .border(BorderStroke(2.dp, Color(0xFFFACC15)), RoundedCornerShape(22.dp))
                             .padding(horizontal = 14.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "${profile?.totalStars ?: 27}",
+                            text = "${profile?.totalStars ?: 448}",
                             color = Color(0xFFD97706),
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 15.sp
+                            fontSize = 16.sp
                         )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text("⭐", fontSize = 14.sp)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("⭐", fontSize = 15.sp)
                     }
                 }
 
-                // Big greeting row containing giant waving character on left, text on right
+                // Greeting section with Avatar & Title
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 14.dp),
-                    verticalAlignment = Alignment.Bottom,
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Left side: Waving friendly character illustration with custom floating up-and-down waveOffset
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .offset(y = waveOffset.dp)
-                                .scale(1.02f)
-                        ) {
-                            Image(
-                                painter = androidx.compose.ui.res.painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.kids_police_splash_1783935509010),
-                                contentDescription = "Kids Police Superhero",
-                                modifier = Modifier
-                                    .size(110.dp)
-                                    .clip(CircleShape)
-                                    .border(androidx.compose.foundation.BorderStroke(3.dp, Color.White), CircleShape),
-                                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    // Right Side (in RTL): Glowing Circular Avatar Badge
+                    Box(
+                        modifier = Modifier
+                            .size(90.dp)
+                            .clip(CircleShape)
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(Color(0xFF0284C7), Color(0xFF0F172A))
+                                )
                             )
-                        }
+                            .border(BorderStroke(2.5.dp, Color(0xFF38BDF8)), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = com.aistudio.kidspolice.abcd.R.drawable.kids_police_splash_1783935509010),
+                            contentDescription = "Kids Police Superhero",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
                     }
 
-                    // Right side: "شرطة الأطفال" bold branding texts with gorgeous Arabic shadow layout
+                    // Left Side (in RTL): Title & Greeting
                     Column(
-                        modifier = Modifier.weight(1.5f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 12.dp),
                         horizontalAlignment = Alignment.End
                     ) {
                         Text(
-                            "شرطة الأطفال",
-                            fontSize = 32.sp,
+                            text = "شرطة الأطفال",
+                            fontSize = 30.sp,
                             fontWeight = FontWeight.Black,
-                            color = Color(0xFF1E3A8A),
-                            lineHeight = 36.sp,
+                            color = Color.White,
                             style = androidx.compose.ui.text.TextStyle(
                                 shadow = Shadow(
-                                    color = Color(0xFF1E3A8A).copy(alpha = 0.15f),
-                                    offset = Offset(2f, 2f),
-                                    blurRadius = 4f
+                                    color = Color(0xFF0284C7).copy(alpha = 0.6f),
+                                    offset = Offset(0f, 2f),
+                                    blurRadius = 8f
                                 )
                             )
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            "👋 أهلاً بك، $childName!",
-                            fontSize = 15.sp,
-                            color = Color(0xFF334155),
+                            text = "أهلاً بك، $childName! 👋",
+                            fontSize = 16.sp,
+                            color = Color(0xFF38BDF8),
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
 
-                // Main Kids Dashboard Content (2x2 Grid)
-                Box(
+                // Scrollable Grid Content (2 Columns, Version 19 Layout)
+                Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
-                    contentAlignment = Alignment.Center
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    // Row 1: الأبطال الخارقون (Right) | معرض سيارات الشرطة (Left)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        // 1. الأبطال الخارقون (Right Card in RTL)
+                        KidsMainCard(
+                            title = "الأبطال الخارقون",
+                            subtitle = "عالم الأبطال المذهل",
+                            imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_heroes_1783955818726,
+                            backgroundColor = Color(0xFFFFF7ED),
+                            accentColor = Color(0xFFEA580C),
+                            modifier = Modifier.weight(1f)
                         ) {
-                            // 1. Sounds Icon
-                            KidsMainCard(
-                                title = "معرض سيارات الشرطة",
-                                subtitle = "تعرف على مركبات الشرطة",
-                                imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_sounds_1783955804158,
-                                backgroundColor = Color(0xFFFDF2F8),
-                                accentColor = Color(0xFFDB2777),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                soundManager.playSynthSound("funny")
-                                onNavigateToPoliceCars()
-                            }
-
-                            // 2. Superheroes Icon
-                            KidsMainCard(
-                                title = "الأبطال الخارقون",
-                                subtitle = "عالم الأبطال المذهل",
-                                imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_heroes_1783955818726,
-                                backgroundColor = Color(0xFFFFF7ED),
-                                accentColor = Color(0xFFEA580C),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                soundManager.playSynthSound("funny")
-                                onNavigateToHeroesUniverse()
-                            }
+                            soundManager.playSynthSound("funny")
+                            onNavigateToHeroesUniverse()
                         }
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        // 2. معرض سيارات الشرطة (Left Card in RTL)
+                        KidsMainCard(
+                            title = "معرض سيارات الشرطة",
+                            subtitle = "تعرف على مركبات الشرطة",
+                            imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_sounds_1783955804158,
+                            backgroundColor = Color(0xFFFDF2F8),
+                            accentColor = Color(0xFFDB2777),
+                            modifier = Modifier.weight(1f)
                         ) {
-                            // 3. Calls Icon
-                            KidsMainCard(
-                                title = "المكالمات",
-                                subtitle = "تحدث مع أصدقائك الموجهين",
-                                imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_calls_1783955830382,
-                                backgroundColor = Color(0xFFF0FDF4),
-                                accentColor = Color(0xFF16A34A),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                soundManager.playSynthSound("funny")
-                                onNavigateToCallHub()
-                            }
-
-                            // 4. Games & Fun Icon
-                            KidsMainCard(
-                                title = "الألعاب والمرح",
-                                subtitle = "ألعاب، اختبارات وتلوين",
-                                imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_games_1783955841991,
-                                backgroundColor = Color(0xFFEFF6FF),
-                                accentColor = Color(0xFF2563EB),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                soundManager.playSynthSound("funny")
-                                onNavigateToGames()
-                            }
-                        }
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp)
-                        ) {
-                            // 5. Stories Icon
-                            KidsMainCard(
-                                title = "قصص ممتعة",
-                                subtitle = "قصص تعليمية وتفاعلية",
-                                imageRes = com.aistudio.kidspolice.abcd.R.drawable.dash_stories_icon_1784050441881,
-                                backgroundColor = Color(0xFFF0F9FF),
-                                accentColor = Color(0xFF0284C7),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                soundManager.playSynthSound("funny")
-                                onNavigateToStories()
-                            }
-
-                            // 6. Tasks Icon
-                            KidsMainCard(
-                                title = "مهامي",
-                                subtitle = "جدول المهام اليومية للأبطال",
-                                imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_heroes_1783955818726, // Using heroes as fallback for now
-                                backgroundColor = Color(0xFFFEF2F2),
-                                accentColor = Color(0xFFDC2626),
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                soundManager.playSynthSound("funny")
-                                onNavigateToTasks()
-                            }
+                            soundManager.playSynthSound("funny")
+                            onNavigateToPoliceCars()
                         }
                     }
+
+                    // Row 2: المكالمات (Right) | الألعاب والمرح (Left)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // 3. المكالمات (Right Card in RTL)
+                        KidsMainCard(
+                            title = "المكالمات",
+                            subtitle = "تحدث مع أصدقائك الموجهين",
+                            imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_calls_1783955830382,
+                            backgroundColor = Color(0xFFF0FDF4),
+                            accentColor = Color(0xFF16A34A),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            soundManager.playSynthSound("funny")
+                            onNavigateToCallHub()
+                        }
+
+                        // 4. الألعاب والمرح (Left Card in RTL)
+                        KidsMainCard(
+                            title = "الألعاب والمرح",
+                            subtitle = "ألعاب، اختبارات وتلوين",
+                            imageRes = com.aistudio.kidspolice.abcd.R.drawable.img_dash_games_1783955841991,
+                            backgroundColor = Color(0xFFEFF6FF),
+                            accentColor = Color(0xFF2563EB),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            soundManager.playSynthSound("funny")
+                            onNavigateToGames()
+                        }
+                    }
+
+                    // Row 3: مهامي (Right) | قصص ممتعة (Left)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // 5. مهامي (Right Card in RTL)
+                        KidsMainCard(
+                            title = "مهامي",
+                            subtitle = "جدول المهام اليومية للأبطال",
+                            imageRes = com.aistudio.kidspolice.abcd.R.drawable.superheroes_icon_1783547109098,
+                            backgroundColor = Color(0xFFFEF2F2),
+                            accentColor = Color(0xFFDC2626),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            soundManager.playSynthSound("funny")
+                            onNavigateToTasks()
+                        }
+
+                        // 6. قصص ممتعة (Left Card in RTL)
+                        KidsMainCard(
+                            title = "قصص ممتعة",
+                            subtitle = "قصص تعليمية وتفاعلية",
+                            imageRes = com.aistudio.kidspolice.abcd.R.drawable.dash_stories_icon_1784050441881,
+                            backgroundColor = Color(0xFFF0F9FF),
+                            accentColor = Color(0xFF0284C7),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            soundManager.playSynthSound("funny")
+                            onNavigateToStories()
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
                 
                 // AdMob Banner Ad

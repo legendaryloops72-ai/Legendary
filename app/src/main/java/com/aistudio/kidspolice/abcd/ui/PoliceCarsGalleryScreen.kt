@@ -152,8 +152,26 @@ fun PoliceCarDetailScreen(
     vehicleId: Int,
     onNavigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val soundManager = remember { com.aistudio.kidspolice.abcd.sound.CallSoundManager(context) }
+    
+    DisposableEffect(Unit) {
+        onDispose {
+            soundManager.release()
+        }
+    }
+
     val vehicle = remember(vehicleId) {
         policeVehicles.find { it.id == vehicleId }
+    }
+
+    // Speak description and play siren automatically upon entering
+    LaunchedEffect(vehicleId) {
+        vehicle?.let {
+            soundManager.playSynthSound("siren")
+            kotlinx.coroutines.delay(800)
+            soundManager.speakDirect("هذه هي ${it.name}. ${it.description}")
+        }
     }
 
     if (vehicle == null) {
@@ -216,69 +234,109 @@ fun PoliceCarDetailScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Hero Image Area
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
             ) {
-                val context = LocalContext.current
-                val imageResId = remember(vehicle.imageAssetPath) {
-                    try {
-                        context.resources.getIdentifier(vehicle.imageAssetPath, "drawable", context.packageName)
-                    } catch (e: Exception) {
-                        0
+                // Hero Image Area
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.2f)
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val imageResId = remember(vehicle.imageAssetPath) {
+                        try {
+                            context.resources.getIdentifier(vehicle.imageAssetPath, "drawable", context.packageName)
+                        } catch (e: Exception) {
+                            0
+                        }
+                    }
+                    
+                    var isImageError by remember { mutableStateOf(false) }
+                    
+                    if (imageResId != 0 && !isImageError) {
+                        AsyncImage(
+                            model = imageResId,
+                            contentDescription = vehicle.name,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit,
+                            onError = { isImageError = true }
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.LocalPolice,
+                            contentDescription = vehicle.name,
+                            modifier = Modifier.size(120.dp),
+                            tint = Color(0xFF1E3A8A)
+                        )
                     }
                 }
                 
-                var isImageError by remember { mutableStateOf(false) }
+                Spacer(modifier = Modifier.height(16.dp))
                 
-                if (imageResId != 0 && !isImageError) {
-                    AsyncImage(
-                        model = imageResId,
-                        contentDescription = vehicle.name,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Fit,
-                        onError = { isImageError = true }
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.LocalPolice,
-                        contentDescription = vehicle.name,
-                        modifier = Modifier.size(120.dp),
-                        tint = Color(0xFF1E3A8A)
+                Text(
+                    text = vehicle.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 26.sp,
+                    color = Color(0xFF1E3A8A),
+                    textAlign = TextAlign.Center
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Surface(
+                    color = Color(0xFFFEE2E2),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = vehicle.description,
+                        fontSize = 18.sp,
+                        color = Color(0xFFDC2626),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(20.dp)
                     )
                 }
             }
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            Text(
-                text = vehicle.name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                color = Color(0xFF1E3A8A),
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Surface(
-                color = Color(0xFFFEE2E2),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth()
+
+            // Interactive Audio Action Buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    text = vehicle.description,
-                    fontSize = 18.sp,
-                    color = Color(0xFFDC2626), // Red color for description matching "warning red"
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Button(
+                    onClick = {
+                        soundManager.playSynthSound("siren")
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(54.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626)),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("🚨 تشغيل الصفارة", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                }
+
+                Button(
+                    onClick = {
+                        soundManager.speakDirect("هذه هي ${vehicle.name}. ${vehicle.description}")
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(54.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("🗣️ الاستماع للشرح", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                }
             }
         }
     }
