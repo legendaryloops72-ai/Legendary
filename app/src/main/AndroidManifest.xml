@@ -1,112 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions"/>
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
-
-    <attribution android:tag="@string/empty" android:label="@string/app_name" />
-    <attribution android:tag="audioPlayback" android:label="@string/app_name" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication">
-
-        <!-- AdMob App ID -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-4760027279848820~4114638850"/>
-
+        android:theme="@style/Theme.App">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MyApplication">
+            android:theme="@style/Theme.App">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <!-- رابط الدعوة المخصص: kidspolice://call/{caller} -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="kidspolice" />
-            </intent-filter>
-
-            <!-- روابط الويب لخدمة AI Studio و Google Cloud Run لتجربة المكالمات والمعلق والدعوات -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                
-                <data android:host="*.run.app" />
-                <data android:host="ais-pre-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app" />
-                <data android:host="ais-dev-7ldjbf3a7dwula4tvp55mq-837550959080.europe-west2.run.app" />
-                
-                <data android:pathPrefix="/call" />
-            </intent-filter>
         </activity>
-
-        <service
-            android:name="com.aistudio.kidspolice.abcd.service.AppLockService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse"/>
-
-        <receiver
-            android:name="com.aistudio.kidspolice.abcd.service.BootReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name="com.aistudio.kidspolice.abcd.service.AppLockDeviceAdminReceiver"
-            android:label="حماية إلغاء التثبيت"
-            android:description="@string/device_admin_description"
-            android:permission="android.permission.BIND_DEVICE_ADMIN"
-            android:exported="true">
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/device_admin_rules" />
-            <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-            </intent-filter>
-        </receiver>
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 
 </manifest>
