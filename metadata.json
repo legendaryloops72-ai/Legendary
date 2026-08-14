@@ -1,6 +1,6 @@
 {
-  "name": "App",
-  "description": "Android application",
+  "name": "شرطة الأطفال",
+  "description": "تطبيق شرطة الأطفال التربوي التفاعلي للمكالمات الوهمية والقصص والألعاب والمهام التربوية والأصوات المميزة.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
