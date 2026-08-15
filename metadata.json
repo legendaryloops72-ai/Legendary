@@ -1,6 +1,6 @@
 {
-  "name": "Rebuilt App",
-  "description": "App was missing, so it was rebuilt",
+  "name": "شرطة الأطفال",
+  "description": "تطبيق شرطة الأطفال التفاعلي للمكالمات والألعاب والأصوات والمهام التربوية",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
