@@ -1,12 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Police Badge Outer -->
     <path
         android:fillColor="#FFD700"
-        android:pathData="M54,20 L78,32 L78,58 C78,74 67.5,88.5 54,92 C40.5,88.5 30,74 30,58 L30,32 Z" />
+        android:pathData="M54,20 L78,32 L78,60 C78,74 54,88 54,88 C54,88 30,74 30,60 L30,32 Z" />
+    <!-- Police Badge Inner -->
     <path
-        android:fillColor="#1A3B8B"
-        android:pathData="M54,34 L58,46 L70,46 L60,54 L64,66 L54,58 L44,66 L48,54 L38,46 L50,46 Z" />
+        android:fillColor="#00E5FF"
+        android:pathData="M54,26 L72,36 L72,58 C72,68 54,80 54,80 C54,80 36,68 36,58 L36,36 Z" />
+    <!-- Siren light red/blue -->
+    <path
+        android:fillColor="#FF1744"
+        android:pathData="M42,42 L52,42 L52,56 L42,56 Z" />
+    <path
+        android:fillColor="#2979FF"
+        android:pathData="M56,42 L66,42 L66,56 L56,56 Z" />
+    <!-- Star on badge -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,58 L56,64 L62,64 L57,68 L59,74 L54,70 L49,74 L51,68 L46,64 L52,64 Z" />
 </vector>

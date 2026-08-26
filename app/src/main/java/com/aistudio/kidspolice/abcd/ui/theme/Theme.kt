@@ -1,61 +1,29 @@
 package com.aistudio.kidspolice.abcd.ui.theme
 
-import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = PoliceGold,
-    secondary = PoliceLightBlue,
-    tertiary = PoliceYellow,
-    background = SurfaceDark,
-    surface = PoliceDark,
-    onPrimary = PoliceDark,
-    onSecondary = TextLight,
-    onTertiary = PoliceDark,
-    onBackground = TextLight,
-    onSurface = TextLight,
-    error = PoliceRed
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = PoliceBlue,
-    secondary = PoliceLightBlue,
-    tertiary = PoliceGold,
-    background = PoliceSkyBlue,
+    secondary = PoliceAccentCyan,
+    tertiary = PoliceBlue,
+    background = PoliceNavy,
     surface = PoliceCardBg,
-    onPrimary = TextLight,
-    onSecondary = TextLight,
-    onTertiary = PoliceDark,
-    onBackground = TextPrimary,
-    onSurface = TextPrimary,
-    error = PoliceCrimson
+    onPrimary = PoliceNavy,
+    onSecondary = Color.Black,
+    onTertiary = Color.White,
+    onBackground = Color.White,
+    onSurface = Color.White
 )
 
 @Composable
 fun KidsPoliceTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
-        }
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = DarkColorScheme,
         typography = Typography,
         content = content
     )

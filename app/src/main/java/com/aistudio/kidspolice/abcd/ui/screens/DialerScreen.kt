@@ -1,7 +1,7 @@
 package com.aistudio.kidspolice.abcd.ui.screens
 
-import android.app.Activity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,224 +16,205 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Backspace
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aistudio.kidspolice.abcd.ads.AdBanner
-import com.aistudio.kidspolice.abcd.ads.AdManager
-import com.aistudio.kidspolice.abcd.data.PoliceRepository
+import com.aistudio.kidspolice.abcd.data.Dialect
 import com.aistudio.kidspolice.abcd.data.PoliceScenario
-import com.aistudio.kidspolice.abcd.ui.AppViewModel
-import com.aistudio.kidspolice.abcd.ui.theme.PoliceBlue
-import com.aistudio.kidspolice.abcd.ui.theme.PoliceCrimson
+import com.aistudio.kidspolice.abcd.data.ScenarioCategory
+import com.aistudio.kidspolice.abcd.ui.components.PoliceSirenLightBar
+import com.aistudio.kidspolice.abcd.ui.theme.PoliceAccentCyan
+import com.aistudio.kidspolice.abcd.ui.theme.PoliceCardBg
 import com.aistudio.kidspolice.abcd.ui.theme.PoliceGold
 import com.aistudio.kidspolice.abcd.ui.theme.PoliceGreen
+import com.aistudio.kidspolice.abcd.ui.theme.PoliceNavy
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialerScreen(
-    viewModel: AppViewModel,
-    onBack: () -> Unit,
-    onStartCall: (PoliceScenario) -> Unit
+    selectedDialect: Dialect,
+    onStartCustomCall: (PoliceScenario) -> Unit,
+    onBack: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-    val activity = context as? Activity
+    var dialNumber by remember { mutableStateOf("") }
+    var childName by remember { mutableStateOf("") }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("لوحة طلب الشرطة", color = Color.White, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "رجوع", tint = Color.White)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = PoliceBlue)
-            )
-        },
-        bottomBar = {
-            AdBanner()
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+    val digits = listOf(
+        listOf("1", "2", "3"),
+        listOf("4", "5", "6"),
+        listOf("7", "8", "9"),
+        listOf("*", "0", "#")
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PoliceNavy)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Number Display Box
-            Card(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(90.dp),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(PoliceCardBg)
+                    .clickable { onBack() },
+                contentAlignment = Alignment.Center
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = uiState.customDialNumber.ifEmpty { "اطلب رقم الشرطة (مثال: 999)" },
-                        fontSize = if (uiState.customDialNumber.isEmpty()) 16.sp else 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (uiState.customDialNumber.isEmpty()) Color.Gray else PoliceBlue
-                    )
-
-                    if (uiState.customDialNumber.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.deleteDialNumber() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Backspace,
-                                contentDescription = "حذف رقم",
-                                tint = PoliceCrimson
-                            )
-                        }
-                    }
-                }
+                Text(text = "➡️", fontSize = 18.sp)
             }
-
-            // Fast Emergency Presets
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                listOf("999 (الشرطة)", "911 (الطوارئ)", "112 (النجدة)").forEach { numText ->
-                    val num = numText.substringBefore(" ")
-                    Button(
-                        onClick = {
-                            viewModel.clearDialNumber()
-                            num.forEach { ch -> viewModel.appendDialNumber(ch.toString()) }
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = PoliceBlue.copy(alpha = 0.1f))
-                    ) {
-                        Text(
-                            text = numText,
-                            fontSize = 11.sp,
-                            color = PoliceBlue,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1
-                        )
-                    }
-                }
-            }
-
-            // Keypad Grid
-            val keys = listOf(
-                listOf("1", "2", "3"),
-                listOf("4", "5", "6"),
-                listOf("7", "8", "9"),
-                listOf("*", "0", "#")
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "طلب رقم طوارئ الأطفال 999",
+                color = Color.White,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
             )
+        }
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                keys.forEach { row ->
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        row.forEach { digit ->
-                            KeypadButton(
-                                digit = digit,
-                                onClick = { viewModel.appendDialNumber(digit) }
+        PoliceSirenLightBar(isFlashing = true)
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = childName,
+            onValueChange = { childName = it },
+            label = { Text("اسم البطل / البطلة (اختياري)", color = PoliceAccentCyan) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = PoliceGold,
+                unfocusedBorderColor = PoliceCardBg,
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White
+            )
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(PoliceCardBg)
+                .border(1.dp, PoliceGold.copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = if (dialNumber.isEmpty()) "999 شرطة الأطفال" else dialNumber,
+                color = if (dialNumber.isEmpty()) Color.White.copy(alpha = 0.5f) else PoliceGold,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            for (row in digits) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    for (digit in row) {
+                        Box(
+                            modifier = Modifier
+                                .size(68.dp)
+                                .clip(CircleShape)
+                                .background(PoliceCardBg)
+                                .border(1.dp, PoliceAccentCyan.copy(alpha = 0.3f), CircleShape)
+                                .clickable {
+                                    if (dialNumber.length < 10) dialNumber += digit
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = digit,
+                                color = Color.White,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
                 }
             }
+        }
 
-            // Big Call Button
+        Spacer(modifier = Modifier.height(18.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .background(PoliceCardBg)
+                    .clickable {
+                        if (dialNumber.isNotEmpty()) {
+                            dialNumber = dialNumber.dropLast(1)
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "⌫", color = Color.White, fontSize = 20.sp)
+            }
+
+            Spacer(modifier = Modifier.width(28.dp))
+
             Button(
                 onClick = {
-                    val defaultScenario = PoliceRepository.scenarios.firstOrNull {
-                        it.dialect == uiState.selectedDialect
-                    } ?: PoliceRepository.scenarios.first()
-
-                    if (activity != null) {
-                        AdManager.showInterstitial(activity) {
-                            viewModel.startOutgoingCall(defaultScenario)
-                            onStartCall(defaultScenario)
-                        }
-                    } else {
-                        viewModel.startOutgoingCall(defaultScenario)
-                        onStartCall(defaultScenario)
-                    }
+                    val namePart = if (childName.isNotBlank()) "يا $childName " else "يا بطل "
+                    val customScenario = PoliceScenario(
+                        id = "custom_call",
+                        title = "نداء طوارئ مخصص",
+                        subtitle = "اتصال مباشر مع غرفة العمليات",
+                        iconEmoji = "🚨",
+                        category = ScenarioCategory.BEHAVIOR,
+                        officerName = "غرفة العمليات المركزية",
+                        responsesByDialect = mapOf(
+                            Dialect.SAUDI to "السلام عليكم ${namePart}معك مركز شرطة الأطفال. تم استلام نداءك، ونحن دائماً في خدمتك لدعمك لتكون أفضل وأقوى بطل في الوطن!",
+                            Dialect.EGYPTIAN to "ألو ${namePart}معاك العمليات في شرطة الأطفال. إحنا جنبك وسامعينك، خليك دايماً شاطر وممتاز وبنحبك جداً!",
+                            Dialect.SYRIAN to "مرحبا ${namePart}معك شرطة الأطفال. نحن معك خطوة بخطوة حتى تضل بطلنا الشاطر والمؤدب دايماً!",
+                            Dialect.GULF to "يا هلا ${namePart}معاك القيادة العامة. عساك على القوة دوم ونحن فخورين فيك يا بطل!",
+                            Dialect.IRAQI to "هلو ${namePart}وياك غرفة العمليات. نحييك ونريدك دايماً شجاع ومبدع يا وردة!",
+                            Dialect.MOROCCAN to "السلام ${namePart}معاك مركز الشرطة. تبارك الله عليك ونتمناو ليك ديما التوفيق والنجاح!",
+                            Dialect.ALGERIAN to "سلام ${namePart}معاك مركز الشرطة. راك هايل وخليك دايماً متألق وشاطر!",
+                            Dialect.FASHA to "السلام عليكم ${namePart}معكم غرفة القيادة والسيطرة بشرطة الأطفال. نحييكم ونتمنى لكم التوفيق والتميز دائماً."
+                        )
+                    )
+                    onStartCustomCall(customScenario)
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PoliceGreen)
+                    .height(60.dp)
+                    .width(150.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = PoliceGreen),
+                shape = RoundedCornerShape(30.dp)
             ) {
-                Icon(imageVector = Icons.Default.Call, contentDescription = null, modifier = Modifier.size(24.dp))
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "اتصال بالدورية",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text(text = "اتصال 📞", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
         }
-    }
-}
-
-@Composable
-fun KeypadButton(
-    digit: String,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .size(72.dp)
-            .clip(CircleShape)
-            .background(Color.White)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = digit,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = PoliceBlue,
-            textAlign = TextAlign.Center
-        )
     }
 }

@@ -1,6 +1,8 @@
 {
   "name": "شرطة الأطفال",
-  "description": "تطبيق شرطة الأطفال التفاعلي للمكالمات والألعاب والأصوات والمهام التربوية",
+  "description": "تطبيق شرطة الأطفال التفاعلي للتهذيب والتوجيه الإيجابي بمختلف اللهجات العربية ومكالمات وهمية ومؤثرات الشرطة",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
