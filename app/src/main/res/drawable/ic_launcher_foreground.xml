@@ -1,26 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Police Badge Outer -->
+
+    <!-- Outer Gold Glow -->
     <path
-        android:fillColor="#FFD700"
+        android:fillColor="#33F59E0B"
         android:pathData="M54,20 L78,32 L78,60 C78,74 54,88 54,88 C54,88 30,74 30,60 L30,32 Z" />
-    <!-- Police Badge Inner -->
+
+    <!-- Police Badge Shield Outer Frame (Gold Gradient) -->
     <path
-        android:fillColor="#00E5FF"
-        android:pathData="M54,26 L72,36 L72,58 C72,68 54,80 54,80 C54,80 36,68 36,58 L36,36 Z" />
-    <!-- Siren light red/blue -->
+        android:pathData="M54,22 L76,33 L76,59 C76,72 54,85 54,85 C54,85 32,72 32,59 L32,33 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="32"
+                android:startY="22"
+                android:endX="76"
+                android:endY="85"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FDE047" />
+                <item android:offset="0.4" android:color="#F59E0B" />
+                <item android:offset="0.8" android:color="#D97706" />
+                <item android:offset="1.0" android:color="#B45309" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Police Badge Inner Dark Blue Plate -->
     <path
-        android:fillColor="#FF1744"
-        android:pathData="M42,42 L52,42 L52,56 L42,56 Z" />
+        android:pathData="M54,27 L71,36 L71,57 C71,67 54,78 54,78 C54,78 37,67 37,57 L37,36 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="37"
+                android:startY="27"
+                android:endX="71"
+                android:endY="78"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#1E3A8A" />
+                <item android:offset="0.6" android:color="#0F172A" />
+                <item android:offset="1.0" android:color="#020617" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Top Police Beacon Lights Bar -->
+    <!-- Red Light (Left/Right) -->
     <path
-        android:fillColor="#2979FF"
-        android:pathData="M56,42 L66,42 L66,56 L56,56 Z" />
-    <!-- Star on badge -->
+        android:pathData="M43,40 L52,40 L51,48 L44,48 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="43"
+                android:startY="40"
+                android:endX="52"
+                android:endY="48"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF6B6B" />
+                <item android:offset="1.0" android:color="#DC2626" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Blue Light -->
     <path
-        android:fillColor="#FFD700"
-        android:pathData="M54,58 L56,64 L62,64 L57,68 L59,74 L54,70 L49,74 L51,68 L46,64 L52,64 Z" />
+        android:pathData="M56,40 L65,40 L64,48 L57,48 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="56"
+                android:startY="40"
+                android:endX="65"
+                android:endY="48"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#38BDF8" />
+                <item android:offset="1.0" android:color="#2563EB" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Big Center 3D Star Badge -->
+    <path
+        android:pathData="M54,52 L56.5,58 L63,58.5 L58,62.5 L59.8,69 L54,65 L48.2,69 L50,62.5 L45,58.5 L51.5,58 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="45"
+                android:startY="52"
+                android:endX="63"
+                android:endY="69"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FEF08A" />
+                <item android:offset="0.5" android:color="#FACC15" />
+                <item android:offset="1.0" android:color="#CA8A04" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Star Center Highlight -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.6"
+        android:pathData="M54,54 L55,58 L58,58.5 L55.5,60.5 L56.5,63.5 L54,61.5 Z" />
 </vector>
+

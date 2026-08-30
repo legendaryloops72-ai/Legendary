@@ -26,22 +26,26 @@ fun TestBannerAdView(modifier: Modifier = Modifier) {
         AndroidView(
             modifier = Modifier.fillMaxWidth(),
             factory = { context ->
-                AdView(context).apply {
-                    val adRequest = BannerAdRequest.Builder(
-                        "ca-app-pub-4760027279848820/5268836214",
-                        AdSize.BANNER
-                    ).build()
-                    loadAd(
-                        adRequest,
-                        object : AdLoadCallback<com.google.android.libraries.ads.mobile.sdk.banner.BannerAd> {
-                            override fun onAdLoaded(ad: com.google.android.libraries.ads.mobile.sdk.banner.BannerAd) {
-                                // Ad loaded
+                try {
+                    AdView(context).apply {
+                        val adRequest = BannerAdRequest.Builder(
+                            "ca-app-pub-4760027279848820/5268836214",
+                            AdSize.BANNER
+                        ).build()
+                        loadAd(
+                            adRequest,
+                            object : AdLoadCallback<com.google.android.libraries.ads.mobile.sdk.banner.BannerAd> {
+                                override fun onAdLoaded(ad: com.google.android.libraries.ads.mobile.sdk.banner.BannerAd) {
+                                    // Ad loaded
+                                }
+                                override fun onAdFailedToLoad(error: LoadAdError) {
+                                    // Ad failed to load
+                                }
                             }
-                            override fun onAdFailedToLoad(error: LoadAdError) {
-                                // Ad failed to load
-                            }
-                        }
-                    )
+                        )
+                    }
+                } catch (e: Throwable) {
+                    android.view.View(context)
                 }
             }
         )

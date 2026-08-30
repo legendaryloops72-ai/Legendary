@@ -62,11 +62,21 @@ fun CallScreen(
     audioPlayer: PoliceAudioPlayer,
     onEndCall: () -> Unit
 ) {
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        android.util.Log.d("PoliceAudioPlayer", "CALL_SCREEN_STARTED")
+    }
+
     var callState by remember { mutableStateOf(CallState.RINGING) }
     var secondsElapsed by remember { mutableIntStateOf(0) }
     val isSpeaking by audioPlayer.isSpeaking.collectAsState()
 
     val speechText = scenario.getSpeech(dialect)
+
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose {
+            audioPlayer.stopSpeaking()
+        }
+    }
 
     LaunchedEffect(callState) {
         if (callState == CallState.RINGING) {
@@ -80,7 +90,7 @@ fun CallScreen(
         if (callState == CallState.CONNECTED) {
             audioPlayer.playRadioChirp()
             delay(600)
-            audioPlayer.speakOfficer(speechText, dialect)
+            audioPlayer.playScenarioCall(scenario.id)
 
             while (true) {
                 delay(1000)
@@ -231,7 +241,10 @@ fun CallScreen(
                             .size(72.dp)
                             .clip(CircleShape)
                             .background(PoliceGreen)
-                            .clickable { callState = CallState.CONNECTED },
+                            .clickable {
+                                android.util.Log.d("PoliceAudioPlayer", "CALL_BUTTON_CLICKED")
+                                callState = CallState.CONNECTED
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(text = "📞", fontSize = 32.sp)

@@ -41,7 +41,14 @@ class MainActivity : ComponentActivity() {
     private lateinit var interstitialAdManager: InterstitialAdManager
     private var isFirstResume = true
 
+    companion object {
+        init {
+            android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_STARTED=true")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONCREATE=true")
         super.onCreate(savedInstanceState)
         appOpenAdManager = AppOpenAdManager(applicationContext)
         interstitialAdManager = InterstitialAdManager(applicationContext)
@@ -81,12 +88,18 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onResume() {
+        android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONRESUME=true")
         super.onResume()
         if (isFirstResume) {
             isFirstResume = false
         } else {
             appOpenAdManager.showAdIfAvailable(this)
         }
+    }
+
+    override fun onDestroy() {
+        android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONDESTROY=true")
+        super.onDestroy()
     }
 }
 
@@ -124,7 +137,8 @@ fun KidsPoliceApp(onTestInterstitial: () -> Unit) {
                 onOpenMissions = { navController.navigate("missions") },
                 onOpenCertificate = { navController.navigate("certificate") },
                 userScore = userScore,
-                onTestInterstitial = onTestInterstitial
+                onTestInterstitial = onTestInterstitial,
+                audioPlayer = audioPlayer
             )
         }
 

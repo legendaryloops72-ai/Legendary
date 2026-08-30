@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
+import android.media.MediaPlayer
 import android.media.ToneGenerator
 import android.os.Build
 import android.os.VibrationEffect
@@ -11,6 +12,8 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.util.Base64
+import com.aistudio.kidspolice.abcd.BuildConfig
 import com.aistudio.kidspolice.abcd.data.Dialect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +24,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
+import java.security.MessageDigest
 import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.sin
@@ -29,6 +39,7 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
 
     private var tts: TextToSpeech? = null
     private var isTtsReady = false
+    private var mediaPlayer: MediaPlayer? = null
 
     private val _isSpeaking = MutableStateFlow(false)
     val isSpeaking: StateFlow<Boolean> = _isSpeaking.asStateFlow()
@@ -38,42 +49,543 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
 
     private val scope = CoroutineScope(Dispatchers.Default)
     private var sirenJob: Job? = null
+    private var ttsJob: Job? = null
 
     private val vibrator: Vibrator? by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-            vibratorManager?.defaultVibrator
-        } else {
-            @Suppress("DEPRECATION")
-            context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vibratorManager?.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
-    init {
-        tts = TextToSpeech(context.applicationContext, this)
+    private fun getTts(): TextToSpeech? {
+        if (tts == null) {
+            try {
+                tts = TextToSpeech(context.applicationContext) { status ->
+                    if (status == TextToSpeech.SUCCESS) {
+                        isTtsReady = true
+                        try {
+                            tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                                override fun onStart(utteranceId: String?) {
+                                    _isSpeaking.value = true
+                                }
+
+                                override fun onDone(utteranceId: String?) {
+                                    _isSpeaking.value = false
+                                }
+
+                                override fun onError(utteranceId: String?) {
+                                    _isSpeaking.value = false
+                                }
+                            })
+                        } catch (_: Exception) {}
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "Error initializing TextToSpeech: ${e.message}", e)
+            }
+        }
+        return tts
     }
 
     override fun onInit(status: Int) {
-        if (status == TextToSpeech.SUCCESS) {
-            isTtsReady = true
-            tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                override fun onStart(utteranceId: String?) {
-                    _isSpeaking.value = true
+        // handled in getTts lambda
+    }
+
+    fun testVoice01Direct() {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val resId = com.aistudio.kidspolice.abcd.R.raw.voice_01_welcome
+                val allBytes = context.resources.openRawResource(resId).readBytes()
+                var pcmStart = 44
+                if (allBytes.size > 12) {
+                    for (i in 12 until allBytes.size - 8) {
+                        if (allBytes[i] == 'd'.code.toByte() &&
+                            allBytes[i+1] == 'a'.code.toByte() &&
+                            allBytes[i+2] == 't'.code.toByte() &&
+                            allBytes[i+3] == 'a'.code.toByte()) {
+                            pcmStart = i + 8
+                            break
+                        }
+                    }
+                }
+                val pcmBytes = if (pcmStart < allBytes.size) {
+                    allBytes.copyOfRange(pcmStart, allBytes.size)
+                } else {
+                    allBytes
                 }
 
-                override fun onDone(utteranceId: String?) {
-                    _isSpeaking.value = false
+                val sampleRate = 24000
+                val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+
+                val audioFormatObj = AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                    .setSampleRate(sampleRate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+
+                val minBufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
+                val bufferSize = Math.max(minBufferSize, pcmBytes.size)
+
+                val audioTrack = AudioTrack.Builder()
+                    .setAudioAttributes(audioAttributes)
+                    .setAudioFormat(audioFormatObj)
+                    .setBufferSizeInBytes(bufferSize)
+                    .setTransferMode(AudioTrack.MODE_STREAM)
+                    .build()
+
+                audioTrack.setVolume(AudioTrack.getMaxVolume())
+                audioTrack.play()
+                audioTrack.write(pcmBytes, 0, pcmBytes.size)
+                val durationMs = (pcmBytes.size.toLong() * 1000) / (sampleRate * 2)
+                delay(durationMs + 500)
+                audioTrack.stop()
+                audioTrack.release()
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "DIRECT_ERROR: ${e.message}", e)
+            }
+        }
+    }
+
+    fun testSyntheticPcm() {
+        scope.launch(Dispatchers.IO) {
+            var trackError = "none"
+            var bytesWritten = 0
+            var state100 = -1
+            var state500 = -1
+            var state1s = -1
+            var headPos = 0
+            var completed = false
+
+            try {
+                android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAY_CALLED=true")
+                val sampleRate = 24000
+                val durationSec = 1
+                val totalSamples = sampleRate * durationSec
+                val pcmBytes = ByteArray(totalSamples * 2)
+                for (i in 0 until totalSamples) {
+                    val angle = 2.0 * Math.PI * 440.0 * i / sampleRate
+                    val sample = (Math.sin(angle) * 16383.0).toInt().toShort()
+                    pcmBytes[2 * i] = (sample.toInt() and 0xff).toByte()
+                    pcmBytes[2 * i + 1] = ((sample.toInt() shr 8) and 0xff).toByte()
                 }
 
-                override fun onError(utteranceId: String?) {
-                    _isSpeaking.value = false
+                val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+
+                val audioFormatObj = AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                    .setSampleRate(sampleRate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+
+                val minBufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
+                val bufferSize = Math.max(minBufferSize, pcmBytes.size)
+
+                val audioTrack = AudioTrack.Builder()
+                    .setAudioAttributes(audioAttributes)
+                    .setAudioFormat(audioFormatObj)
+                    .setBufferSizeInBytes(bufferSize)
+                    .setTransferMode(AudioTrack.MODE_STREAM)
+                    .build()
+
+                audioTrack.play()
+                bytesWritten = audioTrack.write(pcmBytes, 0, pcmBytes.size)
+
+                delay(100)
+                state100 = audioTrack.playState
+                delay(400)
+                state500 = audioTrack.playState
+                delay(500)
+                state1s = audioTrack.playState
+                headPos = audioTrack.playbackHeadPosition
+
+                audioTrack.stop()
+                audioTrack.release()
+                completed = true
+
+            } catch (e: Exception) {
+                trackError = e.message ?: "unknown"
+            }
+
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAY_CALLED=true")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: BYTES_WRITTEN=$bytesWritten")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAY_STATE_AFTER_100MS=$state100")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAY_STATE_AFTER_500MS=$state500")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAY_STATE_AFTER_1SEC=$state1s")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAYBACK_HEAD_POSITION=$headPos")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: PLAYBACK_COMPLETED=$completed")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: AUDIO_TRACK_ERROR=$trackError")
+            android.util.Log.d("PoliceAudioPlayer", "SYNTHETIC_PCM: AUDIBLE_RESULT=USER_HEARD_OR_NOT")
+        }
+    }
+
+    private var currentAudioTrack: AudioTrack? = null
+
+    fun playRawAudioFile(resId: Int, onComplete: () -> Unit = {}) {
+        stopSpeaking()
+        scope.launch(Dispatchers.IO) {
+            _isSpeaking.value = true
+            try {
+                val allBytes = context.resources.openRawResource(resId).readBytes()
+                var pcmStart = 44
+                if (allBytes.size > 12) {
+                    for (i in 12 until allBytes.size - 8) {
+                        if (allBytes[i] == 'd'.code.toByte() &&
+                            allBytes[i+1] == 'a'.code.toByte() &&
+                            allBytes[i+2] == 't'.code.toByte() &&
+                            allBytes[i+3] == 'a'.code.toByte()) {
+                            pcmStart = i + 8
+                            break
+                        }
+                    }
                 }
-            })
+                val pcmBytes = if (pcmStart < allBytes.size) {
+                    allBytes.copyOfRange(pcmStart, allBytes.size)
+                } else {
+                    allBytes
+                }
+
+                val sampleRate = 24000
+                val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+
+                val audioFormatObj = AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                    .setSampleRate(sampleRate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+
+                val minBufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
+                val bufferSize = Math.max(minBufferSize, pcmBytes.size)
+
+                val audioTrack = AudioTrack.Builder()
+                    .setAudioAttributes(audioAttributes)
+                    .setAudioFormat(audioFormatObj)
+                    .setBufferSizeInBytes(bufferSize)
+                    .setTransferMode(AudioTrack.MODE_STREAM)
+                    .build()
+
+                val isVoice14 = (resId == com.aistudio.kidspolice.abcd.R.raw.voice_14_call_start)
+                if (isVoice14) {
+                    android.util.Log.d("PoliceAudioPlayer", "VOICE_14_PLAY_STARTED")
+                }
+
+                currentAudioTrack = audioTrack
+                audioTrack.setVolume(AudioTrack.getMaxVolume())
+                audioTrack.play()
+                audioTrack.write(pcmBytes, 0, pcmBytes.size)
+
+                val durationMs = (pcmBytes.size.toLong() * 1000) / (sampleRate * 2)
+                delay(durationMs + 300)
+
+                try {
+                    audioTrack.stop()
+                    audioTrack.release()
+                } catch (_: Exception) {}
+                if (currentAudioTrack == audioTrack) {
+                    currentAudioTrack = null
+                }
+                if (isVoice14) {
+                    android.util.Log.d("PoliceAudioPlayer", "VOICE_14_PLAY_COMPLETED")
+                }
+                _isSpeaking.value = false
+                withContext(Dispatchers.Main) {
+                    onComplete()
+                }
+            } catch (e: Exception) {
+                _isSpeaking.value = false
+                android.util.Log.e("PoliceAudioPlayer", "PLAY_RAW_ERROR: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    onComplete()
+                }
+            }
+        }
+    }
+
+    private suspend fun playRawAudioSuspend(resId: Int) = kotlinx.coroutines.suspendCancellableCoroutine { continuation ->
+        playRawAudioFile(resId) {
+            if (continuation.isActive) {
+                continuation.resume(Unit) {}
+            }
+        }
+    }
+
+    fun playScenarioCall(scenarioId: String) {
+        android.util.Log.d("PoliceAudioPlayer", "PLAY_SCENARIO_CALL_CALLED")
+        stopSpeaking()
+        scope.launch(Dispatchers.IO) {
+            // 1. Play call start voice (voice_14_call_start)
+            android.util.Log.d("PoliceAudioPlayer", "VOICE_14_REQUESTED")
+            playRawAudioSuspend(com.aistudio.kidspolice.abcd.R.raw.voice_14_call_start)
+            // 2. Play scenario audio sequentially
+            val scenarioResId = when (scenarioId) {
+                "sleep_early" -> com.aistudio.kidspolice.abcd.R.raw.voice_03_sleep
+                "eating_food" -> com.aistudio.kidspolice.abcd.R.raw.voice_04_healthy_food
+                "listen_parents" -> com.aistudio.kidspolice.abcd.R.raw.voice_05_respect_parents
+                "homework_study" -> com.aistudio.kidspolice.abcd.R.raw.voice_06_homework
+                "hero_reward" -> com.aistudio.kidspolice.abcd.R.raw.voice_23_great_job
+                else -> com.aistudio.kidspolice.abcd.R.raw.voice_15_call_question
+            }
+            playRawAudioSuspend(scenarioResId)
         }
     }
 
     fun speakOfficer(text: String, dialect: Dialect) {
-        if (!isTtsReady || tts == null) return
+        android.util.Log.d("PoliceAudioPlayer", "POLICE_CALL_BUTTON_CLICKED")
+        ttsJob?.cancel()
+
+        val resId = when {
+            text.contains("نمت") || text.contains("سريرك") || text.contains("تختك") || text.contains("تصبح على خير") -> com.aistudio.kidspolice.abcd.R.raw.voice_03_sleep
+            text.contains("تاكل") || text.contains("أكلك") || text.contains("وجبتك") || text.contains("طبقك") -> com.aistudio.kidspolice.abcd.R.raw.voice_04_healthy_food
+            text.contains("ماما وبابا") || text.contains("والديك") || text.contains("احترام") || text.contains("طاعة") -> com.aistudio.kidspolice.abcd.R.raw.voice_05_respect_parents
+            text.contains("واجباتك") || text.contains("دراسة") || text.contains("كتبك") || text.contains("المذاكرة") -> com.aistudio.kidspolice.abcd.R.raw.voice_06_homework
+            text.contains("بطلنا العظيم") || text.contains("وسام") || text.contains("مكافأة") || text.contains("ألف مبروك") -> com.aistudio.kidspolice.abcd.R.raw.voice_23_great_job
+            else -> com.aistudio.kidspolice.abcd.R.raw.voice_15_call_question
+        }
+
+        playRawAudioFile(resId)
+    }
+
+    private fun playAudioFileVerified(file: File) {
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                android.util.Log.d("PoliceAudioPlayer", "AUDIO_MEDIA_PLAYER_CREATED=true")
+                setDataSource(file.absolutePath)
+                android.util.Log.d("PoliceAudioPlayer", "AUDIO_PREPARE_STARTED=true")
+                prepare()
+                android.util.Log.d("PoliceAudioPlayer", "AUDIO_PREPARED=true")
+
+                setOnCompletionListener {
+                    _isSpeaking.value = false
+                    android.util.Log.d("PoliceAudioPlayer", "AUDIO_COMPLETED=true")
+                }
+                setOnErrorListener { _, what, extra ->
+                    _isSpeaking.value = false
+                    android.util.Log.e("PoliceAudioPlayer", "AUDIO_PLAYER_ERROR: what=$what extra=$extra")
+                    android.util.Log.d("PoliceAudioPlayer", "AUDIO_PLAYER_ERROR=what=$what extra=$extra")
+                    true
+                }
+                android.util.Log.d("PoliceAudioPlayer", "AUDIO_START_CALLED=true")
+                start()
+                val isPlayingNow = isPlaying
+                android.util.Log.d("PoliceAudioPlayer", "AUDIO_IS_PLAYING=$isPlayingNow")
+            }
+        } catch (e: Exception) {
+            _isSpeaking.value = false
+            android.util.Log.e("PoliceAudioPlayer", "AUDIO_PLAYER_ERROR exception: ${e.message}", e)
+            android.util.Log.d("PoliceAudioPlayer", "AUDIO_PLAYER_ERROR=${e.message}")
+        }
+    }
+
+    private fun createWavHeader(pcmData: ByteArray, sampleRate: Int, channels: Int, bitsPerSample: Int): ByteArray {
+        val byteRate = sampleRate * channels * bitsPerSample / 8
+        val blockAlign = channels * bitsPerSample / 8
+        val dataSize = pcmData.size
+        val chunkSize = 36 + dataSize
+
+        val header = ByteArray(44)
+        header[0] = 'R'.code.toByte()
+        header[1] = 'I'.code.toByte()
+        header[2] = 'F'.code.toByte()
+        header[3] = 'F'.code.toByte()
+
+        header[4] = (chunkSize and 0xff).toByte()
+        header[5] = ((chunkSize shr 8) and 0xff).toByte()
+        header[6] = ((chunkSize shr 16) and 0xff).toByte()
+        header[7] = ((chunkSize shr 24) and 0xff).toByte()
+
+        header[8] = 'W'.code.toByte()
+        header[9] = 'A'.code.toByte()
+        header[10] = 'V'.code.toByte()
+        header[11] = 'E'.code.toByte()
+
+        header[12] = 'f'.code.toByte()
+        header[13] = 'm'.code.toByte()
+        header[14] = 't'.code.toByte()
+        header[15] = ' '.code.toByte()
+
+        header[16] = 16
+        header[17] = 0
+        header[18] = 0
+        header[19] = 0
+
+        header[20] = 1
+        header[21] = 0
+
+        header[22] = channels.toByte()
+        header[23] = 0
+
+        header[24] = (sampleRate and 0xff).toByte()
+        header[25] = ((sampleRate shr 8) and 0xff).toByte()
+        header[26] = ((sampleRate shr 16) and 0xff).toByte()
+        header[27] = ((sampleRate shr 24) and 0xff).toByte()
+
+        header[28] = (byteRate and 0xff).toByte()
+        header[29] = ((byteRate shr 8) and 0xff).toByte()
+        header[30] = ((byteRate shr 16) and 0xff).toByte()
+        header[31] = ((byteRate shr 24) and 0xff).toByte()
+
+        header[32] = blockAlign.toByte()
+        header[33] = 0
+
+        header[34] = bitsPerSample.toByte()
+        header[35] = 0
+
+        header[36] = 'd'.code.toByte()
+        header[37] = 'a'.code.toByte()
+        header[38] = 't'.code.toByte()
+        header[39] = 'a'.code.toByte()
+
+        header[40] = (dataSize and 0xff).toByte()
+        header[41] = ((dataSize shr 8) and 0xff).toByte()
+        header[42] = ((dataSize shr 16) and 0xff).toByte()
+        header[43] = ((dataSize shr 24) and 0xff).toByte()
+
+        return header + pcmData
+    }
+
+    private fun getCachedAudioFile(text: String, dialect: Dialect): File {
+        val hash = md5("${dialect.name}_$text")
+        return File(context.cacheDir, "gemini_tts_v2_$hash.mp3")
+    }
+
+    private fun md5(input: String): String {
+        val bytes = MessageDigest.getInstance("MD5").digest(input.toByteArray())
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun getApiKey(): String? {
+        return try {
+            val field = BuildConfig::class.java.getField("GEMINI_API_KEY")
+            field.get(null) as? String
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private suspend fun generateAndCacheGeminiAudio(text: String, dialect: Dialect, apiKey: String, outputFile: File): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val modelName = "gemini-3.1-flash-tts-preview"
+                val urlStr = "https://generativelanguage.googleapis.com/v1beta/models/$modelName:generateContent?key=$apiKey"
+                val url = URL(urlStr)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Content-Type", "application/json")
+                conn.doOutput = true
+                conn.connectTimeout = 10000
+                conn.readTimeout = 15000
+
+                val prompt = "أنت ضابط شرطة ودود ومحب للأطفال وبطريقة دافئة وطبيعية باللغة العربية (${dialect.displayName}). انطق النص التالي بوضوح وبدون عجلة: $text"
+                val jsonBody = JSONObject().apply {
+                    put("contents", JSONArray().put(
+                        JSONObject().put("parts", JSONArray().put(
+                            JSONObject().put("text", prompt)
+                        ))
+                    ))
+                    put("generationConfig", JSONObject().apply {
+                        put("responseModalities", JSONArray().put("AUDIO"))
+                        put("speechConfig", JSONObject().apply {
+                            put("voiceConfig", JSONObject().apply {
+                                put("prebuiltVoiceConfig", JSONObject().apply {
+                                    put("voiceName", "Puck")
+                                })
+                            })
+                        })
+                    })
+                }
+
+                conn.outputStream.use { os ->
+                    os.write(jsonBody.toString().toByteArray(Charsets.UTF_8))
+                }
+
+                val responseCode = conn.responseCode
+                if (responseCode == 200) {
+                    val responseStr = conn.inputStream.bufferedReader().use { it.readText() }
+                    android.util.Log.d("PoliceAudioPlayer", "GEMINI_TTS_RESPONSE_RECEIVED: length = ${responseStr.length}")
+                    val jsonResp = JSONObject(responseStr)
+                    val candidates = jsonResp.optJSONArray("candidates")
+                    if (candidates != null && candidates.length() > 0) {
+                        val content = candidates.getJSONObject(0).optJSONObject("content")
+                        val parts = content?.optJSONArray("parts")
+                        if (parts != null && parts.length() > 0) {
+                            for (i in 0 until parts.length()) {
+                                val part = parts.getJSONObject(i)
+                                val inlineData = part.optJSONObject("inlineData") ?: part.optJSONObject("inline_data")
+                                if (inlineData != null) {
+                                    val base64Data = inlineData.optString("data")
+                                    if (base64Data.isNotBlank()) {
+                                        val audioBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                                        android.util.Log.d("PoliceAudioPlayer", "GEMINI_TTS_AUDIO_BYTES_RECEIVED: ${audioBytes.size} bytes")
+                                        outputFile.writeBytes(audioBytes)
+                                        return@withContext true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR: Response 200 received but no audio inlineData found in response.")
+                } else {
+                    val errorStr = try {
+                        conn.errorStream?.bufferedReader()?.use { it.readText() } ?: "Unknown error"
+                    } catch (_: Exception) {
+                        "Could not read error stream"
+                    }
+                    android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR HTTP $responseCode: $errorStr")
+                }
+                false
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR exception in generateAndCacheGeminiAudio: ${e.message}", e)
+                false
+            }
+        }
+    }
+
+    private fun playAudioFile(file: File) {
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(file.absolutePath)
+                prepare()
+                setOnCompletionListener {
+                    _isSpeaking.value = false
+                    android.util.Log.d("PoliceAudioPlayer", "GEMINI_TTS_PLAYBACK_FINISHED")
+                }
+                setOnErrorListener { _, what, extra ->
+                    _isSpeaking.value = false
+                    android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR: MediaPlayer error what=$what extra=$extra")
+                    true
+                }
+                start()
+            }
+        } catch (e: Exception) {
+            _isSpeaking.value = false
+            android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR playing file: ${e.message}", e)
+        }
+    }
+
+    private fun fallbackAndroidTts(text: String, dialect: Dialect) {
+        val ttsInstance = getTts()
+        if (!isTtsReady || ttsInstance == null) {
+            _isSpeaking.value = false
+            return
+        }
         val targetLocale = when (dialect) {
             Dialect.SAUDI -> Locale("ar", "SA")
             Dialect.EGYPTIAN -> Locale("ar", "EG")
@@ -85,21 +597,39 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
             Dialect.FASHA -> Locale("ar")
         }
 
-        val result = tts?.setLanguage(targetLocale)
-        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            tts?.setLanguage(Locale("ar"))
+        try {
+            val result = ttsInstance.setLanguage(targetLocale)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                ttsInstance.setLanguage(Locale("ar"))
+            }
+
+            ttsInstance.setPitch(0.95f)
+            ttsInstance.setSpeechRate(0.92f)
+
+            val params = android.os.Bundle()
+            params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "officer_speech_${System.currentTimeMillis()}")
+            ttsInstance.speak(text, TextToSpeech.QUEUE_FLUSH, params, "officer_speech")
+        } catch (e: Exception) {
+            _isSpeaking.value = false
+            android.util.Log.e("PoliceAudioPlayer", "Error in fallbackAndroidTts: ${e.message}", e)
         }
-
-        tts?.setPitch(0.95f)
-        tts?.setSpeechRate(0.92f)
-
-        val params = android.os.Bundle()
-        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "officer_speech_${System.currentTimeMillis()}")
-        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, params, "officer_speech")
     }
 
     fun stopSpeaking() {
-        tts?.stop()
+        ttsJob?.cancel()
+        try {
+            currentAudioTrack?.stop()
+            currentAudioTrack?.release()
+            currentAudioTrack = null
+        } catch (_: Exception) {}
+        try {
+            tts?.stop()
+        } catch (_: Exception) {}
+        try {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+        } catch (_: Exception) {}
         _isSpeaking.value = false
     }
 
@@ -236,5 +766,9 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
         stopPoliceSiren()
         stopSpeaking()
         tts?.shutdown()
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = null
+        } catch (_: Exception) {}
     }
 }

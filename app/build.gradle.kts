@@ -7,6 +7,7 @@ plugins {
 android {
     namespace = "com.aistudio.kidspolice.abcd"
     compileSdk = 35
+    buildToolsVersion = "34.0.0"
 
     defaultConfig {
         applicationId = "com.aistudio.kidspolice.abcd"
