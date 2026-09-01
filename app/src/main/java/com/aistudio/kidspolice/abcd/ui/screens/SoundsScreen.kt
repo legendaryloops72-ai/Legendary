@@ -18,16 +18,24 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.RecordVoiceOver
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +50,7 @@ import com.aistudio.kidspolice.abcd.ui.theme.PoliceRed
 data class SoundEffectItem(
     val title: String,
     val subtitle: String,
-    val emoji: String,
+    val icon: ImageVector,
     val actionType: SoundType,
     val color: Color
 )
@@ -63,18 +71,15 @@ fun SoundsScreen(
     val isSirenPlaying by audioPlayer.isSirenPlaying.collectAsState()
 
     val sounds = listOf(
-        SoundEffectItem("سارينة الدورية", "تشغيل وإيقاف مستمر", "🚨", SoundType.SIREN, PoliceRed),
-        SoundEffectItem("لاسلكي العمليات", "صوت إشارة الراديو", "📻", SoundType.RADIO, PoliceAccentCyan),
-        SoundEffectItem("بوري سيارة الشرطة", "تنبيه الطريق", "📢", SoundType.HORN, PoliceGold),
-        SoundEffectItem("صافرة المرور", "إشارة توقف وانتباه", "🪈", SoundType.WHISTLE, Color(0xFF00E676)),
-        SoundEffectItem("نغمة الاتصال", "جرس هاتف الطوارئ", "🔔", SoundType.RINGTONE, Color(0xFFFF9100))
+        SoundEffectItem("سارينة الدورية", "تشغيل وإيقاف مستمر", Icons.Default.NotificationsActive, SoundType.SIREN, PoliceRed),
+        SoundEffectItem("لاسلكي العمليات", "صوت إشارة الراديو", Icons.Default.RecordVoiceOver, SoundType.RADIO, PoliceAccentCyan),
+        SoundEffectItem("بوري سيارة الشرطة", "تنبيه الطريق", Icons.Default.Campaign, SoundType.HORN, PoliceGold),
+        SoundEffectItem("صافرة المرور", "إشارة توقف وانتباه", Icons.Default.VolumeUp, SoundType.WHISTLE, Color(0xFF00E676)),
+        SoundEffectItem("نغمة الاتصال", "جرس هاتف الطوارئ", Icons.Default.NotificationsActive, SoundType.RINGTONE, Color(0xFFFF9100))
     )
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PoliceNavy)
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize().background(PoliceNavy).padding(16.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -82,25 +87,19 @@ fun SoundsScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(42.dp)
                     .clip(CircleShape)
                     .background(PoliceCardBg)
                     .clickable { onBack() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "➡️", fontSize = 18.sp)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "العودة", tint = PoliceNavy)
             }
             Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "مؤثرات وأصوات دورية الشرطة",
-                color = Color.White,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("مؤثرات وأصوات دورية الشرطة", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
         }
 
         PoliceSirenLightBar(isFlashing = isSirenPlaying)
-
         Spacer(modifier = Modifier.height(14.dp))
 
         LazyVerticalGrid(
@@ -113,7 +112,6 @@ fun SoundsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(140.dp)
-                        .clip(RoundedCornerShape(16.dp))
                         .clickable {
                             when (item.actionType) {
                                 SoundType.SIREN -> audioPlayer.togglePoliceSiren()
@@ -123,6 +121,7 @@ fun SoundsScreen(
                                 SoundType.RINGTONE -> audioPlayer.playRingTone()
                             }
                         },
+                    shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(containerColor = PoliceCardBg),
                     border = androidx.compose.foundation.BorderStroke(
                         1.5.dp,
@@ -130,13 +129,19 @@ fun SoundsScreen(
                     )
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(12.dp),
+                        modifier = Modifier.fillMaxSize().padding(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(text = item.emoji, fontSize = 36.sp)
+                        Box(
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(CircleShape)
+                                .background(item.color.copy(alpha = 0.16f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(item.icon, contentDescription = item.title, tint = item.color, modifier = Modifier.size(30.dp))
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = if (item.actionType == SoundType.SIREN && isSirenPlaying) "إيقاف السارينة" else item.title,
@@ -145,11 +150,7 @@ fun SoundsScreen(
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = item.subtitle,
-                            color = Color.White.copy(alpha = 0.6f),
-                            fontSize = 10.sp
-                        )
+                        Text(item.subtitle, color = Color.White.copy(alpha = 0.6f), fontSize = 10.sp)
                     }
                 }
             }
