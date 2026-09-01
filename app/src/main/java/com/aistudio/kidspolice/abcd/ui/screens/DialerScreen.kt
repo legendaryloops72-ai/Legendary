@@ -16,8 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -72,13 +77,19 @@ fun DialerScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(42.dp)
                     .clip(CircleShape)
                     .background(PoliceCardBg)
+                    .border(1.dp, PoliceAccentCyan.copy(alpha = 0.35f), CircleShape)
                     .clickable { onBack() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "➡️", fontSize = 18.sp)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "العودة",
+                    tint = PoliceNavy,
+                    modifier = Modifier.size(22.dp)
+                )
             }
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -133,9 +144,7 @@ fun DialerScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             for (row in digits) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     for (digit in row) {
                         Box(
                             modifier = Modifier
@@ -150,7 +159,7 @@ fun DialerScreen(
                         ) {
                             Text(
                                 text = digit,
-                                color = Color.White,
+                                color = PoliceNavy,
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -172,14 +181,18 @@ fun DialerScreen(
                     .size(50.dp)
                     .clip(CircleShape)
                     .background(PoliceCardBg)
+                    .border(1.dp, PoliceAccentCyan.copy(alpha = 0.35f), CircleShape)
                     .clickable {
-                        if (dialNumber.isNotEmpty()) {
-                            dialNumber = dialNumber.dropLast(1)
-                        }
+                        if (dialNumber.isNotEmpty()) dialNumber = dialNumber.dropLast(1)
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "⌫", color = Color.White, fontSize = 20.sp)
+                Icon(
+                    imageVector = Icons.Default.Backspace,
+                    contentDescription = "حذف آخر رقم",
+                    tint = PoliceNavy,
+                    modifier = Modifier.size(22.dp)
+                )
             }
 
             Spacer(modifier = Modifier.width(28.dp))
@@ -191,7 +204,7 @@ fun DialerScreen(
                         id = "custom_call",
                         title = "نداء طوارئ مخصص",
                         subtitle = "اتصال مباشر مع غرفة العمليات",
-                        iconEmoji = "🚨",
+                        iconEmoji = "",
                         category = ScenarioCategory.BEHAVIOR,
                         officerName = "غرفة العمليات المركزية",
                         responsesByDialect = mapOf(
@@ -207,13 +220,13 @@ fun DialerScreen(
                     )
                     onStartCustomCall(customScenario)
                 },
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(150.dp),
+                modifier = Modifier.height(60.dp).width(150.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = PoliceGreen),
                 shape = RoundedCornerShape(30.dp)
             ) {
-                Text(text = "اتصال 📞", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Icon(Icons.Default.Call, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("اتصال", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
