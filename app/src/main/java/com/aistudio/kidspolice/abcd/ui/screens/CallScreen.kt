@@ -1,6 +1,7 @@
 package com.aistudio.kidspolice.abcd.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,11 +18,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.CallEnd
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,10 +40,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aistudio.kidspolice.abcd.R
 import com.aistudio.kidspolice.abcd.audio.PoliceAudioPlayer
 import com.aistudio.kidspolice.abcd.data.Dialect
 import com.aistudio.kidspolice.abcd.data.PoliceScenario
@@ -62,15 +70,14 @@ fun CallScreen(
     audioPlayer: PoliceAudioPlayer,
     onEndCall: () -> Unit
 ) {
-    androidx.compose.runtime.LaunchedEffect(Unit) {
-        android.util.Log.d("PoliceAudioPlayer", "CALL_SCREEN_STARTED")
-    }
-
     var callState by remember { mutableStateOf(CallState.RINGING) }
     var secondsElapsed by remember { mutableIntStateOf(0) }
     val isSpeaking by audioPlayer.isSpeaking.collectAsState()
-
     val speechText = scenario.getSpeech(dialect)
+
+    LaunchedEffect(Unit) {
+        android.util.Log.d("PoliceAudioPlayer", "CALL_SCREEN_STARTED")
+    }
 
     androidx.compose.runtime.DisposableEffect(Unit) {
         onDispose {
@@ -79,22 +86,22 @@ fun CallScreen(
     }
 
     LaunchedEffect(callState) {
-        if (callState == CallState.RINGING) {
-            audioPlayer.playRingTone()
-            delay(3500)
-            callState = CallState.CONNECTED
-        }
-    }
-
-    LaunchedEffect(callState) {
-        if (callState == CallState.CONNECTED) {
-            audioPlayer.playRadioChirp()
-            delay(600)
-            audioPlayer.playScenarioCall(scenario.id)
-
-            while (true) {
-                delay(1000)
-                secondsElapsed++
+        when (callState) {
+            CallState.RINGING -> {
+                audioPlayer.playRingTone()
+                delay(3500)
+                if (callState == CallState.RINGING) {
+                    callState = CallState.CONNECTED
+                }
+            }
+            CallState.CONNECTED -> {
+                audioPlayer.playRadioChirp()
+                delay(600)
+                audioPlayer.playScenarioCall(scenario.id)
+                while (callState == CallState.CONNECTED) {
+                    delay(1000)
+                    secondsElapsed++
+                }
             }
         }
     }
@@ -118,7 +125,7 @@ fun CallScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = if (callState == CallState.RINGING) "جارٍ الاتصال بالضابط... 🔔" else "مكالمة جارية: %02d:%02d".format(secondsElapsed / 60, secondsElapsed % 60),
+                text = if (callState == CallState.RINGING) "جارٍ الاتصال بالضابط..." else "مكالمة جارية: %02d:%02d".format(secondsElapsed / 60, secondsElapsed % 60),
                 color = if (callState == CallState.RINGING) PoliceAccentCyan else PoliceGreen,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
@@ -137,7 +144,13 @@ fun CallScreen(
                     .border(3.dp, if (isSpeaking) PoliceAccentCyan else PoliceGold, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "👮‍♂️", fontSize = 65.sp)
+                Image(
+                    painter = painterResource(R.drawable.officer_avatar),
+                    contentDescription = "صورة الضابط",
+                    modifier = Modifier
+                        .size(118.dp)
+                        .clip(CircleShape)
+                )
             }
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -150,7 +163,7 @@ fun CallScreen(
             )
 
             Text(
-                text = "${dialect.displayName} ${dialect.flag}",
+                text = dialect.displayName,
                 color = PoliceAccentCyan,
                 fontSize = 13.sp
             )
@@ -158,9 +171,8 @@ fun CallScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp)),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = PoliceCardBg),
                 border = androidx.compose.foundation.BorderStroke(1.dp, PoliceGold.copy(alpha = 0.3f))
             ) {
@@ -188,12 +200,21 @@ fun CallScreen(
                     AnimatedVisibility(visible = isSpeaking) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "🔊 الضابط يتحدث الآن...",
-                                color = PoliceAccentCyan,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.RecordVoiceOver,
+                                    contentDescription = null,
+                                    tint = PoliceAccentCyan,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "الضابط يتحدث الآن...",
+                                    color = PoliceAccentCyan,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -202,9 +223,7 @@ fun CallScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             if (callState == CallState.CONNECTED) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Button(
                         onClick = {
                             audioPlayer.playRadioChirp()
@@ -213,7 +232,9 @@ fun CallScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = PoliceCardBg),
                         border = androidx.compose.foundation.BorderStroke(1.dp, PoliceAccentCyan)
                     ) {
-                        Text("إعادة كلام الضابط 📢", color = Color.White, fontSize = 13.sp)
+                        Icon(Icons.Default.VolumeUp, contentDescription = null, tint = PoliceAccentCyan)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("إعادة كلام الضابط", color = Color.White, fontSize = 13.sp)
                     }
 
                     Button(
@@ -221,7 +242,9 @@ fun CallScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = PoliceCardBg),
                         border = androidx.compose.foundation.BorderStroke(1.dp, PoliceGold)
                     ) {
-                        Text("صافرة 🪈", color = PoliceGold, fontSize = 13.sp)
+                        Icon(Icons.Default.VolumeUp, contentDescription = null, tint = PoliceGold)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("صافرة", color = PoliceGold, fontSize = 13.sp)
                     }
                 }
             }
@@ -247,10 +270,15 @@ fun CallScreen(
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "📞", fontSize = 32.sp)
+                        Icon(
+                            imageVector = Icons.Default.Call,
+                            contentDescription = "الرد على الضابط",
+                            tint = Color.White,
+                            modifier = Modifier.size(34.dp)
+                        )
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = "رد على الضابط", color = Color.White, fontSize = 12.sp)
+                    Text("رد على الضابط", color = Color.White, fontSize = 12.sp)
                 }
 
                 Spacer(modifier = Modifier.width(60.dp))
@@ -262,13 +290,22 @@ fun CallScreen(
                         .size(72.dp)
                         .clip(CircleShape)
                         .background(PoliceRed)
-                        .clickable { onEndCall() },
+                        .clickable {
+                            callState = CallState.RINGING
+                            audioPlayer.stopSpeaking()
+                            onEndCall()
+                        },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "❌", fontSize = 28.sp)
+                    Icon(
+                        imageVector = Icons.Default.CallEnd,
+                        contentDescription = "إنهاء المكالمة",
+                        tint = Color.White,
+                        modifier = Modifier.size(34.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(text = "إنهاء المكالمة", color = Color.White, fontSize = 12.sp)
+                Text("إنهاء المكالمة", color = Color.White, fontSize = 12.sp)
             }
         }
     }
