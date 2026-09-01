@@ -141,6 +141,7 @@ private val CardStoriesBgBrush = Brush.verticalGradient(
 
 private val Rounded28 = RoundedCornerShape(28.dp)
 private val Rounded22 = RoundedCornerShape(22.dp)
+private val Rounded24 = RoundedCornerShape(24.dp)
 private val Rounded16 = RoundedCornerShape(16.dp)
 private val Rounded12 = RoundedCornerShape(12.dp)
 
@@ -520,7 +521,7 @@ fun HomeScreen(
 }
 
 // ==========================================
-// 1. TOP BRAND HEADER COMPONENT
+// 1. MODERN HOME VISUAL COMPONENTS
 // ==========================================
 @Composable
 private fun NewTopBrandHeader(
@@ -530,143 +531,62 @@ private fun NewTopBrandHeader(
     onOpenParentGate: () -> Unit,
     onOpenRewards: () -> Unit
 ) {
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(10.dp, RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
-            .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
-            .background(brush = TopBarBgBrush)
-            .border(
-                width = 1.5.dp,
-                color = Color(0xFF1E88E5).copy(alpha = 0.5f),
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-            )
-            .padding(horizontal = 14.dp, vertical = 10.dp)
+            .padding(horizontal = 14.dp, vertical = 8.dp)
+            .shadow(12.dp, Rounded22),
+        shape = Rounded22,
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF0B2D63))
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(TopBarBgBrush)
+                .border(1.5.dp, Color(0xFF4CA6FF).copy(alpha = 0.6f), Rounded22)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Brand Logo & Title (Left/Start)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Image(
-                    painter = painterResource(id = R.drawable.shield_logo),
+                    painter = painterResource(R.drawable.shield_logo),
                     contentDescription = "شعار شرطة الأطفال",
-                    modifier = Modifier.size(40.dp)
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(54.dp)
                 )
-
                 Column {
-                    Text(
-                        text = "شرطة الأطفال",
-                        color = Color.White,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                    Text(
-                        text = "مركز القيادة المباشر",
-                        color = Color(0xFF64B5F6),
-                        fontSize = 10.5.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("شرطة الأطفال", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Black)
+                    Text("مركز القيادة", color = Color(0xFFB9E5FF), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
             }
-
-            // Stats Badges (Center)
-            Row(
-                modifier = Modifier
-                    .clip(Rounded12)
-                    .background(Color(0xFF081C38))
-                    .border(1.dp, Color(0xFF1976D2), Rounded12)
-                    .clickable { onOpenRewards() }
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "نقاط",
-                        tint = PoliceGold,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Text(
-                        text = "$points",
-                        color = PoliceGold,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-                Box(
                     modifier = Modifier
-                        .width(1.dp)
-                        .height(14.dp)
-                        .background(Color(0xFF1E88E5).copy(alpha = 0.5f))
-                )
-                Row(
+                        .clip(Rounded12)
+                        .background(Color(0xFF06204A))
+                        .border(1.dp, Color(0xFF4CA6FF), Rounded12)
+                        .clickable(onClick = onOpenRewards)
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(text = "🏆", fontSize = 12.sp)
-                    Text(
-                        text = "$trophies",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Icon(Icons.Default.Star, contentDescription = "النقاط", tint = PoliceGold, modifier = Modifier.size(16.dp))
+                    Text("$points", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Black)
                 }
-            }
-
-            // Quick Actions (Settings & Parent Gate)
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
                 IconButton(
                     onClick = onOpenParentGate,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(Rounded12)
-                        .background(Color(0xFF1B5E20))
-                        .border(1.dp, Color(0xFF81C784), Rounded12)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "ولي الأمر",
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-
+                    modifier = Modifier.size(36.dp).clip(Rounded12).background(Color(0xFF1B5E20)).border(1.dp, Color(0xFF81C784), Rounded12)
+                ) { Icon(Icons.Default.Lock, contentDescription = "ولي الأمر", tint = Color.White, modifier = Modifier.size(18.dp)) }
                 IconButton(
                     onClick = onOpenSettings,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(Rounded12)
-                        .background(Color(0xFF1565C0))
-                        .border(1.dp, Color(0xFF90CAF9), Rounded12)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "الإعدادات",
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
+                    modifier = Modifier.size(36.dp).clip(Rounded12).background(Color(0xFF1565C0)).border(1.dp, Color(0xFF90CAF9), Rounded12)
+                ) { Icon(Icons.Default.Settings, contentDescription = "الإعدادات", tint = Color.White, modifier = Modifier.size(18.dp)) }
             }
         }
     }
 }
 
-// ==========================================
-// 2. MISSION OF THE DAY HERO SECTION
-// ==========================================
 @Composable
 private fun MissionOfTheDayHeroSection(
     modifier: Modifier = Modifier,
@@ -675,165 +595,36 @@ private fun MissionOfTheDayHeroSection(
     onStartEmergencyCall: () -> Unit,
     onOpenMissionsList: () -> Unit
 ) {
-    Card(
-        modifier = modifier.shadow(14.dp, Rounded28),
-        shape = Rounded28,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF0A2246))
-    ) {
-        Box(
+    Card(modifier = modifier.shadow(14.dp, Rounded28), shape = Rounded28, colors = CardDefaults.cardColors(containerColor = Color(0xFF0B2A5A))) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(brush = MissionBannerBgBrush)
-                .border(
-                    width = 2.dp,
-                    color = Color(0xFF00E5FF).copy(alpha = 0.6f),
-                    shape = Rounded28
-                )
-                .padding(16.dp)
+                .background(MissionBannerBgBrush)
+                .border(2.dp, Color(0xFF2E96FF), Rounded28)
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Top Tag with Emergency Beacon
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(Rounded12)
-                            .background(EmergencyRed)
-                            .border(1.dp, Color(0xFFFFCDD2), Rounded12)
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = "مهمة اليوم الخاصة",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    // Flashing Beacon Light
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .graphicsLayer { alpha = beaconPulse().coerceIn(0.3f, 1f) }
-                                .clip(CircleShape)
-                                .background(EmergencyRed)
-                                .border(1.dp, Color.White, CircleShape)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .graphicsLayer { alpha = (1.4f - beaconPulse()).coerceIn(0.3f, 1f) }
-                                .clip(CircleShape)
-                                .background(PoliceBlueCyan)
-                                .border(1.dp, Color.White, CircleShape)
-                        )
-                    }
+            Image(
+                painter = painterResource(R.drawable.officer_avatar),
+                contentDescription = "الضابط المرشد",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(104.dp).clip(CircleShape).border(3.dp, PoliceGold, CircleShape).shadow(8.dp, CircleShape)
+            )
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Box(Modifier.size(11.dp).graphicsLayer { alpha = beaconPulse().coerceIn(0.35f, 1f) }.clip(CircleShape).background(EmergencyRed))
+                    Text("مهمة اليوم", color = PoliceGold, fontSize = 13.sp, fontWeight = FontWeight.Black)
                 }
-
-                // Middle Row: Hero Officer Image + Mission Info
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    // 3D Police Officer Hero Image
-                    Image(
-                        painter = painterResource(id = R.drawable.officer_kid),
-                        contentDescription = "الشرطي الصغير",
-                        modifier = Modifier
-                            .size(92.dp)
-                            .shadow(8.dp, CircleShape)
-                            .clip(CircleShape)
-                            .border(2.5.dp, PoliceGold, CircleShape)
-                    )
-
-                    // Mission Text Content
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "نداء دورية الأبطال الصغار",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black
-                        )
-                        Text(
-                            text = "الضابط فهد مستعد للتحدث معك ومساعدتك في مهامك اليومية!",
-                            color = Color(0xFFB3E5FC),
-                            fontSize = 12.sp,
-                            lineHeight = 16.sp
-                        )
-                        Text(
-                            text = "اللهجة: ${selectedDialect.flag} ${selectedDialect.displayName.take(16)}",
-                            color = PoliceGold,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                Text("مرحبًا أيها الشرطي الصغير!", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Black)
+                Text("حافظ على أمان مدينتك وتعلّم مهام الأبطال.", color = Color(0xFFD5F2FF), fontSize = 11.sp, lineHeight = 15.sp)
+                Text("اللهجة: ${selectedDialect.displayName}", color = PoliceGold, fontSize = 10.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Button(onClick = onStartEmergencyCall, modifier = Modifier.weight(1f).height(38.dp), shape = Rounded12, contentPadding = PaddingValues(0.dp), colors = ButtonDefaults.buttonColors(containerColor = PoliceGoldDark)) {
+                        Text("ابدأ المهمة", color = PoliceNavyDark, fontSize = 12.sp, fontWeight = FontWeight.Black)
                     }
-                }
-
-                // Action Buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Button(
-                        onClick = onStartEmergencyCall,
-                        modifier = Modifier
-                            .weight(1.3f)
-                            .height(44.dp)
-                            .shadow(6.dp, Rounded16),
-                        colors = ButtonDefaults.buttonColors(containerColor = EmergencyGreen),
-                        shape = Rounded16,
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "بدء الاتصال المباشر",
-                                color = Color.White,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Black
-                            )
-                        }
-                    }
-
-                    Button(
-                        onClick = onOpenMissionsList,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(44.dp)
-                            .shadow(6.dp, Rounded16),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2)),
-                        shape = Rounded16,
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Text(
-                            text = "جدول المهام",
-                            color = Color.White,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Button(onClick = onOpenMissionsList, modifier = Modifier.weight(0.8f).height(38.dp), shape = Rounded12, contentPadding = PaddingValues(0.dp), colors = ButtonDefaults.buttonColors(containerColor = PoliceBlueVibrant)) {
+                        Text("المهام", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -841,9 +632,6 @@ private fun MissionOfTheDayHeroSection(
     }
 }
 
-// ==========================================
-// 3. FOUR MAIN SECTIONS GRID (Cars, Sirens, Games, Stories)
-// ==========================================
 @Composable
 private fun FourMainPoliceSectionsGrid(
     modifier: Modifier = Modifier,
@@ -853,75 +641,21 @@ private fun FourMainPoliceSectionsGrid(
     onOpenGames: () -> Unit,
     onOpenStories: () -> Unit
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Row 1: Cars + Sirens
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Card 1: سيارات الشرطة
-            MainSectionActionCard(
-                modifier = Modifier.weight(1f),
-                title = "سيارات الشرطة",
-                subtitle = "أسطول الدوريات السريعة",
-                iconResId = R.drawable.police_car_main,
-                bgBrush = CardCarsBgBrush,
-                borderColor = Color(0xFF64B5F6),
-                badgeText = "٣ دوريات",
-                onClick = onOpenCars
-            )
-
-            // Card 2: صفارات الشرطة
-            MainSectionActionCard(
-                modifier = Modifier.weight(1f),
-                title = "صفارات الشرطة",
-                subtitle = if (isSirenPlaying) "يعمل الآن 🔊" else "أصوات وأبواق الإنذار",
-                iconResId = R.drawable.red_siren,
-                bgBrush = CardSirensBgBrush,
-                borderColor = if (isSirenPlaying) Color(0xFFFFEB3B) else Color(0xFFFF8A80),
-                badgeText = if (isSirenPlaying) "مشتغل" else "إنذار",
-                onClick = onToggleSiren
-            )
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MainSectionActionCard(Modifier.weight(1f), "سيارات الشرطة", "أسطول الدوريات", R.drawable.police_car_main, CardCarsBgBrush, Color(0xFF64B5F6), "٣ دوريات", onOpenCars)
+            MainSectionActionCard(Modifier.weight(1f), "صفارات الشرطة", if (isSirenPlaying) "يعمل الآن" else "تشغيل الأصوات", R.drawable.red_siren, CardSirensBgBrush, Color(0xFFFF8A80), "استمع", onToggleSiren)
         }
-
-        // Row 2: Games + Stories
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Card 3: ألعاب الشرطة
-            MainSectionActionCard(
-                modifier = Modifier.weight(1f),
-                title = "ألعاب الشرطة",
-                subtitle = "تحديات وألغاز الأبطال",
-                iconResId = R.drawable.game_puzzle,
-                bgBrush = CardGamesBgBrush,
-                borderColor = Color(0xFF81C784),
-                badgeText = "تحدي جديد",
-                onClick = onOpenGames
-            )
-
-            // Card 4: قصص الشرطة
-            MainSectionActionCard(
-                modifier = Modifier.weight(1f),
-                title = "قصص الشرطة",
-                subtitle = "مغامرات وقيم هادفة",
-                iconResId = R.drawable.officer_kid,
-                bgBrush = CardStoriesBgBrush,
-                borderColor = Color(0xFFBA68C8),
-                badgeText = "٣ قصص",
-                onClick = onOpenStories
-            )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MainSectionActionCard(Modifier.weight(1f), "ألعاب الشرطة", "أربع ألعاب", R.drawable.game_find_police, CardGamesBgBrush, Color(0xFF81C784), "العب الآن", onOpenGames)
+            MainSectionActionCard(Modifier.weight(1f), "قصص الشرطة", "قصص هادفة", R.drawable.officer_kid, CardStoriesBgBrush, Color(0xFFBA68C8), "اقرأ قصة", onOpenStories)
         }
     }
 }
 
 @Composable
 private fun MainSectionActionCard(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     title: String,
     subtitle: String,
     iconResId: Int,
@@ -930,80 +664,23 @@ private fun MainSectionActionCard(
     badgeText: String,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .shadow(10.dp, Rounded22)
-            .clickable(onClick = onClick),
-        shape = Rounded22,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF092040))
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(brush = bgBrush)
-                .border(width = 2.dp, color = borderColor, shape = Rounded22)
-                .padding(14.dp)
+    Card(modifier = modifier.shadow(10.dp, Rounded22).clickable(onClick = onClick), shape = Rounded22, colors = CardDefaults.cardColors(containerColor = Color(0xFF092040))) {
+        Column(
+            modifier = Modifier.fillMaxWidth().background(bgBrush).border(2.dp, borderColor, Rounded22).padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Top row: Icon + Badge
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Image(
-                        painter = painterResource(id = iconResId),
-                        contentDescription = title,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .shadow(4.dp, CircleShape)
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .clip(Rounded12)
-                            .background(Color.Black.copy(alpha = 0.35f))
-                            .border(1.dp, borderColor.copy(alpha = 0.6f), Rounded12)
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = badgeText,
-                            color = Color.White,
-                            fontSize = 9.5.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.clip(Rounded12).background(Color.Black.copy(alpha = 0.3f)).padding(horizontal = 6.dp, vertical = 3.dp)) {
+                    Text(badgeText, color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                 }
-
-                // Title & Subtitle
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(
-                        text = title,
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Black,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = subtitle,
-                        color = Color(0xFFECEFF1).copy(alpha = 0.85f),
-                        fontSize = 11.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Image(painterResource(iconResId), contentDescription = title, contentScale = ContentScale.Fit, modifier = Modifier.size(72.dp))
             }
+            Text(title, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(subtitle, color = Color.White.copy(alpha = 0.82f), fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
 
-// ==========================================
-// 4. QUICK POLICE CAR SELECTOR SPOTLIGHT
-// ==========================================
 @Composable
 private fun QuickPoliceCarSelectorCard(
     modifier: Modifier = Modifier,
@@ -1013,219 +690,68 @@ private fun QuickPoliceCarSelectorCard(
     onOpenFleet: () -> Unit,
     onPlayHorn: () -> Unit
 ) {
-    Card(
-        modifier = modifier.shadow(12.dp, Rounded24),
-        shape = Rounded24,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF092040))
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF0D2D5B))
-                .border(2.dp, Color(0xFF1976D2), Rounded24)
-                .padding(14.dp)
+    Card(modifier = modifier.shadow(12.dp, Rounded24), shape = Rounded24, colors = CardDefaults.cardColors(containerColor = Color(0xFF092040))) {
+        Column(
+            modifier = Modifier.fillMaxWidth().background(CardCarsBgBrush).border(2.dp, Color(0xFF42A5F5), Rounded24).padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                // Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "دورية الشرطة النشطة",
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Black
-                    )
-
-                    Text(
-                        text = cars.getOrNull(currentCarIndex)?.name ?: "دورية الشرطة",
-                        color = PoliceGold,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("الدورية النشطة", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Black)
+                Text(cars.getOrNull(currentCarIndex)?.name ?: "دورية الشرطة", color = PoliceGold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            }
+            Image(
+                painter = painterResource(R.drawable.police_car_main),
+                contentDescription = "السيارة النشطة",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxWidth().height(130.dp).clip(Rounded16).background(Color(0xFF08204A))
+            )
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                cars.forEachIndexed { index, car ->
+                    val selected = index == currentCarIndex
+                    val thumb = when (index) { 0 -> R.drawable.police_car_1; 1 -> R.drawable.police_car_2; else -> R.drawable.police_car_3 }
+                    Image(
+                        painter = painterResource(thumb), contentDescription = car.name, contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(62.dp).clip(CircleShape).background(Color(0xFF0C3C79)).border(if (selected) 3.dp else 1.dp, if (selected) PoliceGold else Color(0xFF42A5F5), CircleShape).clickable { onSelectCar(index) }
                     )
                 }
-
-                // Thumbnails Selector
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF071833), Rounded16)
-                        .padding(horizontal = 8.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    cars.forEachIndexed { index, car ->
-                        val isSelected = (index == currentCarIndex)
-                        val thumbResId = when (index) {
-                            0 -> R.drawable.police_car_1
-                            1 -> R.drawable.police_car_2
-                            else -> R.drawable.police_car_3
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(CircleShape)
-                                .background(if (isSelected) Color(0xFF1E88E5) else Color(0xFF0D3268))
-                                .border(
-                                    width = if (isSelected) 2.5.dp else 1.dp,
-                                    color = if (isSelected) PoliceGold else Color(0xFF42A5F5),
-                                    shape = CircleShape
-                                )
-                                .clickable { onSelectCar(index) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = thumbResId),
-                                contentDescription = car.name,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape)
-                            )
-                        }
-                    }
-                }
-
-                // Quick Action Buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = onOpenFleet,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(38.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1565C0)),
-                        shape = Rounded12,
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Text("استعراض الأسطول", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
-
-                    Button(
-                        onClick = onPlayHorn,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(38.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1)),
-                        shape = Rounded12,
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Text("بوق الدورية", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onOpenFleet, modifier = Modifier.weight(1f).height(38.dp), shape = Rounded12, contentPadding = PaddingValues(0.dp), colors = ButtonDefaults.buttonColors(containerColor = PoliceBluePrimary)) { Text("استعراض الأسطول", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold) }
+                Button(onClick = onPlayHorn, modifier = Modifier.weight(1f).height(38.dp), shape = Rounded12, contentPadding = PaddingValues(0.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))) { Text("بوق الدورية", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold) }
             }
         }
     }
 }
 
-private val Rounded24 = RoundedCornerShape(24.dp)
-
-// ==========================================
-// 5. NEW MODERN BOTTOM NAVIGATION BAR
-// ==========================================
 @Composable
 private fun NewModernBottomNav(
     modifier: Modifier = Modifier,
     selectedIndex: Int,
     onSelectTab: (Int) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
-            .shadow(16.dp, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .background(Color(0xFF071836))
-            .border(
-                width = 1.5.dp,
-                color = Color(0xFF1E88E5).copy(alpha = 0.6f),
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-            )
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            NavTabItem(
-                label = "الرئيسية",
-                iconResId = R.drawable.shield_logo,
-                isSelected = (selectedIndex == 0),
-                onClick = { onSelectTab(0) }
-            )
-            NavTabItem(
-                label = "الصفارات",
-                iconResId = R.drawable.red_siren,
-                isSelected = (selectedIndex == 1),
-                onClick = { onSelectTab(1) }
-            )
-            NavTabItem(
-                label = "الألعاب",
-                iconResId = R.drawable.game_puzzle,
-                isSelected = (selectedIndex == 2),
-                onClick = { onSelectTab(2) }
-            )
-            NavTabItem(
-                label = "القصص",
-                iconResId = R.drawable.officer_kid,
-                isSelected = (selectedIndex == 3),
-                onClick = { onSelectTab(3) }
-            )
-            NavTabItem(
-                label = "المكافآت",
-                iconResId = R.drawable.officer_kid,
-                isSelected = (selectedIndex == 4),
-                onClick = { onSelectTab(4) }
-            )
+    Card(modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp).shadow(14.dp, Rounded22), shape = Rounded22, colors = CardDefaults.cardColors(containerColor = Color(0xFF071B3A))) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 6.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            NavTabItem("الرئيسية", R.drawable.shield_logo, selectedIndex == 0) { onSelectTab(0) }
+            NavTabItem("الصفارات", R.drawable.red_siren, selectedIndex == 1) { onSelectTab(1) }
+            NavTabItem("الألعاب", R.drawable.game_find_police, selectedIndex == 2) { onSelectTab(2) }
+            NavTabItem("القصص", R.drawable.officer_kid, selectedIndex == 3) { onSelectTab(3) }
+            NavTabItem("المكافآت", R.drawable.game_collect_stars, selectedIndex == 4) { onSelectTab(4) }
         }
     }
 }
 
 @Composable
-private fun NavTabItem(
-    label: String,
-    iconResId: Int,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
+private fun NavTabItem(label: String, iconResId: Int, isSelected: Boolean, onClick: () -> Unit) {
     Column(
+        modifier = Modifier.clip(Rounded12).background(if (isSelected) Color(0xFF1565C0) else Color.Transparent).clickable(onClick = onClick).padding(horizontal = 7.dp, vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .clip(Rounded12)
-            .background(if (isSelected) Color(0xFF1565C0) else Color.Transparent)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Image(
-            painter = painterResource(id = iconResId),
-            contentDescription = label,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            text = label,
-            color = if (isSelected) PoliceGold else Color(0xFF90CAF9),
-            fontSize = 10.sp,
-            fontWeight = if (isSelected) FontWeight.Black else FontWeight.Normal
-        )
+        Image(painterResource(iconResId), contentDescription = label, contentScale = ContentScale.Fit, modifier = Modifier.size(30.dp))
+        Text(label, color = if (isSelected) PoliceGold else Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold, maxLines = 1)
     }
 }
 
-// ==========================================
-// 6. DIALOGS IMPLEMENTATION
-// ==========================================
-
-// Parent Gate Dialog
 @Composable
 private fun ParentGateDialog(
     onDismiss: () -> Unit,
@@ -1709,7 +1235,7 @@ private fun StoryReaderDialog(
                     enabled = !isReadingComplete
                 ) {
                     Text(
-                        text = if (isReadingComplete) "تم استلام وسام القصة ⭐" else "أكملت القصة واكسب ٥٠ نجمة ⭐",
+                        text = if (isReadingComplete) "تم استلام وسام القصة" else "أكملت القصة واكسب ٥٠ نجمة",
                         color = Color.White,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -1817,7 +1343,7 @@ private fun MiniGameDialog(
                 if (isWon) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "أحسنت يا بطل! حصلت على ١٠٠ نقطة ⭐",
+                        text = "أحسنت يا بطل! حصلت على ١٠٠ نقطة",
                         color = EmergencyGreen,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
@@ -1882,7 +1408,10 @@ private fun RewardsDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "⭐ $points", color = PoliceGold, fontSize = 16.sp, fontWeight = FontWeight.Black)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Icon(Icons.Default.Star, contentDescription = "النقاط", tint = PoliceGold, modifier = Modifier.size(18.dp))
+                                Text(text = "$points", color = PoliceGold, fontSize = 16.sp, fontWeight = FontWeight.Black)
+                            }
                             Text(text = "مجموع النقاط", color = Color.White, fontSize = 11.sp)
                         }
                     }
@@ -1895,7 +1424,10 @@ private fun RewardsDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "🏆 $trophies", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Black)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Icon(Icons.Default.Star, contentDescription = "الكؤوس", tint = PoliceGold, modifier = Modifier.size(18.dp))
+                                Text(text = "$trophies", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Black)
+                            }
                             Text(text = "الأوسمة المحققة", color = Color.White, fontSize = 11.sp)
                         }
                     }
