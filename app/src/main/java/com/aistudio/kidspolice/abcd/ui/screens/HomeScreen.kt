@@ -554,7 +554,7 @@ private fun NewTopBrandHeader(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_app_brand_logo),
+                    painter = painterResource(id = R.drawable.shield_logo),
                     contentDescription = "شعار شرطة الأطفال",
                     modifier = Modifier.size(40.dp)
                 )
@@ -748,7 +748,7 @@ private fun MissionOfTheDayHeroSection(
                 ) {
                     // 3D Police Officer Hero Image
                     Image(
-                        painter = painterResource(id = R.drawable.ic_police_officer_hero),
+                        painter = painterResource(id = R.drawable.officer_kid),
                         contentDescription = "الشرطي الصغير",
                         modifier = Modifier
                             .size(92.dp)
@@ -867,7 +867,7 @@ private fun FourMainPoliceSectionsGrid(
                 modifier = Modifier.weight(1f),
                 title = "سيارات الشرطة",
                 subtitle = "أسطول الدوريات السريعة",
-                iconResId = R.drawable.ic_section_cars,
+                iconResId = R.drawable.police_car_main,
                 bgBrush = CardCarsBgBrush,
                 borderColor = Color(0xFF64B5F6),
                 badgeText = "٣ دوريات",
@@ -879,7 +879,7 @@ private fun FourMainPoliceSectionsGrid(
                 modifier = Modifier.weight(1f),
                 title = "صفارات الشرطة",
                 subtitle = if (isSirenPlaying) "يعمل الآن 🔊" else "أصوات وأبواق الإنذار",
-                iconResId = R.drawable.ic_section_sirens,
+                iconResId = R.drawable.red_siren,
                 bgBrush = CardSirensBgBrush,
                 borderColor = if (isSirenPlaying) Color(0xFFFFEB3B) else Color(0xFFFF8A80),
                 badgeText = if (isSirenPlaying) "مشتغل" else "إنذار",
@@ -897,7 +897,7 @@ private fun FourMainPoliceSectionsGrid(
                 modifier = Modifier.weight(1f),
                 title = "ألعاب الشرطة",
                 subtitle = "تحديات وألغاز الأبطال",
-                iconResId = R.drawable.ic_section_games,
+                iconResId = R.drawable.game_puzzle,
                 bgBrush = CardGamesBgBrush,
                 borderColor = Color(0xFF81C784),
                 badgeText = "تحدي جديد",
@@ -909,7 +909,7 @@ private fun FourMainPoliceSectionsGrid(
                 modifier = Modifier.weight(1f),
                 title = "قصص الشرطة",
                 subtitle = "مغامرات وقيم هادفة",
-                iconResId = R.drawable.ic_section_stories,
+                iconResId = R.drawable.officer_kid,
                 bgBrush = CardStoriesBgBrush,
                 borderColor = Color(0xFFBA68C8),
                 badgeText = "٣ قصص",
@@ -1062,9 +1062,9 @@ private fun QuickPoliceCarSelectorCard(
                     cars.forEachIndexed { index, car ->
                         val isSelected = (index == currentCarIndex)
                         val thumbResId = when (index) {
-                            0 -> R.drawable.img_car_thumb_1
-                            1 -> R.drawable.img_car_thumb_2
-                            else -> R.drawable.img_car_thumb_3
+                            0 -> R.drawable.police_car_1
+                            1 -> R.drawable.police_car_2
+                            else -> R.drawable.police_car_3
                         }
 
                         Box(
@@ -1158,31 +1158,31 @@ private fun NewModernBottomNav(
         ) {
             NavTabItem(
                 label = "الرئيسية",
-                iconResId = R.drawable.ic_app_brand_logo,
+                iconResId = R.drawable.shield_logo,
                 isSelected = (selectedIndex == 0),
                 onClick = { onSelectTab(0) }
             )
             NavTabItem(
                 label = "الصفارات",
-                iconResId = R.drawable.ic_section_sirens,
+                iconResId = R.drawable.red_siren,
                 isSelected = (selectedIndex == 1),
                 onClick = { onSelectTab(1) }
             )
             NavTabItem(
                 label = "الألعاب",
-                iconResId = R.drawable.ic_section_games,
+                iconResId = R.drawable.game_puzzle,
                 isSelected = (selectedIndex == 2),
                 onClick = { onSelectTab(2) }
             )
             NavTabItem(
                 label = "القصص",
-                iconResId = R.drawable.ic_section_stories,
+                iconResId = R.drawable.officer_kid,
                 isSelected = (selectedIndex == 3),
                 onClick = { onSelectTab(3) }
             )
             NavTabItem(
                 label = "المكافآت",
-                iconResId = R.drawable.ic_police_officer_hero,
+                iconResId = R.drawable.officer_kid,
                 isSelected = (selectedIndex == 4),
                 onClick = { onSelectTab(4) }
             )
@@ -1508,9 +1508,9 @@ private fun VehicleExplorerDialog(
 
                 // Vehicle Image Display
                 val thumbResId = when (currentIndex) {
-                    0 -> R.drawable.img_car_thumb_1
-                    1 -> R.drawable.img_car_thumb_2
-                    else -> R.drawable.img_car_thumb_3
+                    0 -> R.drawable.police_car_1
+                    1 -> R.drawable.police_car_2
+                    else -> R.drawable.police_car_3
                 }
 
                 Image(
