@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Glowing Blue & Night Ambient Background Circle -->
+    <path
+        android:pathData="M60,60m-58,0a58,58 0 1,0 116,0a58,58 0 1,0 -116,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="2"
+                android:endX="60"
+                android:endY="118"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#1E88E5" />
+                <item android:offset="0.4" android:color="#0D47A1" />
+                <item android:offset="1.0" android:color="#061A3A" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Glowing Border -->
+    <path
+        android:pathData="M60,60m-57,0a57,57 0 1,0 114,0a57,57 0 1,0 -114,0"
+        android:strokeColor="#64B5F6"
+        android:strokeWidth="2.5" />
+
+    <!-- Red & Cyan Emergency Lights Glow in Background -->
+    <path
+        android:pathData="M24,40m-12,0a12,12 0 1,0 24,0a12,12 0 1,0 -24,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="24"
+                android:startY="28"
+                android:endX="24"
+                android:endY="52"
+                android:type="radial"
+                android:gradientRadius="12">
+                <item android:offset="0.0" android:color="#FFFF1744" />
+                <item android:offset="0.6" android:color="#80D50000" />
+                <item android:offset="1.0" android:color="#00000000" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M96,40m-12,0a12,12 0 1,0 24,0a12,12 0 1,0 -24,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="96"
+                android:startY="28"
+                android:endX="96"
+                android:endY="52"
+                android:type="radial"
+                android:gradientRadius="12">
+                <item android:offset="0.0" android:color="#FF00E5FF" />
+                <item android:offset="0.6" android:color="#802979FF" />
+                <item android:offset="1.0" android:color="#00000000" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- ==================== POLICE UNIFORM & TORSO ==================== -->
+    <path
+        android:pathData="M28,88 C32,80 42,78 60,78 C78,78 88,80 92,88 L96,118 L24,118 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="78"
+                android:endX="60"
+                android:endY="118"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#1976D2" />
+                <item android:offset="0.3" android:color="#0D47A1" />
+                <item android:offset="1.0" android:color="#061A3A" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Tactical Vest Front Layer -->
+    <path
+        android:pathData="M37,84 L49,84 L51,118 L35,118 Z"
+        android:fillColor="#0A1D3C" />
+    <path
+        android:pathData="M83,84 L71,84 L69,118 L85,118 Z"
+        android:fillColor="#0A1D3C" />
+
+    <!-- Vest Buckles -->
+    <path
+        android:pathData="M38,89h8v4h-8z M74,89h8v4h-8z"
+        android:fillColor="#78909C" />
+
+    <!-- Shirt Collar (Light Blue) -->
+    <path
+        android:pathData="M48,79 L60,86 L46,88 Z"
+        android:fillColor="#29B6F6" />
+    <path
+        android:pathData="M72,79 L60,86 L74,88 Z"
+        android:fillColor="#0288D1" />
+
+    <!-- Navy Necktie -->
+    <path
+        android:pathData="M57,85 L63,85 L65,106 L60,111 L55,106 Z"
+        android:fillColor="#06162D" />
+
+    <!-- Radio on Chest -->
+    <path
+        android:pathData="M76,90 L84,90 L84,106 L76,106 Z"
+        android:fillColor="#212121" />
+    <path
+        android:pathData="M81,84 L83,84 L83,90 L81,90 Z"
+        android:fillColor="#424242" />
+
+    <!-- Gold Police Shield Badge -->
+    <path
+        android:pathData="M56,96 L64,96 L64,104 C64,108 60,112 60,112 C60,112 56,108 56,104 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="56"
+                android:startY="96"
+                android:endX="64"
+                android:endY="112"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFF9C4" />
+                <item android:offset="0.4" android:color="#FFD54F" />
+                <item android:offset="1.0" android:color="#FF8F00" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Badge Center Star -->
+    <path
+        android:pathData="M60,99 L61,101 L63,101 L61.5,102.5 L62,104.5 L60,103 L58,104.5 L58.5,102.5 L57,101 L59,101 Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Left Arm Sleeve Crest Patch -->
+    <path
+        android:pathData="M87,97m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"
+        android:fillColor="#FFD54F" />
+    <path
+        android:pathData="M87,97m-4.5,0a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0"
+        android:fillColor="#0D47A1" />
+    <path
+        android:pathData="M87,95 L88,97 L90,97 L88.5,98.5 L89,100 L87,99 L85,100 L85.5,98.5 L84,97 L86,97 Z"
+        android:fillColor="#FFD54F" />
+
+    <!-- ==================== NECK & EARS ==================== -->
+    <path
+        android:pathData="M54,72 L66,72 L66,82 L54,82 Z"
+        android:fillColor="#FFA88B" />
+
+    <!-- Left Ear (Viewer's Right) -->
+    <path
+        android:pathData="M80,56 C84,56 88,60 87,66 C86,72 82,74 79,72 Z"
+        android:fillColor="#FFBBA7" />
+    <path
+        android:pathData="M81,59 C83,59 85,61 84,65 C83,68 81,69 80,68 Z"
+        android:fillColor="#FFA88B" />
+
+    <!-- Right Ear (Viewer's Left) -->
+    <path
+        android:pathData="M40,56 C36,56 32,60 33,66 C34,72 38,74 41,72 Z"
+        android:fillColor="#FFBBA7" />
+    <path
+        android:pathData="M39,59 C37,59 35,61 36,65 C37,68 39,69 40,68 Z"
+        android:fillColor="#FFA88B" />
+
+    <!-- ==================== FACE & HEAD ==================== -->
+    <path
+        android:pathData="M37,48 C37,34 83,34 83,48 C83,65 80,76 60,76 C40,76 37,65 37,48 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="36"
+                android:endX="60"
+                android:endY="76"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFE8DF" />
+                <item android:offset="0.5" android:color="#FFCCBC" />
+                <item android:offset="1.0" android:color="#FFA88B" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Cheeks -->
+    <path
+        android:pathData="M41,61m-4.5,0a4.5,3 0 1,0 9,0a4.5,3 0 1,0 -9,0"
+        android:fillColor="#FF8A80"
+        android:fillAlpha="0.6" />
+    <path
+        android:pathData="M79,61m-4.5,0a4.5,3 0 1,0 9,0a4.5,3 0 1,0 -9,0"
+        android:fillColor="#FF8A80"
+        android:fillAlpha="0.6" />
+
+    <!-- ==================== EYES ==================== -->
+    <!-- Left Eye White -->
+    <path
+        android:pathData="M45,55m-6,0a6,7 0 1,0 12,0a6,7 0 1,0 -12,0"
+        android:fillColor="#FFFFFF" />
+    <!-- Left Eye Iris (Warm Deep Brown) -->
+    <path
+        android:pathData="M45.5,55m-4.6,0a4.6,5.5 0 1,0 9.2,0a4.6,5.5 0 1,0 -9.2,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="45.5"
+                android:startY="49"
+                android:endX="45.5"
+                android:endY="60"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#3E2723" />
+                <item android:offset="0.6" android:color="#5D4037" />
+                <item android:offset="1.0" android:color="#8D6E63" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M45.5,55.5m-2.8,0a2.8,3.3 0 1,0 5.6,0a2.8,3.3 0 1,0 -5.6,0"
+        android:fillColor="#150905" />
+    <path
+        android:pathData="M44,53m-1.7,0a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M47,57m-0.9,0a0.9,0.9 0 1,0 1.8,0a0.9,0.9 0 1,0 -1.8,0"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Right Eye White -->
+    <path
+        android:pathData="M75,55m-6,0a6,7 0 1,0 12,0a6,7 0 1,0 -12,0"
+        android:fillColor="#FFFFFF" />
+    <!-- Right Eye Iris -->
+    <path
+        android:pathData="M74.5,55m-4.6,0a4.6,5.5 0 1,0 9.2,0a4.6,5.5 0 1,0 -9.2,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="74.5"
+                android:startY="49"
+                android:endX="74.5"
+                android:endY="60"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#3E2723" />
+                <item android:offset="0.6" android:color="#5D4037" />
+                <item android:offset="1.0" android:color="#8D6E63" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M74.5,55.5m-2.8,0a2.8,3.3 0 1,0 5.6,0a2.8,3.3 0 1,0 -5.6,0"
+        android:fillColor="#150905" />
+    <path
+        android:pathData="M73,53m-1.7,0a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M76,57m-0.9,0a0.9,0.9 0 1,0 1.8,0a0.9,0.9 0 1,0 -1.8,0"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Eyebrows -->
+    <path
+        android:pathData="M38,47 C41,44 49,45 51,48"
+        android:strokeColor="#4E342E"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M69,48 C71,45 79,44 82,47"
+        android:strokeColor="#4E342E"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round" />
+
+    <!-- Button Nose -->
+    <path
+        android:pathData="M60,58 C58,59 62,59 60,60"
+        android:strokeColor="#E57373"
+        android:strokeWidth="2.0"
+        android:strokeLineCap="round" />
+
+    <!-- Cheerful Big Smile with White Teeth -->
+    <path
+        android:pathData="M50,64 C50,72 70,72 70,64 Z"
+        android:fillColor="#C62828" />
+    <path
+        android:pathData="M51.5,64 C54.5,66.5 65.5,66.5 68.5,64 Z"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M56,69 C58,71 62,71 64,69 Z"
+        android:fillColor="#FF8A80" />
+
+    <!-- ==================== BROWN HAIR TUFTS ==================== -->
+    <path
+        android:pathData="M31,43 C35,37 42,41 44,48 C39,50 33,50 31,43 Z"
+        android:fillColor="#5D4037" />
+    <path
+        android:pathData="M44,41 C48,37 55,39 57,44 C51,45 47,44 44,41 Z"
+        android:fillColor="#6D4C41" />
+    <path
+        android:pathData="M63,41 C67,37 74,39 76,44 C70,45 66,44 63,41 Z"
+        android:fillColor="#6D4C41" />
+    <path
+        android:pathData="M76,43 C80,37 87,41 89,48 C84,50 78,50 76,43 Z"
+        android:fillColor="#5D4037" />
+
+    <!-- ==================== POLICE CAP ==================== -->
+    <!-- Cap Crown -->
+    <path
+        android:pathData="M60,6 C38,6 27,21 26,32 C30,37 90,37 94,32 C93,21 82,6 60,6 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="6"
+                android:endX="60"
+                android:endY="37"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#2196F3" />
+                <item android:offset="0.3" android:color="#1565C0" />
+                <item android:offset="0.75" android:color="#0D47A1" />
+                <item android:offset="1.0" android:color="#061B3B" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Cap Band (Glossy Black) -->
+    <path
+        android:pathData="M28,30 C40,32 80,32 92,30 L93,37 C82,39 38,39 27,37 Z"
+        android:fillColor="#111111" />
+
+    <!-- Cap Visor -->
+    <path
+        android:pathData="M26,34 C37,43 83,43 94,34 C85,43 35,43 26,34 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="34"
+                android:endX="60"
+                android:endY="43"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#424242" />
+                <item android:offset="0.5" android:color="#212121" />
+                <item android:offset="1.0" android:color="#000000" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Visor Gloss Reflection -->
+    <path
+        android:pathData="M35,37 C46,41 74,41 85,37"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.2"
+        android:strokeAlpha="0.6" />
+
+    <!-- Gold Side Buttons -->
+    <path
+        android:pathData="M28,33m-2.2,0a2.2,2.2 0 1,0 4.4,0a2.2,2.2 0 1,0 -4.4,0"
+        android:fillColor="#FFD54F" />
+    <path
+        android:pathData="M92,33m-2.2,0a2.2,2.2 0 1,0 4.4,0a2.2,2.2 0 1,0 -4.4,0"
+        android:fillColor="#FFD54F" />
+
+    <!-- 3D Gold Police Shield Badge on Cap -->
+    <path
+        android:pathData="M60,8 L73,15 L72,26 C72,33 60,39 60,39 C60,39 48,33 48,26 L47,15 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="47"
+                android:startY="8"
+                android:endX="73"
+                android:endY="39"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFDE7" />
+                <item android:offset="0.2" android:color="#FFEE58" />
+                <item android:offset="0.6" android:color="#FFB300" />
+                <item android:offset="1.0" android:color="#E65100" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Shield Inner Plate (Blue Inset) -->
+    <path
+        android:pathData="M60,11 L70,17 L69,25 C69,29 60,35 60,35 C60,35 51,29 51,25 L50,17 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="11"
+                android:endX="60"
+                android:endY="35"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#1976D2" />
+                <item android:offset="1.0" android:color="#0D47A1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 3D Gold Star on Cap Shield -->
+    <path
+        android:pathData="M60,14 L62,20 L68,20 L63.5,23.5 L65,29 L60,25.5 L55,29 L56.5,23.5 L52,20 L58,20 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="52"
+                android:startY="14"
+                android:endX="68"
+                android:endY="29"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFFFF" />
+                <item android:offset="0.3" android:color="#FFF59D" />
+                <item android:offset="0.7" android:color="#FFC107" />
+                <item android:offset="1.0" android:color="#FF8F00" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- ==================== SALUTING HAND ==================== -->
+    <path
+        android:pathData="M13,76 C15,63 20,54 29,50 L35,56 C29,63 24,72 22,82 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="13"
+                android:startY="50"
+                android:endX="35"
+                android:endY="82"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#1E88E5" />
+                <item android:offset="0.5" android:color="#1565C0" />
+                <item android:offset="1.0" android:color="#0D47A1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Gold Epaulet -->
+    <path
+        android:pathData="M27,76 L29,80 L26,79 L23,81 L24,77 Z"
+        android:fillColor="#FFD54F" />
+
+    <!-- Hand & Fingers Saluting -->
+    <path
+        android:pathData="M28,50 C29,43 38,41 41,44 L39,52 L30,53 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="28"
+                android:startY="41"
+                android:endX="41"
+                android:endY="53"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFE8DF" />
+                <item android:offset="0.6" android:color="#FFCCBC" />
+                <item android:offset="1.0" android:color="#FFA88B" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

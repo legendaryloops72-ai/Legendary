@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Green Circle Base -->
+    <path
+        android:pathData="M48,48m-44,0a44,44 0 1,0 88,0a44,44 0 1,0 -88,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="48"
+                android:startY="4"
+                android:endX="48"
+                android:endY="92"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#43A047" />
+                <item android:offset="0.5" android:color="#2E7D32" />
+                <item android:offset="1.0" android:color="#1B5E20" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Gold Border Ring -->
+    <path
+        android:pathData="M48,48m-43,0a43,43 0 1,0 86,0a43,43 0 1,0 -86,0"
+        android:strokeColor="#FFD54F"
+        android:strokeWidth="2.5" />
+
+    <!-- Game Controller Body -->
+    <path
+        android:pathData="M24,40 C24,32 72,32 72,40 C76,58 78,72 68,74 C60,76 54,62 48,62 C42,62 36,76 28,74 C18,72 20,58 24,40 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="48"
+                android:startY="32"
+                android:endX="48"
+                android:endY="74"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#ECEFF1" />
+                <item android:offset="0.5" android:color="#CFD8DC" />
+                <item android:offset="1.0" android:color="#90A4AE" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- D-Pad Left -->
+    <path
+        android:pathData="M31,48h10v4h-10z M34,45h4v10h-4z"
+        android:fillColor="#0D47A1" />
+
+    <!-- Action Buttons Right -->
+    <path
+        android:pathData="M64,46m-2.5,0a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#E53935" />
+    <path
+        android:pathData="M59,51m-2.5,0a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#FFB300" />
+    <path
+        android:pathData="M69,51m-2.5,0a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#00C853" />
+    <path
+        android:pathData="M64,56m-2.5,0a2.5,2.5 0 1,0 5,0a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#1E88E5" />
+
+    <!-- Center Badge -->
+    <path
+        android:pathData="M48,46m-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0"
+        android:fillColor="#FFD54F" />
+</vector>

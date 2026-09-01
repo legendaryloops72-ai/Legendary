@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Red Circle Base -->
+    <path
+        android:pathData="M48,48m-44,0a44,44 0 1,0 88,0a44,44 0 1,0 -88,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="48"
+                android:startY="4"
+                android:endX="48"
+                android:endY="92"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF5252" />
+                <item android:offset="0.5" android:color="#E53935" />
+                <item android:offset="1.0" android:color="#B71C1C" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Gold Border Ring -->
+    <path
+        android:pathData="M48,48m-43,0a43,43 0 1,0 86,0a43,43 0 1,0 -86,0"
+        android:strokeColor="#FFD54F"
+        android:strokeWidth="2.5" />
+
+    <!-- Sound waves -->
+    <path
+        android:pathData="M24,48 C24,34 32,24 40,24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M72,48 C72,34 64,24 56,24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round" />
+
+    <!-- Siren Beacon Mount -->
+    <path
+        android:pathData="M32,68 L64,68 L60,78 L36,78 Z"
+        android:fillColor="#212121" />
+
+    <!-- Siren Dome Top -->
+    <path
+        android:pathData="M36,66 C36,44 60,44 60,66 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="48"
+                android:startY="44"
+                android:endX="48"
+                android:endY="66"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFF9C4" />
+                <item android:offset="0.3" android:color="#FF5252" />
+                <item android:offset="1.0" android:color="#C62828" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Siren Light Reflection -->
+    <path
+        android:pathData="M42,50 C44,48 52,48 54,50"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.0"
+        android:strokeLineCap="round" />
+
+    <!-- Flashing Star on Top -->
+    <path
+        android:pathData="M48,34 L49.5,39 L54.5,39 L50.5,42 L52,47 L48,44 L44,47 L45.5,42 L41.5,39 L46.5,39 Z"
+        android:fillColor="#FFF59D" />
+</vector>

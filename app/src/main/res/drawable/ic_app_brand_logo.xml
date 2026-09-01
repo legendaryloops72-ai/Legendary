@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+
+    <!-- Police Badge Shield Frame -->
+    <path
+        android:pathData="M36,4 L62,14 L60,38 C60,52 36,66 36,66 C36,66 12,52 12,38 L10,14 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="36"
+                android:startY="4"
+                android:endX="36"
+                android:endY="66"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFF9C4" />
+                <item android:offset="0.3" android:color="#FFD54F" />
+                <item android:offset="0.8" android:color="#FFB300" />
+                <item android:offset="1.0" android:color="#E65100" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner Blue Shield -->
+    <path
+        android:pathData="M36,9 L56,17 L54,36 C54,48 36,60 36,60 C36,60 18,48 18,36 L16,17 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="36"
+                android:startY="9"
+                android:endX="36"
+                android:endY="60"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#1976D2" />
+                <item android:offset="0.5" android:color="#0D47A1" />
+                <item android:offset="1.0" android:color="#061B3B" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Gold Center Star -->
+    <path
+        android:pathData="M36,18 L39,26 L48,26 L41,31 L44,39 L36,34 L28,39 L31,31 L24,26 L33,26 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="36"
+                android:startY="18"
+                android:endX="36"
+                android:endY="39"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFFFF" />
+                <item android:offset="0.4" android:color="#FFF59D" />
+                <item android:offset="1.0" android:color="#FFB300" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Olive Wreath Laurel Leaves at Bottom -->
+    <path
+        android:pathData="M24,46 C28,50 36,53 36,53 C36,53 44,50 48,46"
+        android:strokeColor="#FFD54F"
+        android:strokeWidth="2.0"
+        android:strokeLineCap="round" />
+</vector>

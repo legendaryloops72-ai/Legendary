@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Purple Circle Base -->
+    <path
+        android:pathData="M48,48m-44,0a44,44 0 1,0 88,0a44,44 0 1,0 -88,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="48"
+                android:startY="4"
+                android:endX="48"
+                android:endY="92"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#AB47BC" />
+                <item android:offset="0.5" android:color="#7B1FA2" />
+                <item android:offset="1.0" android:color="#4A148C" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Gold Border Ring -->
+    <path
+        android:pathData="M48,48m-43,0a43,43 0 1,0 86,0a43,43 0 1,0 -86,0"
+        android:strokeColor="#FFD54F"
+        android:strokeWidth="2.5" />
+
+    <!-- Open Book Cover Behind -->
+    <path
+        android:pathData="M22,66 L48,72 L74,66 L72,36 L48,40 L24,36 Z"
+        android:fillColor="#311B92" />
+
+    <!-- Open Book Pages Left -->
+    <path
+        android:pathData="M24,38 L48,42 L48,68 L24,64 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="24"
+                android:startY="38"
+                android:endX="48"
+                android:endY="68"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFFFF" />
+                <item android:offset="1.0" android:color="#ECEFF1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Open Book Pages Right -->
+    <path
+        android:pathData="M48,42 L72,38 L72,64 L48,68 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="48"
+                android:startY="42"
+                android:endX="72"
+                android:endY="68"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#ECEFF1" />
+                <item android:offset="1.0" android:color="#FFFFFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Lines on Left Page -->
+    <path
+        android:pathData="M28,45h14v2h-14z M28,50h14v2h-14z M28,55h14v2h-14z"
+        android:fillColor="#90CAF9" />
+
+    <!-- Gold Police Shield on Right Page -->
+    <path
+        android:pathData="M56,46 L64,46 L64,52 C64,55 60,58 60,58 C60,58 56,55 56,52 Z"
+        android:fillColor="#FFD54F" />
+
+    <!-- Floating Magic Star Above Book -->
+    <path
+        android:pathData="M48,22 L49.5,27 L54.5,27 L50.5,30 L52,35 L48,32 L44,35 L45.5,30 L41.5,27 L46.5,27 Z"
+        android:fillColor="#FFF59D" />
+</vector>

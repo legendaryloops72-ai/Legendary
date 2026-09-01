@@ -1,0 +1,87 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Circular Background with Golden Highlight -->
+    <path
+        android:pathData="M100,100m-95,0a95,95 0,1,1 190,0a95,95 0,1,1 -190,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="100"
+                android:startY="5"
+                android:endX="100"
+                android:endY="195"
+                android:type="linear">
+                <item android:offset="0" android:color="#FF64B5F6" />
+                <item android:offset="0.4" android:color="#FF1E88E5" />
+                <item android:offset="1" android:color="#FF0D47A1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Ground / Turntable Platform -->
+    <path
+        android:pathData="M20,135 Q100,115 180,135 L180,195 L20,195 Z"
+        android:fillColor="#FF071E42" />
+    <path
+        android:pathData="M100,150m-70,0a70,16 0,1,0 140,0a70,16 0,1,0 -140,0"
+        android:fillColor="#FF0D47A1" />
+    <path
+        android:pathData="M100,150m-62,0a62,12 0,1,0 124,0a62,12 0,1,0 -124,0"
+        android:fillColor="#FFFFD54F" />
+    <!-- Police Sedan Cruiser Body -->
+    <path
+        android:pathData="M40,140 L45,124 L72,106 L128,106 L155,124 L160,140 Z"
+        android:fillColor="#FF212121" />
+    <!-- White Doors & Roof -->
+    <path
+        android:pathData="M65,108 L135,108 L130,126 L70,126 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- Windshield -->
+    <path
+        android:pathData="M72,110 L128,110 L124,122 L76,122 Z"
+        android:fillColor="#FFB3E5FC" />
+    <!-- Wheels -->
+    <path
+        android:pathData="M50,144m-12,0a12,12 0,1,0 24,0a12,12 0,1,0 -24,0"
+        android:fillColor="#FF000000" />
+    <path
+        android:pathData="M50,144m-6,0a6,6 0,1,0 12,0a6,6 0,1,0 -12,0"
+        android:fillColor="#FFE0E0E0" />
+    <path
+        android:pathData="M150,144m-12,0a12,12 0,1,0 24,0a12,12 0,1,0 -24,0"
+        android:fillColor="#FF000000" />
+    <path
+        android:pathData="M150,144m-6,0a6,6 0,1,0 12,0a6,6 0,1,0 -12,0"
+        android:fillColor="#FFE0E0E0" />
+    <!-- Front Grill -->
+    <path
+        android:pathData="M78,130 L122,130 L118,142 L82,142 Z"
+        android:fillColor="#FF424242" />
+    <path
+        android:pathData="M54,128 L68,128 L66,136 L56,136 Z"
+        android:fillColor="#FFFFEB3B" />
+    <path
+        android:pathData="M132,128 L146,128 L144,136 L134,136 Z"
+        android:fillColor="#FFFFEB3B" />
+    <!-- Siren Lightbar on Top (Red/Blue) -->
+    <path
+        android:pathData="M82,98 L98,98 L98,106 L82,106 Z"
+        android:fillColor="#FFFF1744" />
+    <path
+        android:pathData="M102,98 L118,98 L118,106 L102,106 Z"
+        android:fillColor="#FF2979FF" />
+    <path
+        android:pathData="M98,100 L102,100 L102,106 L98,106 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- Police Text/Decal -->
+    <path
+        android:pathData="M95,126 L105,126 L100,132 Z"
+        android:fillColor="#FFFFD700" />
+    <!-- Outer Glow Ring -->
+    <path
+        android:pathData="M100,100m-92,0a92,92 0,1,1 184,0a92,92 0,1,1 -184,0"
+        android:strokeWidth="5"
+        android:strokeColor="#FFFFD54F" />
+</vector>

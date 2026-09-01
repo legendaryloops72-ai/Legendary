@@ -12,8 +12,6 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-import android.util.Base64
-import com.aistudio.kidspolice.abcd.BuildConfig
 import com.aistudio.kidspolice.abcd.data.Dialect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
-import java.security.MessageDigest
 import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.sin
@@ -458,126 +451,6 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
         header[43] = ((dataSize shr 24) and 0xff).toByte()
 
         return header + pcmData
-    }
-
-    private fun getCachedAudioFile(text: String, dialect: Dialect): File {
-        val hash = md5("${dialect.name}_$text")
-        return File(context.cacheDir, "gemini_tts_v2_$hash.mp3")
-    }
-
-    private fun md5(input: String): String {
-        val bytes = MessageDigest.getInstance("MD5").digest(input.toByteArray())
-        return bytes.joinToString("") { "%02x".format(it) }
-    }
-
-    private fun getApiKey(): String? {
-        return try {
-            val field = BuildConfig::class.java.getField("GEMINI_API_KEY")
-            field.get(null) as? String
-        } catch (_: Exception) {
-            null
-        }
-    }
-
-    private suspend fun generateAndCacheGeminiAudio(text: String, dialect: Dialect, apiKey: String, outputFile: File): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val modelName = "gemini-3.1-flash-tts-preview"
-                val urlStr = "https://generativelanguage.googleapis.com/v1beta/models/$modelName:generateContent?key=$apiKey"
-                val url = URL(urlStr)
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "POST"
-                conn.setRequestProperty("Content-Type", "application/json")
-                conn.doOutput = true
-                conn.connectTimeout = 10000
-                conn.readTimeout = 15000
-
-                val prompt = "أنت ضابط شرطة ودود ومحب للأطفال وبطريقة دافئة وطبيعية باللغة العربية (${dialect.displayName}). انطق النص التالي بوضوح وبدون عجلة: $text"
-                val jsonBody = JSONObject().apply {
-                    put("contents", JSONArray().put(
-                        JSONObject().put("parts", JSONArray().put(
-                            JSONObject().put("text", prompt)
-                        ))
-                    ))
-                    put("generationConfig", JSONObject().apply {
-                        put("responseModalities", JSONArray().put("AUDIO"))
-                        put("speechConfig", JSONObject().apply {
-                            put("voiceConfig", JSONObject().apply {
-                                put("prebuiltVoiceConfig", JSONObject().apply {
-                                    put("voiceName", "Puck")
-                                })
-                            })
-                        })
-                    })
-                }
-
-                conn.outputStream.use { os ->
-                    os.write(jsonBody.toString().toByteArray(Charsets.UTF_8))
-                }
-
-                val responseCode = conn.responseCode
-                if (responseCode == 200) {
-                    val responseStr = conn.inputStream.bufferedReader().use { it.readText() }
-                    android.util.Log.d("PoliceAudioPlayer", "GEMINI_TTS_RESPONSE_RECEIVED: length = ${responseStr.length}")
-                    val jsonResp = JSONObject(responseStr)
-                    val candidates = jsonResp.optJSONArray("candidates")
-                    if (candidates != null && candidates.length() > 0) {
-                        val content = candidates.getJSONObject(0).optJSONObject("content")
-                        val parts = content?.optJSONArray("parts")
-                        if (parts != null && parts.length() > 0) {
-                            for (i in 0 until parts.length()) {
-                                val part = parts.getJSONObject(i)
-                                val inlineData = part.optJSONObject("inlineData") ?: part.optJSONObject("inline_data")
-                                if (inlineData != null) {
-                                    val base64Data = inlineData.optString("data")
-                                    if (base64Data.isNotBlank()) {
-                                        val audioBytes = Base64.decode(base64Data, Base64.DEFAULT)
-                                        android.util.Log.d("PoliceAudioPlayer", "GEMINI_TTS_AUDIO_BYTES_RECEIVED: ${audioBytes.size} bytes")
-                                        outputFile.writeBytes(audioBytes)
-                                        return@withContext true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR: Response 200 received but no audio inlineData found in response.")
-                } else {
-                    val errorStr = try {
-                        conn.errorStream?.bufferedReader()?.use { it.readText() } ?: "Unknown error"
-                    } catch (_: Exception) {
-                        "Could not read error stream"
-                    }
-                    android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR HTTP $responseCode: $errorStr")
-                }
-                false
-            } catch (e: Exception) {
-                android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR exception in generateAndCacheGeminiAudio: ${e.message}", e)
-                false
-            }
-        }
-    }
-
-    private fun playAudioFile(file: File) {
-        try {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(file.absolutePath)
-                prepare()
-                setOnCompletionListener {
-                    _isSpeaking.value = false
-                    android.util.Log.d("PoliceAudioPlayer", "GEMINI_TTS_PLAYBACK_FINISHED")
-                }
-                setOnErrorListener { _, what, extra ->
-                    _isSpeaking.value = false
-                    android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR: MediaPlayer error what=$what extra=$extra")
-                    true
-                }
-                start()
-            }
-        } catch (e: Exception) {
-            _isSpeaking.value = false
-            android.util.Log.e("PoliceAudioPlayer", "GEMINI_TTS_ERROR playing file: ${e.message}", e)
-        }
     }
 
     private fun fallbackAndroidTts(text: String, dialect: Dialect) {

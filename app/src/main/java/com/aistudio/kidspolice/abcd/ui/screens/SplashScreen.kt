@@ -131,15 +131,15 @@ fun SplashScreen(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFF030712), // Deep Space Black
-                            Color(0xFF0B192C), // Midnight Blue
-                            Color(0xFF1E3A8A), // Royal Police Blue
-                            Color(0xFF020617)  // Deep Navy
+                            Color(0xFF0D47A1), // Deep Vibrant Blue
+                            Color(0xFF1565C0), // Royal Blue
+                            Color(0xFF1E88E5), // Vivid Blue
+                            Color(0xFF0D47A1)  // Deep Blue Base
                         )
                     )
                 )
         ) {
-            // Futuristic AI Radar Background
+            // Futuristic AI Radar / Sky Cloud Canvas Background
             SplashRadarCanvas(
                 rotationAngle = radarRotation,
                 modifier = Modifier.fillMaxSize()
@@ -149,17 +149,18 @@ fun SplashScreen(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(top = 36.dp, start = 16.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF1E293B).copy(alpha = 0.7f))
-                    .border(1.dp, Color(0xFF64748B), RoundedCornerShape(16.dp))
+                    .padding(top = 40.dp, start = 16.dp)
+                    .shadow(6.dp, RoundedCornerShape(18.dp))
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(Color(0xFF1565C0).copy(alpha = 0.85f))
+                    .border(1.5.dp, Color(0xFF64B5F6), RoundedCornerShape(18.dp))
                     .clickable { onSplashFinished() }
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .padding(horizontal = 14.dp, vertical = 7.dp)
             ) {
                 Text(
                     text = "تخطي ⏩",
-                    color = Color(0xFF94A3B8),
-                    fontSize = 12.sp,
+                    color = Color.White,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -175,19 +176,21 @@ fun SplashScreen(
                 // Top Space / Tag
                 Box(
                     modifier = Modifier
+                        .padding(top = 10.dp)
+                        .shadow(6.dp, RoundedCornerShape(20.dp))
                         .clip(RoundedCornerShape(20.dp))
                         .background(
                             Brush.horizontalGradient(
-                                colors = listOf(Color(0xFF1D4ED8), Color(0xFF0284C7))
+                                colors = listOf(Color(0xFF1976D2), Color(0xFF42A5F5))
                             )
                         )
-                        .border(1.5.dp, Color(0xFF60A5FA), RoundedCornerShape(20.dp))
-                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                        .border(2.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(20.dp))
+                        .padding(horizontal = 18.dp, vertical = 7.dp)
                 ) {
                     Text(
                         text = "🛡️ نظام شرطة الأطفال الذكي 🤖",
-                        color = Color(0xFFFDE047),
-                        fontSize = 13.sp,
+                        color = Color(0xFFFFF9C4),
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Black
                     )
                 }
@@ -199,38 +202,38 @@ fun SplashScreen(
                 ) {
                     // Twin Emergency Flashing Beacons
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(32.dp)
+                                .shadow(12.dp, CircleShape)
                                 .clip(CircleShape)
-                                .background(Color(0xFFEF4444).copy(alpha = beaconPulse))
-                                .border(2.dp, Color(0xFFFCA5A5), CircleShape)
-                                .shadow(8.dp, CircleShape)
+                                .background(Color(0xFFE53935).copy(alpha = beaconPulse))
+                                .border(2.5.dp, Color(0xFFFFCDD2), CircleShape)
                         )
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(32.dp)
+                                .shadow(12.dp, CircleShape)
                                 .clip(CircleShape)
-                                .background(Color(0xFF38BDF8).copy(alpha = 1.4f - beaconPulse))
-                                .border(2.dp, Color(0xFFBAE6FD), CircleShape)
-                                .shadow(8.dp, CircleShape)
+                                .background(Color(0xFF00B0FF).copy(alpha = 1.4f - beaconPulse))
+                                .border(2.5.dp, Color(0xFFE1F5FE), CircleShape)
                         )
                     }
 
                     Spacer(modifier = Modifier.height(14.dp))
 
-                    // 3D Police Shield Crest Art
-                    SplashBadgeHeroCanvas(modifier = Modifier.size(160.dp))
+                    // 3D Police Shield Crest Art with Officer Cap
+                    SplashBadgeHeroCanvas(modifier = Modifier.size(175.dp))
 
-                    Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         text = "شرطة الأطفال",
-                        color = Color(0xFFFACC15),
-                        fontSize = 32.sp,
+                        color = Color(0xFFFFD54F),
+                        fontSize = 34.sp,
                         fontWeight = FontWeight.Black,
                         textAlign = TextAlign.Center
                     )
@@ -239,9 +242,9 @@ fun SplashScreen(
 
                     Text(
                         text = "مغامرات، نداءات، وتدريب الأبطال الصغار",
-                        color = Color(0xFFE2E8F0),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
+                        color = Color.White,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -254,8 +257,8 @@ fun SplashScreen(
                     // Status text
                     Text(
                         text = statusText,
-                        color = Color(0xFF38BDF8),
-                        fontSize = 13.sp,
+                        color = Color(0xFFE0F7FA),
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
@@ -266,22 +269,23 @@ fun SplashScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(16.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFF0F172A))
-                            .border(1.5.dp, Color(0xFF1E3A8A), RoundedCornerShape(10.dp))
+                            .height(18.dp)
+                            .shadow(6.dp, RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFF082759))
+                            .border(2.dp, Color(0xFF64B5F6), RoundedCornerShape(12.dp))
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth(animatedProgress)
-                                .height(16.dp)
-                                .clip(RoundedCornerShape(10.dp))
+                                .height(18.dp)
+                                .clip(RoundedCornerShape(12.dp))
                                 .background(
                                     Brush.horizontalGradient(
                                         colors = listOf(
-                                            Color(0xFF2563EB),
-                                            Color(0xFF38BDF8),
-                                            Color(0xFFFACC15)
+                                            Color(0xFF1E88E5),
+                                            Color(0xFF00E5FF),
+                                            Color(0xFFFFD600)
                                         )
                                     )
                                 )
@@ -296,13 +300,14 @@ fun SplashScreen(
                     ) {
                         Text(
                             text = "الإصدار 3.0 الذكي",
-                            color = Color(0xFF64748B),
-                            fontSize = 11.sp
+                            color = Color(0xFFB0BEC5),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${(animatedProgress * 100).toInt()}%",
-                            color = Color(0xFFFDE047),
-                            fontSize = 12.sp,
+                            color = Color(0xFFFFD54F),
+                            fontSize = 13.sp,
                             fontWeight = FontWeight.Black
                         )
                     }
@@ -323,19 +328,19 @@ private fun SplashRadarCanvas(
 
         // Radar grid circles
         drawCircle(
-            color = Color(0xFF38BDF8).copy(alpha = 0.08f),
+            color = Color(0xFF64B5F6).copy(alpha = 0.15f),
             radius = 120.dp.toPx(),
             center = Offset(cx, cy),
             style = Stroke(width = 1.5.dp.toPx())
         )
         drawCircle(
-            color = Color(0xFF38BDF8).copy(alpha = 0.06f),
+            color = Color(0xFF64B5F6).copy(alpha = 0.10f),
             radius = 180.dp.toPx(),
             center = Offset(cx, cy),
             style = Stroke(width = 1.5.dp.toPx())
         )
         drawCircle(
-            color = Color(0xFF38BDF8).copy(alpha = 0.04f),
+            color = Color(0xFF64B5F6).copy(alpha = 0.08f),
             radius = 240.dp.toPx(),
             center = Offset(cx, cy),
             style = Stroke(width = 1.5.dp.toPx())
@@ -349,13 +354,13 @@ private fun SplashRadarCanvas(
 
         drawLine(
             brush = Brush.linearGradient(
-                colors = listOf(Color(0xFF38BDF8).copy(alpha = 0.5f), Color.Transparent),
+                colors = listOf(Color(0xFF80D8FF).copy(alpha = 0.6f), Color.Transparent),
                 start = Offset(cx, cy),
                 end = Offset(endX, endY)
             ),
             start = Offset(cx, cy),
             end = Offset(endX, endY),
-            strokeWidth = 2.5.dp.toPx(),
+            strokeWidth = 3.dp.toPx(),
             cap = StrokeCap.Round
         )
     }
@@ -372,53 +377,116 @@ private fun SplashBadgeHeroCanvas(modifier: Modifier = Modifier) {
         // Outer Glow Aura
         drawCircle(
             brush = Brush.radialGradient(
-                colors = listOf(Color(0xFF2563EB).copy(alpha = 0.4f), Color.Transparent),
+                colors = listOf(Color(0xFF42A5F5).copy(alpha = 0.5f), Color.Transparent),
                 center = Offset(cx, cy),
-                radius = w * 0.55f
+                radius = w * 0.58f
             ),
             center = Offset(cx, cy),
-            radius = w * 0.55f
+            radius = w * 0.58f
         )
 
-        // Shield Outer Frame (Gold Gradient)
+        // Shield Outer Frame (Gold 3D Gradient)
         val outerShield = Path().apply {
-            moveTo(cx, h * 0.08f)
-            lineTo(w * 0.88f, h * 0.24f)
-            lineTo(w * 0.88f, h * 0.62f)
-            cubicTo(w * 0.88f, h * 0.82f, cx, h * 0.96f, cx, h * 0.96f)
-            cubicTo(cx, h * 0.96f, w * 0.12f, h * 0.82f, w * 0.12f, h * 0.62f)
-            lineTo(w * 0.12f, h * 0.24f)
+            moveTo(cx, h * 0.12f)
+            lineTo(w * 0.90f, h * 0.28f)
+            lineTo(w * 0.90f, h * 0.64f)
+            cubicTo(w * 0.90f, h * 0.84f, cx, h * 0.98f, cx, h * 0.98f)
+            cubicTo(cx, h * 0.98f, w * 0.10f, h * 0.84f, w * 0.10f, h * 0.64f)
+            lineTo(w * 0.10f, h * 0.28f)
             close()
         }
         drawPath(
             path = outerShield,
             brush = Brush.verticalGradient(
-                colors = listOf(Color(0xFFFDE047), Color(0xFFF59E0B), Color(0xFFB45309))
+                colors = listOf(Color(0xFFFFF59D), Color(0xFFFFD54F), Color(0xFFFF8F00), Color(0xFFC62828))
             )
         )
 
-        // Shield Inner Plate (Deep Navy)
+        // Shield Inner Plate (Deep Royal Blue)
         val innerShield = Path().apply {
-            moveTo(cx, h * 0.15f)
-            lineTo(w * 0.80f, h * 0.28f)
-            lineTo(w * 0.80f, h * 0.60f)
-            cubicTo(w * 0.80f, h * 0.77f, cx, h * 0.89f, cx, h * 0.89f)
-            cubicTo(cx, h * 0.89f, w * 0.20f, h * 0.77f, w * 0.20f, h * 0.60f)
-            lineTo(w * 0.20f, h * 0.28f)
+            moveTo(cx, h * 0.18f)
+            lineTo(w * 0.82f, h * 0.32f)
+            lineTo(w * 0.82f, h * 0.62f)
+            cubicTo(w * 0.82f, h * 0.79f, cx, h * 0.91f, cx, h * 0.91f)
+            cubicTo(cx, h * 0.91f, w * 0.18f, h * 0.79f, w * 0.18f, h * 0.62f)
+            lineTo(w * 0.18f, h * 0.32f)
             close()
         }
         drawPath(
             path = innerShield,
             brush = Brush.verticalGradient(
-                colors = listOf(Color(0xFF1E3A8A), Color(0xFF0F172A), Color(0xFF020617))
+                colors = listOf(Color(0xFF1E88E5), Color(0xFF0D47A1), Color(0xFF071E4A))
             )
         )
 
-        // Large 5-Point Star in the Center
+        // Top Left Red Beacon Glow
+        drawArc(
+            brush = Brush.linearGradient(
+                colors = listOf(Color(0xFFFF8A80), Color(0xFFE53935))
+            ),
+            startAngle = 180f,
+            sweepAngle = 90f,
+            useCenter = true,
+            topLeft = Offset(w * 0.20f, h * 0.20f),
+            size = Size(w * 0.25f, h * 0.18f)
+        )
+
+        // Top Right Blue Beacon Glow
+        drawArc(
+            brush = Brush.linearGradient(
+                colors = listOf(Color(0xFF80D8FF), Color(0xFF00B0FF))
+            ),
+            startAngle = 270f,
+            sweepAngle = 90f,
+            useCenter = true,
+            topLeft = Offset(w * 0.55f, h * 0.20f),
+            size = Size(w * 0.25f, h * 0.18f)
+        )
+
+        // 3D Police Cap on Top
+        val capCrown = Path().apply {
+            moveTo(cx, h * 0.08f)
+            cubicTo(w * 0.30f, h * 0.08f, w * 0.24f, h * 0.22f, w * 0.24f, h * 0.30f)
+            cubicTo(w * 0.24f, h * 0.36f, w * 0.32f, h * 0.38f, cx, h * 0.38f)
+            cubicTo(w * 0.68f, h * 0.38f, w * 0.76f, h * 0.36f, w * 0.76f, h * 0.30f)
+            cubicTo(w * 0.76f, h * 0.22f, w * 0.70f, h * 0.08f, cx, h * 0.08f)
+            close()
+        }
+        drawPath(
+            path = capCrown,
+            brush = Brush.verticalGradient(
+                colors = listOf(Color(0xFF1976D2), Color(0xFF0D47A1), Color(0xFF051329))
+            )
+        )
+
+        // Glossy Cap Visor
+        val capVisor = Path().apply {
+            moveTo(w * 0.28f, h * 0.32f)
+            cubicTo(w * 0.32f, h * 0.42f, w * 0.68f, h * 0.42f, w * 0.72f, h * 0.32f)
+            cubicTo(w * 0.66f, h * 0.37f, w * 0.34f, h * 0.37f, w * 0.28f, h * 0.32f)
+            close()
+        }
+        drawPath(
+            path = capVisor,
+            brush = Brush.verticalGradient(
+                colors = listOf(Color(0xFF455A64), Color(0xFF212121), Color(0xFF000000))
+            )
+        )
+
+        // Cap Gold Badge
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(Color(0xFFFFF9C4), Color(0xFFFFD54F), Color(0xFFFFA000))
+            ),
+            radius = w * 0.05f,
+            center = Offset(cx, h * 0.24f)
+        )
+
+        // Large 5-Point Star in the Center (Lower Plate)
         val starPath = Path().apply {
             val starR = w * 0.22f
             val innerR = starR * 0.42f
-            val starCy = cy + h * 0.04f
+            val starCy = h * 0.62f
             for (i in 0 until 10) {
                 val r = if (i % 2 == 0) starR else innerR
                 val angle = Math.toRadians((i * 36 - 90).toDouble())
@@ -431,10 +499,17 @@ private fun SplashBadgeHeroCanvas(modifier: Modifier = Modifier) {
         drawPath(
             path = starPath,
             brush = Brush.radialGradient(
-                colors = listOf(Color(0xFFFEF08A), Color(0xFFFACC15), Color(0xFFCA8A04)),
-                center = Offset(cx, cy + h * 0.04f),
-                radius = w * 0.25f
+                colors = listOf(Color(0xFFFFFDE7), Color(0xFFFFEE58), Color(0xFFFFB300), Color(0xFFE65100)),
+                center = Offset(cx, h * 0.62f),
+                radius = w * 0.24f
             )
+        )
+
+        // Star Specular Highlight
+        drawCircle(
+            color = Color.White.copy(alpha = 0.75f),
+            radius = w * 0.04f,
+            center = Offset(cx - w * 0.04f, h * 0.58f)
         )
     }
 }

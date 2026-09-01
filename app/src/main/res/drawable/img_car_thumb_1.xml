@@ -1,0 +1,87 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Circular Background -->
+    <path
+        android:pathData="M100,100m-95,0a95,95 0,1,1 190,0a95,95 0,1,1 -190,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="100"
+                android:startY="5"
+                android:endX="100"
+                android:endY="195"
+                android:type="linear">
+                <item android:offset="0" android:color="#FF42A5F5" />
+                <item android:offset="0.5" android:color="#FF1976D2" />
+                <item android:offset="1" android:color="#FF0D47A1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Inner Ground / Platform -->
+    <path
+        android:pathData="M20,135 Q100,115 180,135 L180,195 L20,195 Z"
+        android:fillColor="#FF0A2756" />
+    <path
+        android:pathData="M100,148m-70,0a70,16 0,1,0 140,0a70,16 0,1,0 -140,0"
+        android:fillColor="#FF1565C0" />
+    <path
+        android:pathData="M100,148m-62,0a62,12 0,1,0 124,0a62,12 0,1,0 -124,0"
+        android:fillColor="#FF26C6DA" />
+    <!-- Police SUV Body -->
+    <path
+        android:pathData="M45,138 L48,118 L68,102 L132,102 L152,118 L155,138 Z"
+        android:fillColor="#FF1C2833" />
+    <!-- White Side Doors / Roof -->
+    <path
+        android:pathData="M70,104 L130,104 L125,122 L75,122 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- Windshield -->
+    <path
+        android:pathData="M74,106 L126,106 L122,118 L78,118 Z"
+        android:fillColor="#FF81D4FA" />
+    <!-- Wheels -->
+    <path
+        android:pathData="M52,142m-12,0a12,12 0,1,0 24,0a12,12 0,1,0 -24,0"
+        android:fillColor="#FF111111" />
+    <path
+        android:pathData="M52,142m-6,0a6,6 0,1,0 12,0a6,6 0,1,0 -12,0"
+        android:fillColor="#FFB0BEC5" />
+    <path
+        android:pathData="M148,142m-12,0a12,12 0,1,0 24,0a12,12 0,1,0 -24,0"
+        android:fillColor="#FF111111" />
+    <path
+        android:pathData="M148,142m-6,0a6,6 0,1,0 12,0a6,6 0,1,0 -12,0"
+        android:fillColor="#FFB0BEC5" />
+    <!-- Front Grill & Headlights -->
+    <path
+        android:pathData="M80,128 L120,128 L118,138 L82,138 Z"
+        android:fillColor="#FF37474F" />
+    <path
+        android:pathData="M58,126 L72,126 L70,134 L60,134 Z"
+        android:fillColor="#FFFFEE58" />
+    <path
+        android:pathData="M128,126 L142,126 L140,134 L130,134 Z"
+        android:fillColor="#FFFFEE58" />
+    <!-- Red and Blue Flashing Lightbar on Top -->
+    <path
+        android:pathData="M85,95 L98,95 L98,102 L85,102 Z"
+        android:fillColor="#FFFF1744" />
+    <path
+        android:pathData="M102,95 L115,95 L115,102 L102,102 Z"
+        android:fillColor="#FF00E5FF" />
+    <path
+        android:pathData="M98,97 L102,97 L102,102 L98,102 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- Police Badge Decal -->
+    <path
+        android:pathData="M100,122 L104,130 L96,130 Z"
+        android:fillColor="#FFFFD700" />
+    <!-- Outer Glow Ring -->
+    <path
+        android:pathData="M100,100m-92,0a92,92 0,1,1 184,0a92,92 0,1,1 -184,0"
+        android:strokeWidth="4"
+        android:strokeColor="#FF64B5F6" />
+</vector>

@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +22,9 @@ import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import com.google.android.libraries.ads.mobile.sdk.common.RequestConfiguration
 import com.google.android.libraries.ads.mobile.sdk.common.AgeRestrictedTreatment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.aistudio.kidspolice.abcd.audio.PoliceAudioPlayer
 import com.aistudio.kidspolice.abcd.data.DailyMission
 import com.aistudio.kidspolice.abcd.data.Dialect
@@ -53,8 +57,21 @@ class MainActivity : ComponentActivity() {
         appOpenAdManager = AppOpenAdManager(applicationContext)
         interstitialAdManager = InterstitialAdManager(applicationContext)
 
-        // Initialize Mobile Ads SDK on a background thread to avoid ANR
-        Thread {
+        // Render HomeScreen immediately
+        setContent {
+            KidsPoliceTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = PoliceNavy
+                ) {
+                    KidsPoliceApp(onTestInterstitial = { interstitialAdManager.showAd(this) })
+                }
+            }
+        }
+
+        // Defer Mobile Ads SDK initialization and ad loading until after HomeScreen has rendered
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(3500)
             val initConfig =
                 InitializationConfig.Builder(
                     "ca-app-pub-4760027279848820~4114638850"
@@ -72,17 +89,6 @@ class MainActivity : ComponentActivity() {
             ) {
                 appOpenAdManager.loadAd()
                 interstitialAdManager.loadAd()
-            }
-        }.start()
-
-        setContent {
-            KidsPoliceTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = PoliceNavy
-                ) {
-                    KidsPoliceApp(onTestInterstitial = { interstitialAdManager.showAd(this) })
-                }
             }
         }
     }

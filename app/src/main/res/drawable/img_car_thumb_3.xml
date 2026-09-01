@@ -1,0 +1,83 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Circular Background with Purple / Blue Accent -->
+    <path
+        android:pathData="M100,100m-95,0a95,95 0,1,1 190,0a95,95 0,1,1 -190,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="100"
+                android:startY="5"
+                android:endX="100"
+                android:endY="195"
+                android:type="linear">
+                <item android:offset="0" android:color="#FF7E57C2" />
+                <item android:offset="0.5" android:color="#FF3949AB" />
+                <item android:offset="1" android:color="#FF0D47A1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Ground / Turntable Platform -->
+    <path
+        android:pathData="M20,135 Q100,115 180,135 L180,195 L20,195 Z"
+        android:fillColor="#FF081B38" />
+    <path
+        android:pathData="M100,150m-70,0a70,16 0,1,0 140,0a70,16 0,1,0 -140,0"
+        android:fillColor="#FF311B92" />
+    <path
+        android:pathData="M100,150m-62,0a62,12 0,1,0 124,0a62,12 0,1,0 -124,0"
+        android:fillColor="#FFAB47BC" />
+    <!-- Police Tactical Van / Cruiser Body -->
+    <path
+        android:pathData="M42,138 L44,110 L65,96 L135,96 L156,110 L158,138 Z"
+        android:fillColor="#FF1A237E" />
+    <!-- White Side Panels -->
+    <path
+        android:pathData="M60,102 L140,102 L136,124 L64,124 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- Front Windshield & Windows -->
+    <path
+        android:pathData="M68,104 L132,104 L128,116 L72,116 Z"
+        android:fillColor="#FF80DEEA" />
+    <!-- Heavy Wheels -->
+    <path
+        android:pathData="M52,142m-13,0a13,13 0,1,0 26,0a13,13 0,1,0 -26,0"
+        android:fillColor="#FF111111" />
+    <path
+        android:pathData="M52,142m-6,0a6,6 0,1,0 12,0a6,6 0,1,0 -12,0"
+        android:fillColor="#FF90A4AE" />
+    <path
+        android:pathData="M148,142m-13,0a13,13 0,1,0 26,0a13,13 0,1,0 -26,0"
+        android:fillColor="#FF111111" />
+    <path
+        android:pathData="M148,142m-6,0a6,6 0,1,0 12,0a6,6 0,1,0 -12,0"
+        android:fillColor="#FF90A4AE" />
+    <!-- Grill & Bull Bar -->
+    <path
+        android:pathData="M78,124 L122,124 L120,138 L80,138 Z"
+        android:fillColor="#FF263238" />
+    <path
+        android:pathData="M56,122 L70,122 L68,132 L58,132 Z"
+        android:fillColor="#FFFFD54F" />
+    <path
+        android:pathData="M130,122 L144,122 L142,132 L132,132 Z"
+        android:fillColor="#FFFFD54F" />
+    <!-- Tactical Lightbar on Top -->
+    <path
+        android:pathData="M80,88 L98,88 L98,96 L80,96 Z"
+        android:fillColor="#FFFF1744" />
+    <path
+        android:pathData="M102,88 L120,88 L120,96 L102,96 Z"
+        android:fillColor="#FF00E5FF" />
+    <path
+        android:pathData="M98,90 L102,90 L102,96 L98,96 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- Outer Glow Ring -->
+    <path
+        android:pathData="M100,100m-92,0a92,92 0,1,1 184,0a92,92 0,1,1 -184,0"
+        android:strokeWidth="4"
+        android:strokeColor="#FFAB47BC" />
+</vector>
