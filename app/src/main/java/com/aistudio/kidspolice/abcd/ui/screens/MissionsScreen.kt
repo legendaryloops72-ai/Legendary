@@ -19,17 +19,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.MilitaryTech
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aistudio.kidspolice.abcd.R
 import com.aistudio.kidspolice.abcd.data.DailyMission
 import com.aistudio.kidspolice.abcd.ui.components.PoliceSirenLightBar
 import com.aistudio.kidspolice.abcd.ui.theme.PoliceAccentCyan
@@ -47,10 +55,7 @@ fun MissionsScreen(
     onBack: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PoliceNavy)
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize().background(PoliceNavy).padding(16.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -59,22 +64,13 @@ fun MissionsScreen(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(PoliceCardBg)
-                        .clickable { onBack() },
+                    modifier = Modifier.size(42.dp).clip(CircleShape).background(PoliceCardBg).clickable { onBack() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "➡️", fontSize = 18.sp)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "العودة", tint = PoliceNavy)
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = "مهام وسلوكيات البطل اليومية",
-                    color = Color.White,
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("مهام وسلوكيات البطل اليومية", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
             }
 
             Box(
@@ -83,19 +79,17 @@ fun MissionsScreen(
                     .background(PoliceGold.copy(alpha = 0.2f))
                     .border(1.dp, PoliceGold, RoundedCornerShape(16.dp))
                     .clickable { onOpenCertificate() }
-                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                    .padding(horizontal = 10.dp, vertical = 7.dp)
             ) {
-                Text(
-                    text = "🎖️ الشهادة",
-                    color = PoliceGold,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.MilitaryTech, contentDescription = null, tint = PoliceGold, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text("الشهادة", color = PoliceGold, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
 
         PoliceSirenLightBar(isFlashing = true)
-
         Spacer(modifier = Modifier.height(10.dp))
 
         Box(
@@ -112,20 +106,10 @@ fun MissionsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(
-                        text = "مجموع النقاط المكتسبة:",
-                        color = Color.White.copy(alpha = 0.8f),
-                        fontSize = 13.sp
-                    )
-                    Text(
-                        text = "$userScore نقطة تميز",
-                        color = PoliceGold,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("مجموع النقاط المكتسبة:", color = Color.White.copy(alpha = 0.8f), fontSize = 13.sp)
+                    Text("$userScore نقطة تميز", color = PoliceGold, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
-
-                Text(text = "🏆", fontSize = 32.sp)
+                Icon(Icons.Default.EmojiEvents, contentDescription = "الإنجازات", tint = PoliceGold, modifier = Modifier.size(34.dp))
             }
         }
 
@@ -138,56 +122,43 @@ fun MissionsScreen(
         ) {
             items(missions) { mission ->
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .clickable { onToggleMission(mission.id) },
+                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).clickable { onToggleMission(mission.id) },
                     colors = CardDefaults.cardColors(containerColor = PoliceCardBg),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
-                        if (mission.isCompleted) PoliceGreen else PoliceGold.copy(alpha = 0.2f)
-                    )
+                    border = androidx.compose.foundation.BorderStroke(1.dp, if (mission.isCompleted) PoliceGreen else PoliceGold.copy(alpha = 0.2f))
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(14.dp),
+                        modifier = Modifier.fillMaxWidth().padding(14.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = mission.iconEmoji, fontSize = 26.sp)
+                        val missionIcon = when (mission.id) {
+                            "m1" -> R.drawable.game_collect_stars
+                            "m2" -> R.drawable.officer_kid
+                            "m3" -> R.drawable.shield_logo
+                            "m4" -> R.drawable.game_puzzle
+                            "m5" -> R.drawable.game_match_badge
+                            else -> R.drawable.officer_avatar
+                        }
+                        androidx.compose.foundation.Image(
+                            painter = painterResource(missionIcon),
+                            contentDescription = mission.title,
+                            modifier = Modifier.size(44.dp).clip(CircleShape)
+                        )
                         Spacer(modifier = Modifier.width(14.dp))
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = mission.title,
-                                color = Color.White,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Text(mission.title, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = mission.description,
-                                color = Color.White.copy(alpha = 0.7f),
-                                fontSize = 11.sp
-                            )
+                            Text(mission.description, color = Color.White.copy(alpha = 0.7f), fontSize = 11.sp)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "+${mission.points} نقطة",
-                                color = PoliceGold,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Text("+${mission.points} نقطة", color = PoliceGold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
-
                         Box(
-                            modifier = Modifier
-                                .size(34.dp)
-                                .clip(CircleShape)
+                            modifier = Modifier.size(34.dp).clip(CircleShape)
                                 .background(if (mission.isCompleted) PoliceGreen else Color.Transparent)
                                 .border(1.5.dp, if (mission.isCompleted) PoliceGreen else Color.Gray, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             if (mission.isCompleted) {
-                                Text(text = "✓", color = PoliceNavy, fontWeight = FontWeight.Bold)
+                                Icon(Icons.Default.Check, contentDescription = "مكتملة", tint = PoliceNavy, modifier = Modifier.size(20.dp))
                             }
                         }
                     }
