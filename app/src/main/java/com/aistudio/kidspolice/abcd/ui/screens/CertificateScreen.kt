@@ -18,8 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Draw
-import androidx.compose.material.icons.filled.MilitaryTech
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -33,7 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.clip
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -130,12 +129,12 @@ fun CertificateScreen(
                 Spacer(modifier = Modifier.height(14.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.MilitaryTech, contentDescription = null, tint = PoliceGreen, modifier = Modifier.size(24.dp))
+                        Icon(Icons.Default.Star, contentDescription = null, tint = PoliceGreen, modifier = Modifier.size(24.dp))
                         Text("رتبة البطل", color = PoliceGreen, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         Text("ملازم شرفي", color = Color.White, fontSize = 12.sp)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Draw, contentDescription = null, tint = PoliceGold, modifier = Modifier.size(24.dp))
+                        Icon(Icons.Default.Star, contentDescription = null, tint = PoliceGold, modifier = Modifier.size(24.dp))
                         Text("التوقيع والاعتماد", color = PoliceGold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         Text("قائد شرطة الأطفال", color = Color.White, fontSize = 12.sp)
                     }

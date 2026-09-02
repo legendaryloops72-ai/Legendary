@@ -22,8 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.MilitaryTech
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -31,7 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.clip
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -82,7 +81,7 @@ fun MissionsScreen(
                     .padding(horizontal = 10.dp, vertical = 7.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.MilitaryTech, contentDescription = null, tint = PoliceGold, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Star, contentDescription = null, tint = PoliceGold, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(5.dp))
                     Text("الشهادة", color = PoliceGold, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
@@ -109,7 +108,7 @@ fun MissionsScreen(
                     Text("مجموع النقاط المكتسبة:", color = Color.White.copy(alpha = 0.8f), fontSize = 13.sp)
                     Text("$userScore نقطة تميز", color = PoliceGold, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
-                Icon(Icons.Default.EmojiEvents, contentDescription = "الإنجازات", tint = PoliceGold, modifier = Modifier.size(34.dp))
+                Icon(Icons.Default.Star, contentDescription = "الإنجازات", tint = PoliceGold, modifier = Modifier.size(34.dp))
             }
         }
 

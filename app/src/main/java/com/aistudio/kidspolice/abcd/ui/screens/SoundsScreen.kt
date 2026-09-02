@@ -20,10 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Campaign
-import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.RecordVoiceOver
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -33,7 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.clip
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -71,11 +68,11 @@ fun SoundsScreen(
     val isSirenPlaying by audioPlayer.isSirenPlaying.collectAsState()
 
     val sounds = listOf(
-        SoundEffectItem("سارينة الدورية", "تشغيل وإيقاف مستمر", Icons.Default.NotificationsActive, SoundType.SIREN, PoliceRed),
-        SoundEffectItem("لاسلكي العمليات", "صوت إشارة الراديو", Icons.Default.RecordVoiceOver, SoundType.RADIO, PoliceAccentCyan),
-        SoundEffectItem("بوري سيارة الشرطة", "تنبيه الطريق", Icons.Default.Campaign, SoundType.HORN, PoliceGold),
-        SoundEffectItem("صافرة المرور", "إشارة توقف وانتباه", Icons.Default.VolumeUp, SoundType.WHISTLE, Color(0xFF00E676)),
-        SoundEffectItem("نغمة الاتصال", "جرس هاتف الطوارئ", Icons.Default.NotificationsActive, SoundType.RINGTONE, Color(0xFFFF9100))
+        SoundEffectItem("سارينة الدورية", "تشغيل وإيقاف مستمر", Icons.Default.PlayArrow, SoundType.SIREN, PoliceRed),
+        SoundEffectItem("لاسلكي العمليات", "صوت إشارة الراديو", Icons.Default.PlayArrow, SoundType.RADIO, PoliceAccentCyan),
+        SoundEffectItem("بوري سيارة الشرطة", "تنبيه الطريق", Icons.Default.PlayArrow, SoundType.HORN, PoliceGold),
+        SoundEffectItem("صافرة المرور", "إشارة توقف وانتباه", Icons.Default.PlayArrow, SoundType.WHISTLE, Color(0xFF00E676)),
+        SoundEffectItem("نغمة الاتصال", "جرس هاتف الطوارئ", Icons.Default.PlayArrow, SoundType.RINGTONE, Color(0xFFFF9100))
     )
 
     Column(

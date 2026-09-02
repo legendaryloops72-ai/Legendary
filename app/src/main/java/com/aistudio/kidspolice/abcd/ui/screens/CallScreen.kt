@@ -20,14 +20,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.CallEnd
-import androidx.compose.material.icons.filled.VolumeUp
-import androidx.compose.material.icons.filled.RecordVoiceOver
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -202,7 +201,7 @@ fun CallScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.RecordVoiceOver,
+                                    imageVector = Icons.Default.Call,
                                     contentDescription = null,
                                     tint = PoliceAccentCyan,
                                     modifier = Modifier.size(18.dp)
@@ -232,7 +231,7 @@ fun CallScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = PoliceCardBg),
                         border = androidx.compose.foundation.BorderStroke(1.dp, PoliceAccentCyan)
                     ) {
-                        Icon(Icons.Default.VolumeUp, contentDescription = null, tint = PoliceAccentCyan)
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = PoliceAccentCyan)
                         Spacer(modifier = Modifier.width(6.dp))
                         Text("إعادة كلام الضابط", color = Color.White, fontSize = 13.sp)
                     }
@@ -242,7 +241,7 @@ fun CallScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = PoliceCardBg),
                         border = androidx.compose.foundation.BorderStroke(1.dp, PoliceGold)
                     ) {
-                        Icon(Icons.Default.VolumeUp, contentDescription = null, tint = PoliceGold)
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = PoliceGold)
                         Spacer(modifier = Modifier.width(6.dp))
                         Text("صافرة", color = PoliceGold, fontSize = 13.sp)
                     }
@@ -298,7 +297,7 @@ fun CallScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CallEnd,
+                        imageVector = Icons.Default.Call,
                         contentDescription = "إنهاء المكالمة",
                         tint = Color.White,
                         modifier = Modifier.size(34.dp)
