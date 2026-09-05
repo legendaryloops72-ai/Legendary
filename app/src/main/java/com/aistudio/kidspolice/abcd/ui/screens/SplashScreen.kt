@@ -9,6 +9,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,12 +52,14 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import com.aistudio.kidspolice.abcd.R
 
 @Composable
 fun SplashScreen(onSplashFinished: () -> Unit) {
@@ -151,7 +154,12 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
                         Box(Modifier.size(32.dp).shadow(12.dp, CircleShape).clip(CircleShape).background(Color(0xFF00B0FF).copy(alpha = 1.4f - beaconPulse)).border(2.5.dp, Color(0xFFE1F5FE), CircleShape))
                     }
                     Spacer(modifier = Modifier.height(14.dp))
-                    SplashBadgeHeroCanvas(modifier = Modifier.size(175.dp))
+                    Image(
+                        painter = painterResource(R.drawable.police_siren_splash),
+                        contentDescription = "صفارة شرطة مضيئة",
+                        modifier = Modifier.size(175.dp).clip(RoundedCornerShape(28.dp)),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("شرطة الأطفال", color = Color(0xFFFFD54F), fontSize = 34.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(4.dp))

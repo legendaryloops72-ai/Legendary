@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.sin
@@ -100,7 +102,7 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
     fun testVoice01Direct() {
         scope.launch(Dispatchers.IO) {
             try {
-                val resId = com.aistudio.kidspolice.abcd.R.raw.voice_01_welcome
+                val resId = com.aistudio.kidspolice.abcd.R.raw.licensed_02_police_siren
                 val allBytes = context.resources.openRawResource(resId).readBytes()
                 var pcmStart = 44
                 if (allBytes.size > 12) {
@@ -241,7 +243,7 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
                     }
                 }
                 val pcmBytes = if (pcmStart < allBytes.size) allBytes.copyOfRange(pcmStart, allBytes.size) else allBytes
-                val sampleRate = 24000
+                val sampleRate = if (allBytes.size >= 28) ByteBuffer.wrap(allBytes, 24, 4).order(ByteOrder.LITTLE_ENDIAN).int else 44100
                 val audioAttributes = AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -260,7 +262,7 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
                     .setTransferMode(AudioTrack.MODE_STREAM)
                     .build()
 
-                val isVoice14 = resId == com.aistudio.kidspolice.abcd.R.raw.voice_14_call_start
+                val isVoice14 = resId == com.aistudio.kidspolice.abcd.R.raw.licensed_03_emergency_car_arrival
                 if (isVoice14) android.util.Log.d("PoliceAudioPlayer", "VOICE_14_PLAY_STARTED")
 
                 currentAudioTrack = audioTrack
@@ -309,14 +311,14 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
         stopSpeaking()
         scenarioCallJob = scope.launch(Dispatchers.IO) {
             android.util.Log.d("PoliceAudioPlayer", "VOICE_14_REQUESTED")
-            playRawAudioSuspend(com.aistudio.kidspolice.abcd.R.raw.voice_14_call_start)
+            playRawAudioSuspend(com.aistudio.kidspolice.abcd.R.raw.licensed_03_emergency_car_arrival)
             val scenarioResId = when (scenarioId) {
-                "sleep_early" -> com.aistudio.kidspolice.abcd.R.raw.voice_03_sleep
-                "eating_food" -> com.aistudio.kidspolice.abcd.R.raw.voice_04_healthy_food
-                "listen_parents" -> com.aistudio.kidspolice.abcd.R.raw.voice_05_respect_parents
-                "homework_study" -> com.aistudio.kidspolice.abcd.R.raw.voice_06_homework
-                "hero_reward" -> com.aistudio.kidspolice.abcd.R.raw.voice_23_great_job
-                else -> com.aistudio.kidspolice.abcd.R.raw.voice_15_call_question
+                "sleep_early" -> com.aistudio.kidspolice.abcd.R.raw.licensed_27_urgent_emergency_tone
+                "eating_food" -> com.aistudio.kidspolice.abcd.R.raw.licensed_13_car_engine_start
+                "listen_parents" -> com.aistudio.kidspolice.abcd.R.raw.licensed_22_radio_signal
+                "homework_study" -> com.aistudio.kidspolice.abcd.R.raw.licensed_26_double_beep_alert
+                "hero_reward" -> com.aistudio.kidspolice.abcd.R.raw.licensed_29_police_whistle
+                else -> com.aistudio.kidspolice.abcd.R.raw.licensed_23_radio_transmission
             }
             playRawAudioSuspend(scenarioResId)
         }
@@ -327,12 +329,12 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
         android.util.Log.d("PoliceAudioPlayer", "POLICE_CALL_BUTTON_CLICKED")
         ttsJob?.cancel()
         val resId = when {
-            text.contains("نمت") || text.contains("سريرك") || text.contains("تختك") || text.contains("تصبح على خير") -> com.aistudio.kidspolice.abcd.R.raw.voice_03_sleep
-            text.contains("تاكل") || text.contains("أكلك") || text.contains("وجبتك") || text.contains("طبقك") -> com.aistudio.kidspolice.abcd.R.raw.voice_04_healthy_food
-            text.contains("ماما وبابا") || text.contains("والديك") || text.contains("احترام") || text.contains("طاعة") -> com.aistudio.kidspolice.abcd.R.raw.voice_05_respect_parents
-            text.contains("واجباتك") || text.contains("دراسة") || text.contains("كتبك") || text.contains("المذاكرة") -> com.aistudio.kidspolice.abcd.R.raw.voice_06_homework
-            text.contains("بطلنا العظيم") || text.contains("وسام") || text.contains("مكافأة") || text.contains("ألف مبروك") -> com.aistudio.kidspolice.abcd.R.raw.voice_23_great_job
-            else -> com.aistudio.kidspolice.abcd.R.raw.voice_15_call_question
+            text.contains("نمت") || text.contains("سريرك") || text.contains("تختك") || text.contains("تصبح على خير") -> com.aistudio.kidspolice.abcd.R.raw.licensed_27_urgent_emergency_tone
+            text.contains("تاكل") || text.contains("أكلك") || text.contains("وجبتك") || text.contains("طبقك") -> com.aistudio.kidspolice.abcd.R.raw.licensed_13_car_engine_start
+            text.contains("ماما وبابا") || text.contains("والديك") || text.contains("احترام") || text.contains("طاعة") -> com.aistudio.kidspolice.abcd.R.raw.licensed_22_radio_signal
+            text.contains("واجباتك") || text.contains("دراسة") || text.contains("كتبك") || text.contains("المذاكرة") -> com.aistudio.kidspolice.abcd.R.raw.licensed_26_double_beep_alert
+            text.contains("بطلنا العظيم") || text.contains("وسام") || text.contains("مكافأة") || text.contains("ألف مبروك") -> com.aistudio.kidspolice.abcd.R.raw.licensed_29_police_whistle
+            else -> com.aistudio.kidspolice.abcd.R.raw.licensed_23_radio_transmission
         }
         playRawAudioFile(resId)
     }
