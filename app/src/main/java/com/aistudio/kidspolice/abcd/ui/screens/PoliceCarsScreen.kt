@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -73,14 +74,55 @@ fun PoliceCarsScreen(onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF4F8FF)).padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(24.dp))
         Text("صور سيارات الشرطة", color = Color(0xFF0D47A1), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-        Text("30 مركبة أصلية — اضغط على أي صورة للتفاصيل", color = Color(0xFF60738F), fontSize = 13.sp)
+        Text("30 مركبة أصلية — اضغط على أي صورة للتفاصيل", color = Color(0xFF2C3E50), fontSize = 13.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(16.dp))
-        LazyVerticalGrid(columns = GridCells.Fixed(2), verticalArrangement = Arrangement.spacedBy(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
             itemsIndexed(cars) { index, car ->
-                Card(modifier = Modifier.fillMaxWidth().height(175.dp).clickable { selectedIndex = index }, shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)) {
-                    Column(modifier = Modifier.fillMaxSize().padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(painterResource(car.imageId), contentDescription = car.title, modifier = Modifier.weight(1f).fillMaxWidth(), contentScale = ContentScale.Crop)
-                        Text(car.title, color = Color(0xFF20334F), fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(175.dp)
+                        .clickable { selectedIndex = index },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFFF8FAFC)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(car.imageId),
+                                contentDescription = car.title,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            car.title,
+                            color = Color(0xFF1D2B42),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
                     }
                 }
             }
@@ -93,21 +135,39 @@ private fun PoliceCarDetail(cars: List<PoliceCar>, selectedIndex: Int, onSelecte
     val car = cars[selectedIndex]
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF4F8FF)).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "العودة", tint = Color(0xFF0D47A1)) }
-            Text("صور سيارات الشرطة", color = Color(0xFF0D47A1), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "العودة لقائمة السيارات", tint = Color(0xFF0D47A1)) }
+            Text("تفاصيل سيارة الشرطة", color = Color(0xFF0D47A1), fontSize = 21.sp, fontWeight = FontWeight.Bold)
         }
-        Spacer(Modifier.height(20.dp))
-        Card(modifier = Modifier.fillMaxWidth().weight(1f), shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Image(painterResource(car.imageId), contentDescription = car.title, modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.Fit) }
+        Spacer(Modifier.height(16.dp))
+        Card(modifier = Modifier.fillMaxWidth().weight(1f), shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+            Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(car.imageId),
+                    contentDescription = car.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
-        Spacer(Modifier.height(18.dp))
-        Text(car.title, color = Color(0xFF1D2B42), fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Text("${selectedIndex + 1} من ${cars.size}", color = Color(0xFF60738F), fontSize = 13.sp)
+        Spacer(Modifier.height(16.dp))
+        Text(car.title, color = Color(0xFF1D2B42), fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(4.dp))
+        Text("${selectedIndex + 1} من ${cars.size}", color = Color(0xFF4A5568), fontSize = 14.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(28.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { onSelected(if (selectedIndex == 0) cars.lastIndex else selectedIndex - 1) }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "السيارة السابقة", tint = Color(0xFF1565C0), modifier = Modifier.size(32.dp)) }
-            Icon(Icons.Default.Star, contentDescription = "مركبة شرطة", tint = Color(0xFF00A5B5), modifier = Modifier.size(30.dp))
-            IconButton(onClick = { onSelected(if (selectedIndex == cars.lastIndex) 0 else selectedIndex + 1) }) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "السيارة التالية", tint = Color(0xFF1565C0), modifier = Modifier.size(32.dp)) }
+            IconButton(
+                onClick = { onSelected(if (selectedIndex == 0) cars.lastIndex else selectedIndex - 1) },
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "السيارة السابقة", tint = Color(0xFF1565C0), modifier = Modifier.size(32.dp))
+            }
+            Icon(Icons.Default.Star, contentDescription = "مركبة شرطة معتمدة", tint = Color(0xFF00838F), modifier = Modifier.size(30.dp))
+            IconButton(
+                onClick = { onSelected(if (selectedIndex == cars.lastIndex) 0 else selectedIndex + 1) },
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "السيارة التالية", tint = Color(0xFF1565C0), modifier = Modifier.size(32.dp))
+            }
         }
         Spacer(Modifier.height(8.dp))
     }

@@ -91,13 +91,29 @@ fun SoundsScreen(audioPlayer: PoliceAudioPlayer, onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF4F8FF)).padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(24.dp))
         Text("أصوات الشرطة", color = Color(0xFF0D47A1), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-        Text("30 مؤثرًا حقيقيًا بترخيص موثق للاستخدام التجاري", color = Color(0xFF60738F), fontSize = 13.sp)
+        Text("30 مؤثرًا حقيقيًا بترخيص موثق للاستخدام التجاري", color = Color(0xFF2C3E50), fontSize = 13.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(14.dp))
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF0D47A1))) {
             Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                androidx.compose.foundation.layout.Box(modifier = Modifier.size(52.dp).clip(CircleShape).background(Color(0xFF1976D2)), contentAlignment = Alignment.Center) { Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "علامة الصوت", modifier = Modifier.size(34.dp)) }
+                androidx.compose.foundation.layout.Box(modifier = Modifier.size(52.dp).clip(CircleShape).background(Color(0xFF1976D2)), contentAlignment = Alignment.Center) {
+                    Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "موجة صوت الشرطة", tint = Color.White, modifier = Modifier.size(34.dp))
+                }
                 Spacer(Modifier.size(12.dp))
-                Column { Text(if (playingId == null) "المشغل جاهز" else "يتم تشغيل صوت الشرطة", color = Color.White, fontWeight = FontWeight.Bold); Text("اضغط تشغيل أو إيقاف — صوت واحد في كل مرة", color = Color.White.copy(alpha = 0.75f), fontSize = 12.sp) }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(if (playingId == null) "المشغل جاهز" else "يتم تشغيل صوت الشرطة الآن", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                    Text("اضغط تشغيل أو إيقاف — صوت واحد في كل مرة", color = Color.White.copy(alpha = 0.85f), fontSize = 12.sp)
+                }
+                if (playingId != null) {
+                    IconButton(
+                        onClick = {
+                            audioPlayer.stopSpeaking()
+                            playingId = null
+                        },
+                        modifier = Modifier.size(48.dp).clip(CircleShape).background(Color(0xFFD32F2F))
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = "إيقاف الصوت الحالي", tint = Color.White, modifier = Modifier.size(24.dp))
+                    }
+                }
             }
         }
         Spacer(Modifier.height(12.dp))
@@ -105,15 +121,33 @@ fun SoundsScreen(audioPlayer: PoliceAudioPlayer, onBack: () -> Unit) {
             items(sounds, key = { it.resourceId }) { sound ->
                 val isPlaying = playingId == sound.resourceId
                 Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Image(painterResource(sound.imageId), contentDescription = sound.title, modifier = Modifier.size(78.dp).clip(RoundedCornerShape(13.dp)), contentScale = ContentScale.Crop)
-                        Spacer(Modifier.size(10.dp))
-                        Column(modifier = Modifier.weight(1f)) { Text(sound.title, color = Color(0xFF1D2B42), fontSize = 14.sp, fontWeight = FontWeight.Bold); Text("Mixkit · ترخيص موثق", color = Color(0xFF718096), fontSize = 10.sp) }
-                        IconButton(onClick = {
-                            if (isPlaying) { audioPlayer.stopSpeaking(); playingId = null }
-                            else { audioPlayer.stopSpeaking(); playingId = sound.resourceId; audioPlayer.playRawAudioFile(sound.resourceId) { playingId = null } }
-                        }, modifier = Modifier.size(46.dp).clip(CircleShape).background(if (isPlaying) Color(0xFFFFE7E7) else Color(0xFFE6F1FF))) {
-                            Icon(if (isPlaying) Icons.Default.Close else Icons.Default.PlayArrow, contentDescription = if (isPlaying) "إيقاف ${sound.title}" else "تشغيل ${sound.title}", tint = if (isPlaying) Color(0xFFD32F2F) else Color(0xFF1565C0))
+                    Row(modifier = Modifier.fillMaxWidth().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Image(painterResource(sound.imageId), contentDescription = sound.title, modifier = Modifier.size(76.dp).clip(RoundedCornerShape(13.dp)), contentScale = ContentScale.Crop)
+                        Spacer(Modifier.size(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(sound.title, color = Color(0xFF1D2B42), fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.height(2.dp))
+                            Text("ترخيص موثق للاستخدام التجاري", color = Color(0xFF4A5568), fontSize = 11.sp, fontWeight = FontWeight.Medium)
+                        }
+                        IconButton(
+                            onClick = {
+                                if (isPlaying) {
+                                    audioPlayer.stopSpeaking()
+                                    playingId = null
+                                } else {
+                                    audioPlayer.stopSpeaking()
+                                    playingId = sound.resourceId
+                                    audioPlayer.playRawAudioFile(sound.resourceId) { playingId = null }
+                                }
+                            },
+                            modifier = Modifier.size(48.dp).clip(CircleShape).background(if (isPlaying) Color(0xFFFFE7E7) else Color(0xFFE6F1FF))
+                        ) {
+                            Icon(
+                                if (isPlaying) Icons.Default.Close else Icons.Default.PlayArrow,
+                                contentDescription = if (isPlaying) "إيقاف ${sound.title}" else "تشغيل ${sound.title}",
+                                tint = if (isPlaying) Color(0xFFD32F2F) else Color(0xFF1565C0),
+                                modifier = Modifier.size(26.dp)
+                            )
                         }
                     }
                 }

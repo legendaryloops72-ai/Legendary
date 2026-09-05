@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">شرطة الأطفال</string>
+    <string name="tab_home">الرئيسية</string>
+    <string name="tab_sounds">أصوات الشرطة</string>
+    <string name="tab_cars">سيارات الشرطة</string>
+    <string name="action_share">مشاركة التطبيق</string>
+    <string name="action_privacy">سياسة الخصوصية</string>
+    <string name="action_about">معلومات التطبيق</string>
+    <string name="action_close">إغلاق</string>
+    <string name="action_back">العودة</string>
+    <string name="action_play">تشغيل</string>
+    <string name="action_stop">إيقاف</string>
+    <string name="cars_subtitle">30 مركبة أصلية — اضغط على أي صورة للتفاصيل</string>
+    <string name="sounds_subtitle">30 مؤثرًا صوتيًا محليًا</string>
 </resources>

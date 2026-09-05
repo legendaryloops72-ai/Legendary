@@ -89,10 +89,20 @@ fun HomeScreen(
     val context = LocalContext.current
 
     fun shareApp() {
-        context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "تطبيق شرطة الأطفال\nhttps://play.google.com/store/apps/details?id=com.aistudio.kidspolice.abcd")
-        }, "مشاركة تطبيق شرطة الأطفال"))
+        try {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, "تطبيق شرطة الأطفال\nhttps://play.google.com/store/apps/details?id=com.aistudio.kidspolice.abcd")
+            }
+            context.startActivity(Intent.createChooser(intent, "مشاركة تطبيق شرطة الأطفال"))
+        } catch (_: Exception) {}
+    }
+
+    fun openPrivacyPolicy() {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://kidspolicy-munpfkb8.manus.space/"))
+            context.startActivity(intent)
+        } catch (_: Exception) {}
     }
 
     ModalNavigationDrawer(
@@ -103,21 +113,14 @@ fun HomeScreen(
                     Image(painterResource(R.drawable.police_child_icon), contentDescription = "شعار شرطة الأطفال", modifier = Modifier.size(78.dp).clip(CircleShape))
                     Spacer(Modifier.height(10.dp))
                     Text("شرطة الأطفال", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.ExtraBold)
-                    Text("أصوات ومركبات الشرطة", color = Color.White.copy(alpha = 0.78f), fontSize = 12.sp)
+                    Text("أصوات ومركبات الشرطة", color = Color.White.copy(alpha = 0.85f), fontSize = 13.sp)
                 }
-                DrawerItem("الرئيسية", Icons.Default.Home) { tab = 0; scope.launch { drawerState.close() } }
-                DrawerItem("أصوات الشرطة", painterResource(R.drawable.ic_sound_wave)) { tab = 1; scope.launch { drawerState.close() } }
-                DrawerItem("سيارات الشرطة", {
-                    Image(
-                        painter = painterResource(R.drawable.car_01_sedan),
-                        contentDescription = "سيارات الشرطة",
-                        modifier = Modifier.size(26.dp).clip(RoundedCornerShape(6.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                }) { tab = 2; scope.launch { drawerState.close() } }
+                DrawerItem("الرئيسية", Icons.Default.Home) { if (tab != 0) player.stopSpeaking(); tab = 0; scope.launch { drawerState.close() } }
+                DrawerItem("أصوات الشرطة", painterResource(R.drawable.ic_sound_wave)) { if (tab != 1) player.stopSpeaking(); tab = 1; scope.launch { drawerState.close() } }
+                DrawerItem("سيارات الشرطة", painterResource(R.drawable.ic_section_cars)) { if (tab != 2) player.stopSpeaking(); tab = 2; scope.launch { drawerState.close() } }
                 DrawerItem("مشاركة التطبيق", Icons.Default.Share) { shareApp(); scope.launch { drawerState.close() } }
                 DrawerItem("سياسة الخصوصية", Icons.Default.Info) {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://kidspolicy-munpfkb8.manus.space/")))
+                    openPrivacyPolicy()
                     scope.launch { drawerState.close() }
                 }
                 DrawerItem("معلومات التطبيق", Icons.Default.Info) { showInfo = true; scope.launch { drawerState.close() } }
@@ -130,28 +133,41 @@ fun HomeScreen(
             Column(modifier = Modifier.fillMaxSize().background(Background)) {
                 Box(modifier = Modifier.weight(1f)) {
                     when (tab) {
-                        0 -> HomeLanding(onMenu = { scope.launch { drawerState.open() } }, onSounds = { tab = 1 }, onCars = { tab = 2 }, onShare = ::shareApp)
-                        1 -> SoundsScreen(audioPlayer = player, onBack = { tab = 0 })
+                        0 -> HomeLanding(
+                            onMenu = { scope.launch { drawerState.open() } },
+                            onSounds = { if (tab != 1) player.stopSpeaking(); tab = 1 },
+                            onCars = { if (tab != 2) player.stopSpeaking(); tab = 2 },
+                            onShare = ::shareApp
+                        )
+                        1 -> SoundsScreen(audioPlayer = player, onBack = { player.stopSpeaking(); tab = 0 })
                         else -> PoliceCarsScreen(onBack = { tab = 0 })
                     }
                 }
                 NavigationBar(modifier = Modifier.navigationBarsPadding(), containerColor = Color.White, tonalElevation = 8.dp) {
-                    NavigationBarItem(selected = tab == 0, onClick = { tab = 0 }, icon = { Icon(Icons.Default.Home, contentDescription = "الرئيسية") }, label = { Text("الرئيسية") })
-                    NavigationBarItem(selected = tab == 1, onClick = { tab = 1 }, icon = { Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "الأصوات") }, label = { Text("الأصوات") })
+                    NavigationBarItem(
+                        selected = tab == 0,
+                        onClick = { if (tab != 0) player.stopSpeaking(); tab = 0 },
+                        icon = { Icon(Icons.Default.Home, contentDescription = "الرئيسية", modifier = Modifier.size(26.dp)) },
+                        label = { Text("الرئيسية", fontWeight = if (tab == 0) FontWeight.Bold else FontWeight.Normal) }
+                    )
+                    NavigationBarItem(
+                        selected = tab == 1,
+                        onClick = { if (tab != 1) player.stopSpeaking(); tab = 1 },
+                        icon = { Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "أصوات الشرطة", modifier = Modifier.size(26.dp)) },
+                        label = { Text("الأصوات", fontWeight = if (tab == 1) FontWeight.Bold else FontWeight.Normal) }
+                    )
                     NavigationBarItem(
                         selected = tab == 2,
-                        onClick = { tab = 2 },
+                        onClick = { if (tab != 2) player.stopSpeaking(); tab = 2 },
                         icon = {
-                            Image(
-                                painter = painterResource(R.drawable.car_01_sedan),
-                                contentDescription = "السيارات",
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
+                            Icon(
+                                painter = painterResource(R.drawable.ic_section_cars),
+                                contentDescription = "سيارات الشرطة",
+                                modifier = Modifier.size(26.dp),
+                                tint = Color.Unspecified
                             )
                         },
-                        label = { Text("السيارات") }
+                        label = { Text("السيارات", fontWeight = if (tab == 2) FontWeight.Bold else FontWeight.Normal) }
                     )
                 }
             }
@@ -182,15 +198,20 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(18.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onMenu) { Icon(Icons.Default.Menu, contentDescription = "فتح القائمة", tint = Navy, modifier = Modifier.size(30.dp)) }
+            IconButton(onClick = onMenu, modifier = Modifier.size(48.dp)) { Icon(Icons.Default.Menu, contentDescription = "فتح القائمة", tint = Navy, modifier = Modifier.size(30.dp)) }
             Text("شرطة الأطفال", color = Navy, fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
-            IconButton(onClick = onShare) { Icon(Icons.Default.Share, contentDescription = "مشاركة التطبيق", tint = Navy, modifier = Modifier.size(25.dp)) }
+            IconButton(onClick = onShare, modifier = Modifier.size(48.dp)) { Icon(Icons.Default.Share, contentDescription = "مشاركة التطبيق", tint = Navy, modifier = Modifier.size(26.dp)) }
         }
-        Text("أصوات ومركبات الشرطة", color = Color(0xFF5B6B83), fontSize = 14.sp)
+        Text("أصوات ومركبات الشرطة", color = Color(0xFF2C3E50), fontSize = 14.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(14.dp))
-        Card(modifier = Modifier.fillMaxWidth().height(220.dp), shape = RoundedCornerShape(30.dp), colors = CardDefaults.cardColors(containerColor = Navy)) {
-            Box(modifier = Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xFF0D47A1), Color(0xFF42A5F5)))), contentAlignment = Alignment.Center) {
-                Image(painterResource(R.drawable.police_child_icon), contentDescription = "شرطي أطفال ثلاثي الأبعاد", modifier = Modifier.fillMaxSize().padding(20.dp), contentScale = ContentScale.Fit)
+        Card(modifier = Modifier.fillMaxWidth().height(220.dp), shape = RoundedCornerShape(30.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF0A1128))) {
+            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFF0A1128), Color(0xFF001F54)))), contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.police_child_icon),
+                    contentDescription = "شرطي أطفال ثلاثي الأبعاد",
+                    modifier = Modifier.fillMaxSize().padding(14.dp).clip(RoundedCornerShape(20.dp)),
+                    contentScale = ContentScale.Fit
+                )
             }
         }
         Spacer(Modifier.height(18.dp))
@@ -211,17 +232,17 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
             onClick = onCars,
             tint = Color(0xFF00838F)
         ) {
-            Image(
-                painter = painterResource(R.drawable.car_01_sedan),
-                contentDescription = "سيارات الشرطة",
-                modifier = Modifier
-                    .size(58.dp)
-                    .clip(RoundedCornerShape(18.dp)),
-                contentScale = ContentScale.Crop
-            )
+            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF00838F).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_section_cars),
+                    contentDescription = "سيارات الشرطة",
+                    modifier = Modifier.size(42.dp),
+                    tint = Color.Unspecified
+                )
+            }
         }
         Spacer(Modifier.height(18.dp))
-        Text("سياسة الخصوصية متاحة من القائمة الجانبية", color = Color(0xFF718096), fontSize = 12.sp)
+        Text("سياسة الخصوصية ومعلومات التطبيق متاحة من القائمة الجانبية", color = Color(0xFF4A5568), fontSize = 13.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
     }
 }
@@ -238,7 +259,7 @@ private fun HomeActionCard(
         Row(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
             iconSlot()
             Spacer(Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) { Text(title, color = Color(0xFF18263D), fontSize = 18.sp, fontWeight = FontWeight.Bold); Spacer(Modifier.height(3.dp)); Text(subtitle, color = Color(0xFF718096), fontSize = 12.sp) }
+            Column(modifier = Modifier.weight(1f)) { Text(title, color = Color(0xFF18263D), fontSize = 18.sp, fontWeight = FontWeight.Bold); Spacer(Modifier.height(3.dp)); Text(subtitle, color = Color(0xFF4A5568), fontSize = 13.sp, fontWeight = FontWeight.Medium) }
             Icon(Icons.Default.PlayArrow, contentDescription = "فتح", tint = tint)
         }
     }
