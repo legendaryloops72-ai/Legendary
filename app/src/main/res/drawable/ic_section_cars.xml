@@ -6,28 +6,6 @@
     android:viewportWidth="96"
     android:viewportHeight="96">
 
-    <!-- Blue Circle Base -->
-    <path
-        android:pathData="M48,48m-44,0a44,44 0 1,0 88,0a44,44 0 1,0 -88,0">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:startX="48"
-                android:startY="4"
-                android:endX="48"
-                android:endY="92"
-                android:type="linear">
-                <item android:offset="0.0" android:color="#1E88E5" />
-                <item android:offset="0.5" android:color="#1565C0" />
-                <item android:offset="1.0" android:color="#0D47A1" />
-            </gradient>
-        </aapt:attr>
-    </path>
-    <!-- Gold Border Ring -->
-    <path
-        android:pathData="M48,48m-43,0a43,43 0 1,0 86,0a43,43 0 1,0 -86,0"
-        android:strokeColor="#FFD54F"
-        android:strokeWidth="2.5" />
-
     <!-- Police Car Wheels -->
     <path
         android:pathData="M32,68m-7,0a7,7 0 1,0 14,0a7,7 0 1,0 -14,0"

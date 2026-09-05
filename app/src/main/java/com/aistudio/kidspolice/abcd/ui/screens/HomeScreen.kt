@@ -107,7 +107,14 @@ fun HomeScreen(
                 }
                 DrawerItem("الرئيسية", Icons.Default.Home) { tab = 0; scope.launch { drawerState.close() } }
                 DrawerItem("أصوات الشرطة", painterResource(R.drawable.ic_sound_wave)) { tab = 1; scope.launch { drawerState.close() } }
-                DrawerItem("سيارات الشرطة", painterResource(R.drawable.ic_section_cars)) { tab = 2; scope.launch { drawerState.close() } }
+                DrawerItem("سيارات الشرطة", {
+                    Image(
+                        painter = painterResource(R.drawable.car_01_sedan),
+                        contentDescription = "سيارات الشرطة",
+                        modifier = Modifier.size(26.dp).clip(RoundedCornerShape(6.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }) { tab = 2; scope.launch { drawerState.close() } }
                 DrawerItem("مشاركة التطبيق", Icons.Default.Share) { shareApp(); scope.launch { drawerState.close() } }
                 DrawerItem("سياسة الخصوصية", Icons.Default.Info) {
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://kidspolicy-munpfkb8.manus.space/")))
@@ -131,7 +138,21 @@ fun HomeScreen(
                 NavigationBar(modifier = Modifier.navigationBarsPadding(), containerColor = Color.White, tonalElevation = 8.dp) {
                     NavigationBarItem(selected = tab == 0, onClick = { tab = 0 }, icon = { Icon(Icons.Default.Home, contentDescription = "الرئيسية") }, label = { Text("الرئيسية") })
                     NavigationBarItem(selected = tab == 1, onClick = { tab = 1 }, icon = { Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "الأصوات") }, label = { Text("الأصوات") })
-                    NavigationBarItem(selected = tab == 2, onClick = { tab = 2 }, icon = { Icon(painterResource(R.drawable.ic_section_cars), contentDescription = "السيارات") }, label = { Text("السيارات") })
+                    NavigationBarItem(
+                        selected = tab == 2,
+                        onClick = { tab = 2 },
+                        icon = {
+                            Image(
+                                painter = painterResource(R.drawable.car_01_sedan),
+                                contentDescription = "السيارات",
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        },
+                        label = { Text("السيارات") }
+                    )
                 }
             }
         }
@@ -152,6 +173,11 @@ private fun DrawerItem(title: String, icon: androidx.compose.ui.graphics.painter
 }
 
 @Composable
+private fun DrawerItem(title: String, icon: @Composable () -> Unit, onClick: () -> Unit) {
+    androidx.compose.material3.NavigationDrawerItem(label = { Text(title) }, selected = false, onClick = onClick, icon = icon, modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp))
+}
+
+@Composable
 private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> Unit, onShare: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(18.dp))
@@ -168,9 +194,32 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
             }
         }
         Spacer(Modifier.height(18.dp))
-        HomeActionCard("أصوات الشرطة", "30 مؤثرًا صوتيًا محليًا", painterResource(R.drawable.ic_sound_wave), onSounds, Color(0xFF1565C0))
+        HomeActionCard(
+            title = "أصوات الشرطة",
+            subtitle = "30 مؤثرًا صوتيًا محليًا",
+            onClick = onSounds,
+            tint = Color(0xFF1565C0)
+        ) {
+            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF1565C0).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
+                Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "أصوات الشرطة", tint = Color(0xFF1565C0), modifier = Modifier.size(34.dp))
+            }
+        }
         Spacer(Modifier.height(12.dp))
-        HomeActionCard("سيارات الشرطة", "30 صورة أصلية للمركبات", painterResource(R.drawable.ic_section_cars), onCars, Color(0xFF00838F))
+        HomeActionCard(
+            title = "سيارات الشرطة",
+            subtitle = "30 صورة أصلية للمركبات",
+            onClick = onCars,
+            tint = Color(0xFF00838F)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.car_01_sedan),
+                contentDescription = "سيارات الشرطة",
+                modifier = Modifier
+                    .size(58.dp)
+                    .clip(RoundedCornerShape(18.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
         Spacer(Modifier.height(18.dp))
         Text("سياسة الخصوصية متاحة من القائمة الجانبية", color = Color(0xFF718096), fontSize = 12.sp)
         Spacer(Modifier.height(12.dp))
@@ -178,10 +227,16 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
 }
 
 @Composable
-private fun HomeActionCard(title: String, subtitle: String, icon: androidx.compose.ui.graphics.painter.Painter, onClick: () -> Unit, tint: Color) {
+private fun HomeActionCard(
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    tint: Color,
+    iconSlot: @Composable () -> Unit
+) {
     Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick), shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
         Row(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(tint.copy(alpha = 0.12f)), contentAlignment = Alignment.Center) { Icon(icon, contentDescription = title, tint = tint, modifier = Modifier.size(34.dp)) }
+            iconSlot()
             Spacer(Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) { Text(title, color = Color(0xFF18263D), fontSize = 18.sp, fontWeight = FontWeight.Bold); Spacer(Modifier.height(3.dp)); Text(subtitle, color = Color(0xFF718096), fontSize = 12.sp) }
             Icon(Icons.Default.PlayArrow, contentDescription = "فتح", tint = tint)

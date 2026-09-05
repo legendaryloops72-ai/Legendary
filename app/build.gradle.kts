@@ -18,8 +18,11 @@ android {
     }
 
     signingConfigs {
-        getByName("debug") {
-            // default debug keystore
+        create("debugConfig") {
+            storeFile = file("${rootDir}/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
         }
         create("release") {
             val keystorePath = (project.findProperty("RELEASE_KEYSTORE_PATH") as? String)
@@ -49,7 +52,7 @@ android {
             }
         }
         debug {
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("debugConfig")
         }
     }
 
