@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import com.aistudio.kidspolice.abcd.R
 import com.aistudio.kidspolice.abcd.audio.PoliceAudioPlayer
 import com.aistudio.kidspolice.abcd.data.Dialect
+import com.aistudio.kidspolice.abcd.ui.components.TestBannerAdView
 import kotlinx.coroutines.launch
 
 private val Background = Color(0xFFF4F8FF)
@@ -135,14 +136,25 @@ fun HomeScreen(
                     when (tab) {
                         0 -> HomeLanding(
                             onMenu = { scope.launch { drawerState.open() } },
-                            onSounds = { if (tab != 1) player.stopSpeaking(); tab = 1 },
-                            onCars = { if (tab != 2) player.stopSpeaking(); tab = 2 },
+                            onSounds = {
+                                onTestInterstitial()
+                                if (tab != 1) player.stopSpeaking()
+                                tab = 1
+                            },
+                            onCars = {
+                                onTestInterstitial()
+                                if (tab != 2) player.stopSpeaking()
+                                tab = 2
+                            },
                             onShare = ::shareApp
                         )
                         1 -> SoundsScreen(audioPlayer = player, onBack = { player.stopSpeaking(); tab = 0 })
                         else -> PoliceCarsScreen(onBack = { tab = 0 })
                     }
                 }
+                TestBannerAdView(
+                    modifier = Modifier.fillMaxWidth()
+                )
                 NavigationBar(modifier = Modifier.navigationBarsPadding(), containerColor = Color.White, tonalElevation = 8.dp) {
                     NavigationBarItem(
                         selected = tab == 0,
