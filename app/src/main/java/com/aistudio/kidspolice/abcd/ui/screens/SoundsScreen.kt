@@ -91,7 +91,7 @@ fun SoundsScreen(audioPlayer: PoliceAudioPlayer, onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF4F8FF)).padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(24.dp))
         Text("أصوات الشرطة", color = Color(0xFF0D47A1), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-        Text("30 مؤثرًا حقيقيًا بترخيص موثق للاستخدام التجاري", color = Color(0xFF2C3E50), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text("30 مؤثرًا حقيقيًا بترخيص موثق للاستخدام التجاري", color = Color(0xFF1D2B42), fontSize = 13.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(14.dp))
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF0D47A1))) {
             Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {

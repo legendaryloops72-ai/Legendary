@@ -74,6 +74,12 @@ class InterstitialAdManager(private val context: Context) {
             }
         }
 
+        if (activity.isFinishing || activity.isDestroyed) {
+            Log.d("InterstitialAdManager", "Activity is finishing or destroyed. Skipping ad display.")
+            onShowComplete()
+            return
+        }
+
         isShowingAd = true
         interstitialAd?.show(activity)
     }

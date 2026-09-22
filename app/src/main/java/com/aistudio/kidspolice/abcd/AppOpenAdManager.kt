@@ -82,6 +82,12 @@ class AppOpenAdManager(private val context: Context) {
             }
         }
 
+        if (activity.isFinishing || activity.isDestroyed) {
+            Log.d("AppOpenAdManager", "Activity is finishing or destroyed. Skipping ad display.")
+            onShowComplete()
+            return
+        }
+
         isShowingAd = true
         appOpenAd?.show(activity)
     }

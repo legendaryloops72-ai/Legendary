@@ -497,50 +497,70 @@ class PoliceAudioPlayer(private val context: Context) : TextToSpeech.OnInitListe
 
     fun playRadioChirp() {
         playSoundEffect {
-            val toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 85)
+            var toneGen: ToneGenerator? = null
             try {
+                toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 85)
                 toneGen.startTone(ToneGenerator.TONE_PROP_BEEP2, 180)
                 vibrate(100)
                 delay(200)
-            } finally { toneGen.release() }
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "Error playing radio chirp: ${e.message}", e)
+            } finally {
+                try { toneGen?.release() } catch (_: Exception) {}
+            }
         }
     }
 
     fun playWhistle() {
         playSoundEffect {
             stopSpeaking()
-            val toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 100)
+            var toneGen: ToneGenerator? = null
             try {
+                toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 100)
                 toneGen.startTone(ToneGenerator.TONE_SUP_RINGTONE, 350)
                 vibrate(150)
                 delay(400)
-            } finally { toneGen.release() }
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "Error playing whistle: ${e.message}", e)
+            } finally {
+                try { toneGen?.release() } catch (_: Exception) {}
+            }
         }
     }
 
     fun playPoliceHorn() {
         playSoundEffect {
             stopSpeaking()
-            val toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 100)
+            var toneGen: ToneGenerator? = null
             try {
+                toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 100)
                 toneGen.startTone(ToneGenerator.TONE_DTMF_D, 400)
                 vibrate(250)
                 delay(450)
-            } finally { toneGen.release() }
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "Error playing horn: ${e.message}", e)
+            } finally {
+                try { toneGen?.release() } catch (_: Exception) {}
+            }
         }
     }
 
     fun playRingTone() {
         playSoundEffect {
             stopSpeaking()
-            val toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 90)
+            var toneGen: ToneGenerator? = null
             try {
+                toneGen = ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 90)
                 repeat(2) {
                     toneGen.startTone(ToneGenerator.TONE_SUP_RINGTONE, 900)
                     vibrate(400)
                     delay(1200)
                 }
-            } finally { toneGen.release() }
+            } catch (e: Exception) {
+                android.util.Log.e("PoliceAudioPlayer", "Error playing ringtone: ${e.message}", e)
+            } finally {
+                try { toneGen?.release() } catch (_: Exception) {}
+            }
         }
     }
 

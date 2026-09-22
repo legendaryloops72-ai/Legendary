@@ -2,6 +2,7 @@ package com.aistudio.kidspolice.abcd.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -85,6 +86,10 @@ fun HomeScreen(
     val player = audioPlayer ?: return
     var tab by remember { mutableIntStateOf(0) }
     var showInfo by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = tab != 0) {
+        tab = 0
+    }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -153,7 +158,9 @@ fun HomeScreen(
                     }
                 }
                 TestBannerAdView(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
                 )
                 NavigationBar(modifier = Modifier.navigationBarsPadding(), containerColor = Color.White, tonalElevation = 8.dp) {
                     NavigationBarItem(

@@ -1,5 +1,6 @@
 package com.aistudio.kidspolice.abcd.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -66,6 +67,11 @@ fun PoliceCarsScreen(onBack: () -> Unit) {
         )
     }
     var selectedIndex by remember { mutableIntStateOf(-1) }
+
+    BackHandler(enabled = selectedIndex >= 0) {
+        selectedIndex = -1
+    }
+
     if (selectedIndex >= 0) {
         PoliceCarDetail(cars = cars, selectedIndex = selectedIndex, onSelected = { selectedIndex = it }, onBack = { selectedIndex = -1 })
         return
@@ -74,7 +80,7 @@ fun PoliceCarsScreen(onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF4F8FF)).padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(24.dp))
         Text("صور سيارات الشرطة", color = Color(0xFF0D47A1), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-        Text("30 مركبة أصلية — اضغط على أي صورة للتفاصيل", color = Color(0xFF2C3E50), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text("30 مركبة أصلية — اضغط على أي صورة للتفاصيل", color = Color(0xFF1D2B42), fontSize = 13.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(16.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -152,7 +158,7 @@ private fun PoliceCarDetail(cars: List<PoliceCar>, selectedIndex: Int, onSelecte
         Spacer(Modifier.height(16.dp))
         Text(car.title, color = Color(0xFF1D2B42), fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(4.dp))
-        Text("${selectedIndex + 1} من ${cars.size}", color = Color(0xFF4A5568), fontSize = 14.sp, fontWeight = FontWeight.Medium)
+        Text("${selectedIndex + 1} من ${cars.size}", color = Color(0xFF1D2B42), fontSize = 14.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(28.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(
