@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -60,6 +62,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.libraries.ads.mobile.sdk.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.common.OnAdInspectorClosedListener
 import com.aistudio.kidspolice.abcd.R
 import com.aistudio.kidspolice.abcd.audio.PoliceAudioPlayer
 import com.aistudio.kidspolice.abcd.data.Dialect
@@ -259,6 +263,21 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
                     tint = Color.Unspecified
                 )
             }
+        }
+        Spacer(Modifier.height(18.dp))
+        Button(
+            onClick = {
+                MobileAds.openAdInspector(OnAdInspectorClosedListener { error ->
+                    // Callback if inspector fails to open or is dismissed
+                })
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Navy),
+            shape = RoundedCornerShape(14.dp)
+        ) {
+            Text("فحص AdMob", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
         Spacer(Modifier.height(18.dp))
         Text("سياسة الخصوصية ومعلومات التطبيق متاحة من القائمة الجانبية", color = Color(0xFF4A5568), fontSize = 13.sp, fontWeight = FontWeight.Medium)
