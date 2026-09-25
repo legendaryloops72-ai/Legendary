@@ -19,24 +19,29 @@ class InterstitialAdManager(private val context: Context) {
     }
 
     fun loadAd() {
+        Log.d("InterstitialAdManager", "loadAd() started. isLoadingAd=$isLoadingAd, isAdAvailable=${isAdAvailable()}")
         if (isLoadingAd || isAdAvailable()) {
+            Log.d("InterstitialAdManager", "loadAd() skipped: already loading or ad available.")
             return
         }
 
         isLoadingAd = true
+        Log.d("InterstitialAdManager", "Requesting load with Ad Unit ID: $AD_UNIT_ID")
         val request = AdRequest.Builder(AD_UNIT_ID).build()
+        Log.d("InterstitialAdManager", "Calling InterstitialAd.load()...")
         InterstitialAd.load(
             request,
             object : AdLoadCallback<InterstitialAd> {
                 override fun onAdLoaded(ad: InterstitialAd) {
                     interstitialAd = ad
                     isLoadingAd = false
-                    Log.d("InterstitialAdManager", "Interstitial ad loaded successfully.")
+                    Log.d("InterstitialAdManager", "onAdLoaded: Interstitial ad loaded successfully.")
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     isLoadingAd = false
-                    Log.d("InterstitialAdManager", "Interstitial ad failed to load: ${loadAdError.message}")
+                    Log.e("InterstitialAdManager", "onAdFailedToLoad: code=${loadAdError.code}, message=${loadAdError.message}")
+                    Log.d("InterstitialAdManager", "loadAd failed, reload will be triggered when needed.")
                 }
             }
         )
@@ -47,13 +52,16 @@ class InterstitialAdManager(private val context: Context) {
     }
 
     fun showAd(activity: Activity, onShowComplete: () -> Unit = {}) {
+        Log.d("InterstitialAdManager", "showAd() started. isShowingAd=$isShowingAd, isAdAvailable=${isAdAvailable()}")
         if (isShowingAd) {
             Log.d("InterstitialAdManager", "Interstitial ad is already showing.")
             return
         }
 
-        if (!isAdAvailable()) {
-            Log.d("InterstitialAdManager", "Interstitial ad is not ready.")
+        val available = isAdAvailable()
+        Log.d("InterstitialAdManager", "isAdAvailable() result: $available")
+        if (!available) {
+            Log.d("InterstitialAdManager", "Interstitial ad is not ready. Calling onShowComplete() and reloading ad.")
             onShowComplete()
             loadAd()
             return
@@ -63,14 +71,15 @@ class InterstitialAdManager(private val context: Context) {
             override fun onAdDismissedFullScreenContent() {
                 interstitialAd = null
                 isShowingAd = false
-                Log.d("InterstitialAdManager", "Interstitial ad dismissed.")
+                Log.d("InterstitialAdManager", "onAdDismissedFullScreenContent: Ad dismissed.")
                 onShowComplete()
+                Log.d("InterstitialAdManager", "Reloading ad after dismiss...")
                 loadAd()
             }
 
             override fun onAdShowedFullScreenContent() {
                 isShowingAd = true
-                Log.d("InterstitialAdManager", "Interstitial ad showed fullscreen content (Impression).")
+                Log.d("InterstitialAdManager", "onAdShowedFullScreenContent: Ad showed fullscreen content (Impression).")
             }
         }
 
@@ -81,6 +90,7 @@ class InterstitialAdManager(private val context: Context) {
         }
 
         isShowingAd = true
+        Log.d("InterstitialAdManager", "Executing ad.show(activity)...")
         interstitialAd?.show(activity)
     }
 }

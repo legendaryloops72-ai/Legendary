@@ -69,9 +69,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Defer Mobile Ads SDK initialization and ad loading until after HomeScreen has rendered
+        // Mobile Ads SDK initialization on background thread according to GMA Next-Gen docs
         lifecycleScope.launch(Dispatchers.IO) {
-            delay(3500)
             val initConfig =
                 InitializationConfig.Builder(
                     "ca-app-pub-4760027279848820~4114638850"
@@ -87,7 +86,6 @@ class MainActivity : ComponentActivity() {
                 applicationContext,
                 initConfig
             ) {
-                appOpenAdManager.loadAd()
                 interstitialAdManager.loadAd()
             }
         }
@@ -96,11 +94,6 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONRESUME=true")
         super.onResume()
-        if (isFirstResume) {
-            isFirstResume = false
-        } else {
-            appOpenAdManager.showAdIfAvailable(this)
-        }
     }
 
     override fun onDestroy() {

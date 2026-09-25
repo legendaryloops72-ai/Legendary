@@ -2,6 +2,7 @@ package com.aistudio.kidspolice.abcd.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -91,8 +92,16 @@ fun HomeScreen(
     var tab by remember { mutableIntStateOf(0) }
     var showInfo by remember { mutableStateOf(false) }
 
-    BackHandler(enabled = tab != 0) {
+    fun handleBackToHome() {
+        if (tab == 1) {
+            player.stopSpeaking()
+        }
         tab = 0
+        onTestInterstitial()
+    }
+
+    BackHandler(enabled = tab != 0) {
+        handleBackToHome()
     }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -146,26 +155,34 @@ fun HomeScreen(
                         0 -> HomeLanding(
                             onMenu = { scope.launch { drawerState.open() } },
                             onSounds = {
-                                onTestInterstitial()
                                 if (tab != 1) player.stopSpeaking()
                                 tab = 1
                             },
                             onCars = {
-                                onTestInterstitial()
                                 if (tab != 2) player.stopSpeaking()
                                 tab = 2
                             },
                             onShare = ::shareApp
                         )
-                        1 -> SoundsScreen(audioPlayer = player, onBack = { player.stopSpeaking(); tab = 0 })
-                        else -> PoliceCarsScreen(onBack = { tab = 0 })
+                        1 -> SoundsScreen(audioPlayer = player, onBack = ::handleBackToHome)
+                        else -> PoliceCarsScreen(onBack = ::handleBackToHome)
                     }
                 }
-                TestBannerAdView(
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                )
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFECEFF1)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                ) {
+                    TestBannerAdView(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    )
+                }
+                Spacer(Modifier.height(4.dp))
                 NavigationBar(modifier = Modifier.navigationBarsPadding(), containerColor = Color.White, tonalElevation = 8.dp) {
                     NavigationBarItem(
                         selected = tab == 0,
@@ -263,21 +280,6 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
                     tint = Color.Unspecified
                 )
             }
-        }
-        Spacer(Modifier.height(18.dp))
-        Button(
-            onClick = {
-                MobileAds.openAdInspector(OnAdInspectorClosedListener { error ->
-                    // Callback if inspector fails to open or is dismissed
-                })
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Navy),
-            shape = RoundedCornerShape(14.dp)
-        ) {
-            Text("فحص AdMob", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
         Spacer(Modifier.height(18.dp))
         Text("سياسة الخصوصية ومعلومات التطبيق متاحة من القائمة الجانبية", color = Color(0xFF4A5568), fontSize = 13.sp, fontWeight = FontWeight.Medium)

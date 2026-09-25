@@ -78,9 +78,31 @@ fun PoliceCarsScreen(onBack: () -> Unit) {
     }
 
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF4F8FF)).padding(horizontal = 16.dp)) {
-        Spacer(Modifier.height(24.dp))
-        Text("صور سيارات الشرطة", color = Color(0xFF0D47A1), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-        Text("30 مركبة أصلية — اضغط على أي صورة للتفاصيل", color = Color(0xFF1D2B42), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+                    .background(Color.White)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "رجوع",
+                    tint = Color(0xFF0D47A1),
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Spacer(Modifier.size(12.dp))
+            Column {
+                Text("صور سيارات الشرطة", color = Color(0xFF0D47A1), fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+                Text("30 مركبة أصلية — اضغط على أي صورة للتفاصيل", color = Color(0xFF1D2B42), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+            }
+        }
         Spacer(Modifier.height(16.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
