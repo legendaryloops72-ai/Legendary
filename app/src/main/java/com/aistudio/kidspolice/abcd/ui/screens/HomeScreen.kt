@@ -64,10 +64,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
-import com.google.android.libraries.ads.mobile.sdk.common.OnAdInspectorClosedListener
 import com.aistudio.kidspolice.abcd.R
 import com.aistudio.kidspolice.abcd.audio.PoliceAudioPlayer
 import com.aistudio.kidspolice.abcd.data.Dialect
+import com.aistudio.kidspolice.abcd.ui.components.NativeHomeAd
 import com.aistudio.kidspolice.abcd.ui.components.TestBannerAdView
 import kotlinx.coroutines.launch
 
@@ -85,7 +85,6 @@ fun HomeScreen(
     onOpenMissions: () -> Unit,
     onOpenCertificate: () -> Unit,
     userScore: Int,
-    onTestInterstitial: () -> Unit = {},
     audioPlayer: PoliceAudioPlayer? = null
 ) {
     val player = audioPlayer ?: return
@@ -97,7 +96,6 @@ fun HomeScreen(
             player.stopSpeaking()
         }
         tab = 0
-        onTestInterstitial()
     }
 
     BackHandler(enabled = tab != 0) {
@@ -265,6 +263,12 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
                 Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "أصوات الشرطة", tint = Color(0xFF1565C0), modifier = Modifier.size(34.dp))
             }
         }
+        Spacer(Modifier.height(12.dp))
+        NativeHomeAd(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+        )
         Spacer(Modifier.height(12.dp))
         HomeActionCard(
             title = "سيارات الشرطة",
