@@ -72,6 +72,9 @@ class MainActivity : ComponentActivity() {
                 .setRequestConfiguration(
                     RequestConfiguration.Builder()
                         .setAgeRestrictedTreatment(AgeRestrictedTreatment.CHILD)
+                        .setMaxAdContentRating(
+                            RequestConfiguration.MaxAdContentRating.MAX_AD_CONTENT_RATING_G
+                        )
                         .build()
                 )
                 .build()

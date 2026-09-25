@@ -99,9 +99,12 @@ private fun createNativeAdView(context: android.content.Context): NativeAdView {
         setBackgroundColor(AndroidColor.WHITE)
     }
 
+    val density = context.resources.displayMetrics.density
+    fun dpToPx(dp: Int): Int = (dp * density).toInt()
+
     val root = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
-        setPadding(18, 14, 18, 14)
+        setPadding(dpToPx(16), dpToPx(12), dpToPx(16), dpToPx(12))
         layoutParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -125,7 +128,8 @@ private fun createNativeAdView(context: android.content.Context): NativeAdView {
     }
 
     val icon = ImageView(context).apply {
-        layoutParams = LinearLayout.LayoutParams(54, 54)
+        val iconSize = dpToPx(48)
+        layoutParams = LinearLayout.LayoutParams(iconSize, iconSize)
         scaleType = ImageView.ScaleType.CENTER_CROP
     }
 
@@ -136,12 +140,12 @@ private fun createNativeAdView(context: android.content.Context): NativeAdView {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             1f
         ).apply {
-            marginStart = 12
+            marginStart = dpToPx(12)
         }
     }
 
     val headline = TextView(context).apply {
-        textSize = 17f
+        textSize = 16f
         setTextColor(AndroidColor.rgb(24, 38, 61))
         setTypeface(typeface, android.graphics.Typeface.BOLD)
     }
@@ -158,11 +162,13 @@ private fun createNativeAdView(context: android.content.Context): NativeAdView {
     }
 
     val media = MediaView(context).apply {
+        minimumWidth = dpToPx(120)
+        minimumHeight = dpToPx(120)
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            180
+            dpToPx(180)
         ).apply {
-            topMargin = 10
+            topMargin = dpToPx(10)
         }
     }
 
@@ -171,12 +177,14 @@ private fun createNativeAdView(context: android.content.Context): NativeAdView {
         setTextColor(AndroidColor.WHITE)
         setBackgroundColor(AndroidColor.rgb(25, 118, 210))
         gravity = Gravity.CENTER
-        setPadding(18, 10, 18, 10)
+        val hp = dpToPx(16)
+        val vp = dpToPx(10)
+        setPadding(hp, vp, hp, vp)
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         ).apply {
-            topMargin = 10
+            topMargin = dpToPx(10)
         }
     }
 
@@ -221,7 +229,6 @@ private fun populateNativeAdView(nativeAdView: NativeAdView, nativeAd: NativeAd)
     nativeAdView.advertiserView = assets.advertiser
     nativeAdView.bodyView = assets.body
     nativeAdView.iconView = assets.icon
-    nativeAdView.mediaView = assets.media
     nativeAdView.callToActionView = assets.callToAction
 
     assets.headline.text = nativeAd.headline
@@ -240,6 +247,14 @@ private fun populateNativeAdView(nativeAdView: NativeAdView, nativeAd: NativeAd)
     assets.advertiser.visibility = if (nativeAd.advertiser.isNullOrBlank()) View.GONE else View.VISIBLE
     assets.body.visibility = if (nativeAd.body.isNullOrBlank()) View.GONE else View.VISIBLE
     assets.callToAction.visibility = if (nativeAd.callToAction.isNullOrBlank()) View.GONE else View.VISIBLE
+
+    val mediaContent = nativeAd.mediaContent
+    if (mediaContent != null) {
+        assets.media.mediaContent = mediaContent
+        assets.media.visibility = View.VISIBLE
+    } else {
+        assets.media.visibility = View.GONE
+    }
 
     nativeAdView.registerNativeAd(nativeAd, assets.media)
 }

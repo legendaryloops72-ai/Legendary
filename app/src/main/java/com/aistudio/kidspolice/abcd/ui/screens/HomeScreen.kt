@@ -263,13 +263,13 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
                 Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "أصوات الشرطة", tint = Color(0xFF1565C0), modifier = Modifier.size(34.dp))
             }
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(14.dp))
         NativeHomeAd(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(18.dp))
+                .clip(RoundedCornerShape(20.dp))
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(14.dp))
         HomeActionCard(
             title = "سيارات الشرطة",
             subtitle = "30 صورة أصلية للمركبات",
