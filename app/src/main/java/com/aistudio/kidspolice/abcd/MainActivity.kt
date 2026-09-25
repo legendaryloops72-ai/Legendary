@@ -41,10 +41,6 @@ import com.aistudio.kidspolice.abcd.ui.theme.KidsPoliceTheme
 import com.aistudio.kidspolice.abcd.ui.theme.PoliceNavy
 
 class MainActivity : ComponentActivity() {
-    private lateinit var appOpenAdManager: AppOpenAdManager
-    private lateinit var interstitialAdManager: InterstitialAdManager
-    private var isFirstResume = true
-
     companion object {
         init {
             android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_STARTED=true")
@@ -54,8 +50,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONCREATE=true")
         super.onCreate(savedInstanceState)
-        appOpenAdManager = AppOpenAdManager(applicationContext)
-        interstitialAdManager = InterstitialAdManager(applicationContext)
 
         // Render HomeScreen immediately
         setContent {
@@ -64,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = PoliceNavy
                 ) {
-                    KidsPoliceApp(onTestInterstitial = { interstitialAdManager.showAd(this) })
+                    KidsPoliceApp()
                 }
             }
         }
@@ -86,7 +80,7 @@ class MainActivity : ComponentActivity() {
                 applicationContext,
                 initConfig
             ) {
-                interstitialAdManager.loadAd()
+                // Banner is initialized via TestBannerAdView
             }
         }
     }
@@ -103,7 +97,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun KidsPoliceApp(onTestInterstitial: () -> Unit) {
+fun KidsPoliceApp() {
     val context = LocalContext.current
     val audioPlayer = remember { PoliceAudioPlayer(context) }
     val navController = rememberNavController()
@@ -136,7 +130,6 @@ fun KidsPoliceApp(onTestInterstitial: () -> Unit) {
                 onOpenMissions = { navController.navigate("missions") },
                 onOpenCertificate = { navController.navigate("certificate") },
                 userScore = userScore,
-                onTestInterstitial = onTestInterstitial,
                 audioPlayer = audioPlayer
             )
         }
