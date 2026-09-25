@@ -212,7 +212,7 @@ fun HomeScreen(
         }
     }
     if (showInfo) {
-        AlertDialog(onDismissRequest = { showInfo = false }, title = { Text("معلومات التطبيق") }, text = { Text("شرطة الأطفال\nأصوات ومركبات شرطة محلية للأطفال\nالإصدار 1.0.6") }, confirmButton = { TextButton(onClick = { showInfo = false }) { Text("إغلاق") } })
+        AlertDialog(onDismissRequest = { showInfo = false }, title = { Text("معلومات التطبيق") }, text = { Text("شرطة الأطفال\nأصوات ومركبات شرطة محلية للأطفال\nالإصدار 1.0.7") }, confirmButton = { TextButton(onClick = { showInfo = false }) { Text("إغلاق") } })
     }
 }
 
