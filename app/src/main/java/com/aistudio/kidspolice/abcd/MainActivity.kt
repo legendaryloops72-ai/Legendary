@@ -25,6 +25,7 @@ import com.google.android.libraries.ads.mobile.sdk.common.AgeRestrictedTreatment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.aistudio.kidspolice.abcd.ads.AppOpenAdManager
 import com.aistudio.kidspolice.abcd.audio.PoliceAudioPlayer
 import com.aistudio.kidspolice.abcd.data.DailyMission
 import com.aistudio.kidspolice.abcd.data.Dialect
@@ -47,9 +48,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private lateinit var appOpenAdManager: AppOpenAdManager
+    private var activeAudioPlayer: PoliceAudioPlayer? = null
+    private var currentDestination: String = "home"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONCREATE=true")
         super.onCreate(savedInstanceState)
+
+        appOpenAdManager = AppOpenAdManager(applicationContext).apply {
+            isAudioActiveProvider = {
+                val player = activeAudioPlayer
+                (player?.isSpeaking?.value == true) || (player?.isSirenPlaying?.value == true)
+            }
+            isSafeScreenToDisplayProvider = {
+                // Only consider safe when user is on home screen, not during an active call
+                currentDestination != "call"
+            }
+        }
 
         // Render HomeScreen immediately
         setContent {
@@ -58,7 +74,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = PoliceNavy
                 ) {
-                    KidsPoliceApp()
+                    KidsPoliceApp(
+                        onAudioPlayerCreated = { player ->
+                            activeAudioPlayer = player
+                        },
+                        onDestinationChanged = { route ->
+                            currentDestination = route
+                        }
+                    )
                 }
             }
         }
@@ -83,7 +106,8 @@ class MainActivity : ComponentActivity() {
                 applicationContext,
                 initConfig
             ) {
-                // Banner is initialized via TestBannerAdView
+                // Preload App Open ad after MobileAds SDK is initialized
+                appOpenAdManager.loadAd()
             }
         }
     }
@@ -91,6 +115,9 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONRESUME=true")
         super.onResume()
+        if (::appOpenAdManager.isInitialized) {
+            appOpenAdManager.showAdIfAvailable(this)
+        }
     }
 
     override fun onDestroy() {
@@ -100,10 +127,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun KidsPoliceApp() {
+fun KidsPoliceApp(
+    onAudioPlayerCreated: (PoliceAudioPlayer) -> Unit = {},
+    onDestinationChanged: (String) -> Unit = {}
+) {
     val context = LocalContext.current
-    val audioPlayer = remember { PoliceAudioPlayer(context) }
+    val audioPlayer = remember {
+        PoliceAudioPlayer(context).also { onAudioPlayerCreated(it) }
+    }
     val navController = rememberNavController()
+
+    DisposableEffect(navController) {
+        val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, destination, _ ->
+            destination.route?.let { onDestinationChanged(it) }
+        }
+        navController.addOnDestinationChangedListener(listener)
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
+        }
+    }
 
     var selectedDialect by remember { mutableStateOf(Dialect.SAUDI) }
     var currentScenario by remember { mutableStateOf<PoliceScenario?>(null) }
