@@ -65,6 +65,9 @@ class MainActivity : ComponentActivity() {
                 // Only consider safe when user is on home screen, not during an active call
                 currentDestination != "call"
             }
+            currentActivityProvider = {
+                this@MainActivity
+            }
         }
 
         // Render HomeScreen immediately
@@ -117,6 +120,14 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         if (::appOpenAdManager.isInitialized) {
             appOpenAdManager.showAdIfAvailable(this)
+        }
+    }
+
+    override fun onPause() {
+        android.util.Log.d("KidsPoliceDebug", "KIDSPOLICE_MAIN_ACTIVITY_ONPAUSE=true")
+        super.onPause()
+        if (::appOpenAdManager.isInitialized) {
+            appOpenAdManager.onActivityPaused()
         }
     }
 

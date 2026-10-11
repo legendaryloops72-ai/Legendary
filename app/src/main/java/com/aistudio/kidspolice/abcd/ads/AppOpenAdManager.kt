@@ -23,29 +23,31 @@ class AppOpenAdManager(private val context: Context) {
 
         private const val PREFS_NAME = "app_open_ad_prefs"
         private const val KEY_APP_OPEN_COUNT = "app_open_count"
-        private const val MIN_APP_OPENS_BEFORE_AD = 2 // Do not show on first launch
         private const val FOUR_HOURS_IN_MILLIS = 4 * 60 * 60 * 1000L
     }
 
     private var appOpenAd: AppOpenAd? = null
     private var isLoadingAd = false
     private var isShowingAd = false
+    private var isShowPending = false
     private var loadTime: Long = 0
 
     // Callback provider to query whether audio or call is active without modifying PoliceAudioPlayer
     var isAudioActiveProvider: (() -> Boolean)? = null
     // Callback provider to query whether user is currently in an active game/call/screen
     var isSafeScreenToDisplayProvider: (() -> Boolean)? = null
+    // Callback provider to get current active Activity if in foreground
+    var currentActivityProvider: (() -> Activity?)? = null
 
     init {
-        incrementAppOpenCount()
+        val count = incrementAppOpenCount()
+        Log.d(TAG, "AppOpenAdManager initialized. App session count: $count")
     }
 
     private fun incrementAppOpenCount(): Int {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val currentCount = prefs.getInt(KEY_APP_OPEN_COUNT, 0) + 1
         prefs.edit().putInt(KEY_APP_OPEN_COUNT, currentCount).apply()
-        Log.d(TAG, "Current app open count: $currentCount")
         return currentCount
     }
 
@@ -61,18 +63,24 @@ class AppOpenAdManager(private val context: Context) {
     }
 
     fun loadAd() {
-        if (isLoadingAd || isAdAvailable()) {
+        if (isLoadingAd) {
+            Log.d(TAG, "[LOAD_CHECK] Ad load is already in progress. Skipping duplicate request.")
+            return
+        }
+
+        if (isAdAvailable()) {
+            Log.d(TAG, "[LOAD_CHECK] Existing ad is still valid and ready. Skipping reload.")
             return
         }
 
         if (!MobileAds.isInitialized) {
-            Log.d(TAG, "MobileAds is not initialized yet. Skipping load.")
+            Log.d(TAG, "[LOAD_CHECK] MobileAds is not initialized yet. Skipping load.")
             return
         }
 
         isLoadingAd = true
         val adUnitId = TEST_AD_UNIT_ID
-        Log.d(TAG, "Requesting AppOpenAd with unit ID: $adUnitId")
+        Log.d(TAG, "[LOAD_START] Requesting AppOpenAd with unit ID: $adUnitId")
 
         try {
             val adRequest = AppOpenAdRequest.Builder(adUnitId).build()
@@ -80,56 +88,98 @@ class AppOpenAdManager(private val context: Context) {
                 adRequest,
                 object : AdLoadCallback<AppOpenAd> {
                     override fun onAdLoaded(ad: AppOpenAd) {
-                        Log.d(TAG, "AppOpenAd loaded successfully.")
+                        Log.d(TAG, "[LOAD_SUCCESS] AppOpenAd loaded successfully.")
                         appOpenAd = ad
                         isLoadingAd = false
                         loadTime = Date().time
+
+                        // Rule 3 & 4: If a show request was pending while waiting for load, evaluate now
+                        if (isShowPending) {
+                            Log.d(TAG, "[PENDING_EVALUATION] Show was pending. Checking foreground activity and conditions.")
+                            val activity = currentActivityProvider?.invoke()
+                            if (activity != null) {
+                                isShowPending = false
+                                activity.runOnUiThread {
+                                    showAdIfAvailable(activity)
+                                }
+                            } else {
+                                Log.d(TAG, "[PENDING_EVALUATION] No active foreground activity found. Ad remains cached.")
+                            }
+                        }
                     }
 
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        Log.w(TAG, "AppOpenAd failed to load: ${loadAdError.message} (code: ${loadAdError.code})")
+                        Log.w(
+                            TAG,
+                            "[LOAD_FAILED] AppOpenAd failed to load: message='${loadAdError.message}', code=${loadAdError.code}"
+                        )
                         isLoadingAd = false
                         appOpenAd = null
+                        isShowPending = false
                     }
                 }
             )
         } catch (e: Exception) {
-            Log.e(TAG, "Exception during AppOpenAd.load: ${e.message}", e)
+            Log.e(TAG, "[LOAD_EXCEPTION] Exception during AppOpenAd.load: ${e.message}", e)
             isLoadingAd = false
             appOpenAd = null
+            isShowPending = false
+        }
+    }
+
+    fun onActivityPaused() {
+        // Cancel pending show if activity goes to background before ad arrives
+        if (isShowPending) {
+            Log.d(TAG, "[LIFECYCLE] Activity paused while show was pending. Cancelling pending show.")
+            isShowPending = false
         }
     }
 
     fun showAdIfAvailable(activity: Activity) {
+        Log.d(TAG, "[SHOW_ATTEMPT] Evaluating show conditions for activity: ${activity.localClassName}")
+
         if (isShowingAd) {
-            Log.d(TAG, "Ad is already showing. Suppressing.")
+            Log.d(TAG, "[SHOW_SUPPRESSED] Ad is already currently showing.")
             return
         }
 
-        // Rule 4: Do not show on first launch (minimum opens required)
-        if (getAppOpenCount() <= MIN_APP_OPENS_BEFORE_AD) {
-            Log.d(TAG, "App open count (${getAppOpenCount()}) <= $MIN_APP_OPENS_BEFORE_AD. Suppressing ad for early sessions.")
-            loadAd() // Preload for subsequent sessions
+        if (activity.isFinishing || activity.isDestroyed) {
+            Log.d(TAG, "[SHOW_SUPPRESSED] Activity is finishing or destroyed.")
             return
         }
 
-        // Rule 5: Do not show while playing sounds, sirens or call speech
+        // Rule 2 & 6: Do not show on first launch (count == 1). Eligible starting from second launch (count >= 2).
+        val openCount = getAppOpenCount()
+        if (openCount <= 1) {
+            Log.d(TAG, "[SHOW_SUPPRESSED] First launch of the app (count=$openCount). Preserving child onboarding experience. Preloading for future sessions.")
+            loadAd()
+            return
+        }
+
+        // Rule 4 & 5: Check audio, sounds, siren, or call speech
         val isAudioPlaying = isAudioActiveProvider?.invoke() ?: false
         if (isAudioPlaying) {
-            Log.d(TAG, "Audio or call is currently active. Suppressing AppOpenAd to protect children experience.")
+            Log.d(TAG, "[SHOW_SUPPRESSED] Audio, siren, or call is currently active. Suppressing ad to protect child experience.")
             return
         }
 
-        // Rule 5: Verify if the current screen is safe for display (e.g. not in the middle of a call)
+        // Rule 4 & 5: Check screen safety
         val isSafeScreen = isSafeScreenToDisplayProvider?.invoke() ?: true
         if (!isSafeScreen) {
-            Log.d(TAG, "Current screen is not in a resting state. Suppressing AppOpenAd.")
+            Log.d(TAG, "[SHOW_SUPPRESSED] Current screen is not safe for ad display (e.g. active call).")
             return
         }
 
+        // Check ad readiness and freshness
         if (!isAdAvailable()) {
-            Log.d(TAG, "AppOpenAd is not available or has expired. Requesting a new ad.")
-            loadAd()
+            if (isLoadingAd) {
+                Log.d(TAG, "[SHOW_DEFERRED] Ad is still loading. Marking show as pending once loaded.")
+                isShowPending = true
+            } else {
+                Log.d(TAG, "[SHOW_DEFERRED] Ad is not available or expired. Triggering load and marking pending.")
+                isShowPending = true
+                loadAd()
+            }
             return
         }
 
@@ -138,26 +188,34 @@ class AppOpenAdManager(private val context: Context) {
         ad.adEventCallback = object : AppOpenAdEventCallback {
             override fun onAdShowedFullScreenContent() {
                 isShowingAd = true
-                Log.d(TAG, "AppOpenAd showed full screen content.")
+                isShowPending = false
+                Log.d(TAG, "[SHOW_EVENT] AppOpenAd showed full screen content.")
             }
 
             override fun onAdDismissedFullScreenContent() {
-                Log.d(TAG, "AppOpenAd dismissed full screen content.")
+                Log.d(TAG, "[SHOW_EVENT] AppOpenAd dismissed full screen content.")
                 appOpenAd = null
                 isShowingAd = false
-                // Preload next ad seamlessly
+                isShowPending = false
+                // Preload next ad seamlessly for next resume
                 loadAd()
             }
 
             override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
-                Log.w(TAG, "AppOpenAd failed to show: ${fullScreenContentError.message}")
+                Log.w(
+                    TAG,
+                    "[SHOW_FAILED] AppOpenAd failed to show: message='${fullScreenContentError.message}', code=${fullScreenContentError.code}"
+                )
                 appOpenAd = null
                 isShowingAd = false
+                isShowPending = false
                 loadAd()
             }
         }
 
+        Log.d(TAG, "[SHOW_SUCCESS] All conditions met. Presenting AppOpenAd.")
         isShowingAd = true
+        isShowPending = false
         ad.show(activity)
     }
 }
