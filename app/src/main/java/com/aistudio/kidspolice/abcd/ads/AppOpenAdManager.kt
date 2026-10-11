@@ -24,6 +24,7 @@ class AppOpenAdManager(private val context: Context) {
         private const val PREFS_NAME = "app_open_ad_prefs"
         private const val KEY_APP_OPEN_COUNT = "app_open_count"
         private const val FOUR_HOURS_IN_MILLIS = 4 * 60 * 60 * 1000L
+        private const val MIN_INTERVAL_BETWEEN_ADS_MS = 60 * 1000L // At least 60 seconds between App Open ads
     }
 
     private var appOpenAd: AppOpenAd? = null
@@ -31,6 +32,7 @@ class AppOpenAdManager(private val context: Context) {
     private var isShowingAd = false
     private var isShowPending = false
     private var loadTime: Long = 0
+    private var lastAdDismissedTime: Long = 0
 
     // Callback provider to query whether audio or call is active without modifying PoliceAudioPlayer
     var isAudioActiveProvider: (() -> Boolean)? = null
@@ -93,12 +95,12 @@ class AppOpenAdManager(private val context: Context) {
                         isLoadingAd = false
                         loadTime = Date().time
 
-                        // Rule 3 & 4: If a show request was pending while waiting for load, evaluate now
+                        // Only evaluate deferred show if a show request was specifically pending
                         if (isShowPending) {
                             Log.d(TAG, "[PENDING_EVALUATION] Show was pending. Checking foreground activity and conditions.")
+                            isShowPending = false
                             val activity = currentActivityProvider?.invoke()
                             if (activity != null) {
-                                isShowPending = false
                                 activity.runOnUiThread {
                                     showAdIfAvailable(activity)
                                 }
@@ -138,6 +140,7 @@ class AppOpenAdManager(private val context: Context) {
     fun showAdIfAvailable(activity: Activity) {
         Log.d(TAG, "[SHOW_ATTEMPT] Evaluating show conditions for activity: ${activity.localClassName}")
 
+        // Requirement 3: Prevent concurrent/duplicate shows
         if (isShowingAd) {
             Log.d(TAG, "[SHOW_SUPPRESSED] Ad is already currently showing.")
             return
@@ -148,7 +151,14 @@ class AppOpenAdManager(private val context: Context) {
             return
         }
 
-        // Rule 2 & 6: Do not show on first launch (count == 1). Eligible starting from second launch (count >= 2).
+        // Requirement 4: Prevent showing another ad immediately after dismissing the previous one
+        val timeSinceLastAd = Date().time - lastAdDismissedTime
+        if (lastAdDismissedTime > 0 && timeSinceLastAd < MIN_INTERVAL_BETWEEN_ADS_MS) {
+            Log.d(TAG, "[SHOW_SUPPRESSED] Ad was dismissed recently (${timeSinceLastAd / 1000}s ago). Cooldown active.")
+            return
+        }
+
+        // Requirement: Do not show on first launch (count <= 1).
         val openCount = getAppOpenCount()
         if (openCount <= 1) {
             Log.d(TAG, "[SHOW_SUPPRESSED] First launch of the app (count=$openCount). Preserving child onboarding experience. Preloading for future sessions.")
@@ -156,21 +166,21 @@ class AppOpenAdManager(private val context: Context) {
             return
         }
 
-        // Rule 4 & 5: Check audio, sounds, siren, or call speech
+        // Requirement: Check audio, sounds, siren, or call speech
         val isAudioPlaying = isAudioActiveProvider?.invoke() ?: false
         if (isAudioPlaying) {
             Log.d(TAG, "[SHOW_SUPPRESSED] Audio, siren, or call is currently active. Suppressing ad to protect child experience.")
             return
         }
 
-        // Rule 4 & 5: Check screen safety
+        // Requirement 5: Check screen safety - only safe screens (e.g. Home screen)
         val isSafeScreen = isSafeScreenToDisplayProvider?.invoke() ?: true
         if (!isSafeScreen) {
-            Log.d(TAG, "[SHOW_SUPPRESSED] Current screen is not safe for ad display (e.g. active call).")
+            Log.d(TAG, "[SHOW_SUPPRESSED] Current screen is not safe for ad display (e.g. active call or in-game navigation).")
             return
         }
 
-        // Check ad readiness and freshness
+        // Requirement 6: Check ad readiness. If loading, mark pending once without loop
         if (!isAdAvailable()) {
             if (isLoadingAd) {
                 Log.d(TAG, "[SHOW_DEFERRED] Ad is still loading. Marking show as pending once loaded.")
@@ -185,6 +195,10 @@ class AppOpenAdManager(private val context: Context) {
 
         val ad = appOpenAd ?: return
 
+        // Set isShowingAd immediately before show() to prevent race conditions
+        isShowingAd = true
+        isShowPending = false
+
         ad.adEventCallback = object : AppOpenAdEventCallback {
             override fun onAdShowedFullScreenContent() {
                 isShowingAd = true
@@ -197,8 +211,9 @@ class AppOpenAdManager(private val context: Context) {
                 appOpenAd = null
                 isShowingAd = false
                 isShowPending = false
-                // Preload next ad seamlessly for next resume
-                loadAd()
+                lastAdDismissedTime = Date().time
+                // Do not auto-reload immediately while user is in active session to avoid repeated ads.
+                // Preload can happen on next background-to-foreground or resume.
             }
 
             override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
@@ -209,13 +224,11 @@ class AppOpenAdManager(private val context: Context) {
                 appOpenAd = null
                 isShowingAd = false
                 isShowPending = false
-                loadAd()
+                lastAdDismissedTime = Date().time
             }
         }
 
         Log.d(TAG, "[SHOW_SUCCESS] All conditions met. Presenting AppOpenAd.")
-        isShowingAd = true
-        isShowPending = false
         ad.show(activity)
     }
 }
