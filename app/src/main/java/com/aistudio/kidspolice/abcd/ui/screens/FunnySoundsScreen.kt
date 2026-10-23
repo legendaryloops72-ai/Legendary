@@ -285,7 +285,7 @@ fun FunnySoundsScreen(
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Image(
-                            painter = painterResource(R.drawable.funny_category_hero),
+                            painter = painterResource(R.drawable.funny_photo_04),
                             contentDescription = "عالم الأصوات المضحكة للأطفال",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
@@ -305,7 +305,7 @@ fun FunnySoundsScreen(
                                 .padding(12.dp)
                         ) {
                             Text(
-                                text = "اضغط على أي صوت للاستماع والمرح! 🎉",
+                                text = "اضغط على أي صوت للاستماع والمرح!",
                                 color = Color.White,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold
@@ -337,7 +337,7 @@ fun FunnySoundsScreen(
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text = cat.emoji, fontSize = 14.sp)
+                                Image(painter = painterResource(cat.iconRes), contentDescription = cat.title, modifier = Modifier.size(24.dp).clip(CircleShape), contentScale = ContentScale.Crop)
                                 Spacer(Modifier.width(6.dp))
                                 Text(
                                     text = cat.title,
@@ -465,18 +465,18 @@ fun FunnySoundsScreen(
                         .verticalScroll(rememberScrollState())
                 ) {
                     Text(
-                        text = "قسم «عالم الأصوات المضحكة» يضم مؤثرات صوتية ترفيهية للأطفال، جميعها ملفات أصلية مولدة رياضياً (WAV 16-bit 22kHz) ومحفوظة محلياً 100% دون إنترنت.",
+                        text = "قسم «عالم الأصوات المضحكة» يضم تسجيلات فعلية ومؤثرات مرخّصة محفوظة محلياً، ويعمل دون إنترنت. تفاصيل كل مصدر وترخيص موجودة في ملف ASSET_LICENSES.md.",
                         fontSize = 13.sp
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "التراخيص وشخصيات المحاكاة:",
+                        text = "التراخيص والأصول المستخدمة:",
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "• شخصيات سبونجي بوبو والدب المحبوب وماشا هي أسماء ترفيهية خيالية بأصوات كرتونية أصلية تماماً بديلة ومولدة برمجياً، ولا نستخدم أي تسجيلات أو أصوات لممثلين أو مواد محمية بحقوق النشر.",
+                        text = "لا يستخدم هذا القسم تسجيلات شخصيات كرتونية محمية أو أصوات ممثلين من أعمال تجارية؛ استُخدمت أوصاف عامة لألعاب وحيوانات ومؤثرات أصلية المصدر.",
                         fontSize = 11.sp,
                         color = Color(0xFF455A64)
                     )
@@ -543,15 +543,15 @@ private fun FunnySoundItemCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Emoji Icon Badge
-                Box(
+                // Real photographic asset badge
+                Image(
+                    painter = painterResource(sound.imageRes),
+                    contentDescription = sound.title,
                     modifier = Modifier
-                        .size(40.dp)
-                        .background(sound.accentColor.copy(alpha = 0.15f), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = sound.emojiIcon, fontSize = 22.sp)
-                }
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
 
                 // Play / Ripple Indicator
                 Box(
