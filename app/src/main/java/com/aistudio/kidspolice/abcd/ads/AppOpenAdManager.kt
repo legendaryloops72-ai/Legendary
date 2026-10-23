@@ -81,8 +81,12 @@ class AppOpenAdManager(private val context: Context) {
         }
 
         isLoadingAd = true
-        val adUnitId = TEST_AD_UNIT_ID
-        Log.d(TAG, "[LOAD_START] Requesting AppOpenAd with unit ID: $adUnitId")
+        val adUnitId = if (com.aistudio.kidspolice.abcd.BuildConfig.DEBUG) {
+            TEST_AD_UNIT_ID
+        } else {
+            PRODUCTION_AD_UNIT_ID
+        }
+        Log.d(TAG, "[LOAD_START] Requesting AppOpenAd with unit ID: $adUnitId (isDebug=${com.aistudio.kidspolice.abcd.BuildConfig.DEBUG})")
 
         try {
             val adRequest = AppOpenAdRequest.Builder(adUnitId).build()

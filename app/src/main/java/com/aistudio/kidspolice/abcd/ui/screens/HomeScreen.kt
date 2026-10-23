@@ -84,6 +84,8 @@ fun HomeScreen(
     onOpenSounds: () -> Unit,
     onOpenMissions: () -> Unit,
     onOpenCertificate: () -> Unit,
+    onOpenToys: () -> Unit = {},
+    onOpenFunnySounds: () -> Unit = {},
     userScore: Int,
     audioPlayer: PoliceAudioPlayer? = null
 ) {
@@ -134,7 +136,9 @@ fun HomeScreen(
                 }
                 DrawerItem("الرئيسية", Icons.Default.Home) { if (tab != 0) player.stopSpeaking(); tab = 0; scope.launch { drawerState.close() } }
                 DrawerItem("أصوات الشرطة", painterResource(R.drawable.ic_sound_wave)) { if (tab != 1) player.stopSpeaking(); tab = 1; scope.launch { drawerState.close() } }
+                DrawerItem("عالم الأصوات المضحكة", Icons.Default.PlayArrow) { player.stopSpeaking(); onOpenFunnySounds(); scope.launch { drawerState.close() } }
                 DrawerItem("سيارات الشرطة", painterResource(R.drawable.ic_section_cars)) { if (tab != 2) player.stopSpeaking(); tab = 2; scope.launch { drawerState.close() } }
+                DrawerItem("محاكي الأسلحة", Icons.Default.PlayArrow) { player.stopSpeaking(); onOpenToys(); scope.launch { drawerState.close() } }
                 DrawerItem("مشاركة التطبيق", Icons.Default.Share) { shareApp(); scope.launch { drawerState.close() } }
                 DrawerItem("سياسة الخصوصية", Icons.Default.Info) {
                     openPrivacyPolicy()
@@ -159,6 +163,14 @@ fun HomeScreen(
                             onCars = {
                                 if (tab != 2) player.stopSpeaking()
                                 tab = 2
+                            },
+                            onToys = {
+                                player.stopSpeaking()
+                                onOpenToys()
+                            },
+                            onFunnySounds = {
+                                player.stopSpeaking()
+                                onOpenFunnySounds()
                             },
                             onShare = ::shareApp
                         )
@@ -232,7 +244,14 @@ private fun DrawerItem(title: String, icon: @Composable () -> Unit, onClick: () 
 }
 
 @Composable
-private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> Unit, onShare: () -> Unit) {
+private fun HomeLanding(
+    onMenu: () -> Unit,
+    onSounds: () -> Unit,
+    onCars: () -> Unit,
+    onToys: () -> Unit,
+    onFunnySounds: () -> Unit,
+    onShare: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(18.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -261,6 +280,33 @@ private fun HomeLanding(onMenu: () -> Unit, onSounds: () -> Unit, onCars: () -> 
         ) {
             Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF1565C0).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
                 Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "أصوات الشرطة", tint = Color(0xFF1565C0), modifier = Modifier.size(34.dp))
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        HomeActionCard(
+            title = "عالم الأصوات المضحكة",
+            subtitle = "20 نغمة ومقلب كرتوني طريف",
+            onClick = onFunnySounds,
+            tint = Color(0xFFFF9800)
+        ) {
+            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFFFF9800).copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
+                Text("🎉", fontSize = 28.sp)
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        HomeActionCard(
+            title = "محاكي الأسلحة",
+            subtitle = "ألعاب خيالية مرحة وآمنة للأطفال",
+            onClick = onToys,
+            tint = Color(0xFFE91E63)
+        ) {
+            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFFE91E63).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.toy_item_laser),
+                    contentDescription = "محاكي الأسلحة",
+                    modifier = Modifier.size(46.dp).clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Fit
+                )
             }
         }
         Spacer(Modifier.height(14.dp))

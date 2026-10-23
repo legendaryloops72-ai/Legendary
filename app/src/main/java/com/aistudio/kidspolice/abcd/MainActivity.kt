@@ -185,8 +185,22 @@ fun KidsPoliceApp(
                 onOpenSounds = { navController.navigate("sounds") },
                 onOpenMissions = { navController.navigate("missions") },
                 onOpenCertificate = { navController.navigate("certificate") },
+                onOpenToys = { navController.navigate("toys") },
+                onOpenFunnySounds = { navController.navigate("funny_sounds") },
                 userScore = userScore,
                 audioPlayer = audioPlayer
+            )
+        }
+
+        composable("funny_sounds") {
+            com.aistudio.kidspolice.abcd.ui.screens.FunnySoundsScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("toys") {
+            com.aistudio.kidspolice.abcd.ui.screens.ToySimulatorScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 
