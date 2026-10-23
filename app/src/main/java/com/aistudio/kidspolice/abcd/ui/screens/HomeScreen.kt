@@ -86,6 +86,7 @@ fun HomeScreen(
     onOpenCertificate: () -> Unit,
     onOpenToys: () -> Unit = {},
     onOpenFunnySounds: () -> Unit = {},
+    onOpenCartoonVoices: () -> Unit = {},
     userScore: Int,
     audioPlayer: PoliceAudioPlayer? = null
 ) {
@@ -137,6 +138,7 @@ fun HomeScreen(
                 DrawerItem("الرئيسية", Icons.Default.Home) { if (tab != 0) player.stopSpeaking(); tab = 0; scope.launch { drawerState.close() } }
                 DrawerItem("أصوات الشرطة", painterResource(R.drawable.ic_sound_wave)) { if (tab != 1) player.stopSpeaking(); tab = 1; scope.launch { drawerState.close() } }
                 DrawerItem("عالم الأصوات المضحكة", Icons.Default.PlayArrow) { player.stopSpeaking(); onOpenFunnySounds(); scope.launch { drawerState.close() } }
+                DrawerItem("أصوات الشخصيات الكرتونية", painterResource(R.drawable.ic_sound_wave)) { player.stopSpeaking(); onOpenCartoonVoices(); scope.launch { drawerState.close() } }
                 DrawerItem("سيارات الشرطة", painterResource(R.drawable.ic_section_cars)) { if (tab != 2) player.stopSpeaking(); tab = 2; scope.launch { drawerState.close() } }
                 DrawerItem("محاكي الأسلحة", Icons.Default.PlayArrow) { player.stopSpeaking(); onOpenToys(); scope.launch { drawerState.close() } }
                 DrawerItem("مشاركة التطبيق", Icons.Default.Share) { shareApp(); scope.launch { drawerState.close() } }
@@ -171,6 +173,10 @@ fun HomeScreen(
                             onFunnySounds = {
                                 player.stopSpeaking()
                                 onOpenFunnySounds()
+                            },
+                            onCartoonVoices = {
+                                player.stopSpeaking()
+                                onOpenCartoonVoices()
                             },
                             onShare = ::shareApp
                         )
@@ -250,6 +256,7 @@ private fun HomeLanding(
     onCars: () -> Unit,
     onToys: () -> Unit,
     onFunnySounds: () -> Unit,
+    onCartoonVoices: () -> Unit,
     onShare: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -291,6 +298,22 @@ private fun HomeLanding(
         ) {
             Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFFFF9800).copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
                 Text("🎉", fontSize = 28.sp)
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        HomeActionCard(
+            title = "أصوات الشخصيات الكرتونية",
+            subtitle = "30 تسجيلاً حقيقياً مرخّصاً",
+            onClick = onCartoonVoices,
+            tint = Color(0xFF8E24AA)
+        ) {
+            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF8E24AA).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.funny_photo_11),
+                    contentDescription = "أصوات الشخصيات الكرتونية",
+                    modifier = Modifier.size(46.dp).clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
             }
         }
         Spacer(Modifier.height(14.dp))

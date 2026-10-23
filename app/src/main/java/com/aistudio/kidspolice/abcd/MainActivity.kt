@@ -187,6 +187,7 @@ fun KidsPoliceApp(
                 onOpenCertificate = { navController.navigate("certificate") },
                 onOpenToys = { navController.navigate("toys") },
                 onOpenFunnySounds = { navController.navigate("funny_sounds") },
+                onOpenCartoonVoices = { navController.navigate("cartoon_voices") },
                 userScore = userScore,
                 audioPlayer = audioPlayer
             )
@@ -198,6 +199,11 @@ fun KidsPoliceApp(
             )
         }
 
+        composable("cartoon_voices") {
+            com.aistudio.kidspolice.abcd.ui.screens.CartoonVoicesScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
         composable("toys") {
             com.aistudio.kidspolice.abcd.ui.screens.ToySimulatorScreen(
                 onBack = { navController.popBackStack() }
