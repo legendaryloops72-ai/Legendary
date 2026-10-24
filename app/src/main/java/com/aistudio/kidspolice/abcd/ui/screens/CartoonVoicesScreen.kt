@@ -177,9 +177,9 @@ fun CartoonVoicesScreen(
     // Filter voices based on category
     val displayedVoices = remember(selectedCategory) {
         if (selectedCategory == CartoonVoiceCategory.ALL) {
-            CartoonVoicesRepository.voices
+            CartoonVoicesRepository.voices.take(20)
         } else {
-            CartoonVoicesRepository.voices.filter { it.category == selectedCategory }
+            CartoonVoicesRepository.voices.filter { it.category == selectedCategory }.take(20)
         }
     }
 
@@ -237,7 +237,7 @@ fun CartoonVoicesScreen(
                             fontWeight = FontWeight.ExtraBold
                         )
                         Text(
-                            text = "مقالب ونغمات كرتونية مرحة للأطفال",
+                            text = "20 شخصية أصلية غير رسمية — أصوات مرخّصة للأطفال",
                             color = Color(0xFF546E7A),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium

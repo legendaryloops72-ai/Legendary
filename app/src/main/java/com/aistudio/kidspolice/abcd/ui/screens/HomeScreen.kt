@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -259,107 +260,110 @@ private fun HomeLanding(
     onCartoonVoices: () -> Unit,
     onShare: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(Modifier.height(18.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onMenu, modifier = Modifier.size(48.dp)) { Icon(Icons.Default.Menu, contentDescription = "فتح القائمة", tint = Navy, modifier = Modifier.size(30.dp)) }
-            Text("شرطة الأطفال", color = Navy, fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
-            IconButton(onClick = onShare, modifier = Modifier.size(48.dp)) { Icon(Icons.Default.Share, contentDescription = "مشاركة التطبيق", tint = Navy, modifier = Modifier.size(26.dp)) }
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(Background),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Dark blue brand header inspired by the supplied reference, built from Compose.
+        Box(
+            modifier = Modifier.fillMaxWidth().background(
+                Brush.verticalGradient(listOf(Color(0xFF0B4BA2), Color(0xFF073272)))
+            ).padding(horizontal = 18.dp, vertical = 14.dp)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onMenu, modifier = Modifier.size(44.dp)) {
+                    Icon(Icons.Default.Menu, contentDescription = "فتح القائمة", tint = Color.White, modifier = Modifier.size(31.dp))
+                }
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(painterResource(R.drawable.ic_app_brand_logo), contentDescription = "شعار شرطة الأطفال", modifier = Modifier.size(32.dp))
+                        Spacer(Modifier.width(7.dp))
+                        Text("شرطة الأطفال", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                    Text("أصوات ومركبات الشرطة", color = Color.White.copy(alpha = 0.9f), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                }
+                Image(painterResource(R.drawable.shield_logo), contentDescription = "شارة شرطة الأطفال", modifier = Modifier.size(49.dp))
+            }
         }
-        Text("أصوات ومركبات الشرطة", color = Color(0xFF2C3E50), fontSize = 14.sp, fontWeight = FontWeight.Medium)
-        Spacer(Modifier.height(14.dp))
-        Card(modifier = Modifier.fillMaxWidth().height(220.dp), shape = RoundedCornerShape(30.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF0A1128))) {
-            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFF0A1128), Color(0xFF001F54)))), contentAlignment = Alignment.Center) {
+
+        Spacer(Modifier.height(12.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp).height(228.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF0A387E)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        ) {
+            Box(Modifier.fillMaxSize()) {
                 Image(
                     painter = painterResource(R.drawable.police_child_icon),
-                    contentDescription = "شرطي أطفال ثلاثي الأبعاد",
-                    modifier = Modifier.fillMaxSize().padding(14.dp).clip(RoundedCornerShape(20.dp)),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
-        Spacer(Modifier.height(18.dp))
-        HomeActionCard(
-            title = "أصوات الشرطة",
-            subtitle = "30 مؤثرًا صوتيًا محليًا",
-            onClick = onSounds,
-            tint = Color(0xFF1565C0)
-        ) {
-            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF1565C0).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                Icon(painterResource(R.drawable.ic_sound_wave), contentDescription = "أصوات الشرطة", tint = Color(0xFF1565C0), modifier = Modifier.size(34.dp))
-            }
-        }
-        Spacer(Modifier.height(14.dp))
-        HomeActionCard(
-            title = "عالم الأصوات المضحكة",
-            subtitle = "20 نغمة ومقلب كرتوني طريف",
-            onClick = onFunnySounds,
-            tint = Color(0xFFFF9800)
-        ) {
-            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFFFF9800).copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
-                Text("🎉", fontSize = 28.sp)
-            }
-        }
-        Spacer(Modifier.height(14.dp))
-        HomeActionCard(
-            title = "أصوات الشخصيات الكرتونية",
-            subtitle = "30 تسجيلاً حقيقياً مرخّصاً",
-            onClick = onCartoonVoices,
-            tint = Color(0xFF8E24AA)
-        ) {
-            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF8E24AA).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                Image(
-                    painter = painterResource(R.drawable.funny_photo_11),
-                    contentDescription = "أصوات الشخصيات الكرتونية",
-                    modifier = Modifier.size(46.dp).clip(RoundedCornerShape(12.dp)),
+                    contentDescription = "شرطي أطفال كرتوني أصلي",
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
+                Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xFF082C66).copy(alpha = 0.78f), Color.Transparent))))
+                Column(modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp), horizontalAlignment = Alignment.Start) {
+                    Text("استعد", color = Color(0xFFFFD21F), fontSize = 34.sp, fontWeight = FontWeight.ExtraBold)
+                    Text("للمغامرة!", color = Color.White, fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
+                    Text("تعلّم، العب، واكتشف", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                    Spacer(Modifier.height(10.dp))
+                    Button(onClick = onSounds, shape = RoundedCornerShape(28.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFCC21))) {
+                        Text("هيا نبدأ", color = Color(0xFF0A387E), fontWeight = FontWeight.ExtraBold, fontSize = 15.sp)
+                        Spacer(Modifier.width(5.dp))
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color(0xFF0A387E))
+                    }
+                }
             }
         }
-        Spacer(Modifier.height(14.dp))
-        HomeActionCard(
-            title = "محاكي الأسلحة",
-            subtitle = "ألعاب خيالية مرحة وآمنة للأطفال",
-            onClick = onToys,
-            tint = Color(0xFFE91E63)
-        ) {
-            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFFE91E63).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                Image(
-                    painter = painterResource(R.drawable.toy_item_laser),
-                    contentDescription = "محاكي الأسلحة",
-                    modifier = Modifier.size(46.dp).clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Fit
-                )
-            }
+
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("اكتشف الأقسام", color = Color(0xFF102E61), fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+            TextButton(onClick = onSounds) { Text("عرض الكل", color = Color(0xFF1664C0), fontWeight = FontWeight.Bold) }
         }
-        Spacer(Modifier.height(14.dp))
-        NativeHomeAd(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-        )
-        Spacer(Modifier.height(14.dp))
-        HomeActionCard(
-            title = "سيارات الشرطة",
-            subtitle = "30 صورة أصلية للمركبات",
-            onClick = onCars,
-            tint = Color(0xFF00838F)
-        ) {
-            Box(modifier = Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Color(0xFF00838F).copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_section_cars),
-                    contentDescription = "سيارات الشرطة",
-                    modifier = Modifier.size(42.dp),
-                    tint = Color.Unspecified
-                )
-            }
+
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            HomeSectionCard("أصوات الشرطة", "30 صوتًا", R.drawable.police_car_main, Color(0xFF1565C0), onSounds)
+            HomeSectionCard("عالم الأصوات", "أصوات مرحة", R.drawable.funny_category_hero, Color(0xFFE17800), onFunnySounds)
         }
-        Spacer(Modifier.height(18.dp))
-        Text("سياسة الخصوصية ومعلومات التطبيق متاحة من القائمة الجانبية", color = Color(0xFF4A5568), fontSize = 13.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            HomeSectionCard("محاكي الألعاب", "ألعاب آمنة", R.drawable.toy_item_laser, Color(0xFFE91E63), onToys)
+            HomeSectionCard("أصوات الشخصيات", "20 شخصية أصلية", R.drawable.funny_photo_11, Color(0xFF7B1FA2), onCartoonVoices)
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp), shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF4C9)), elevation = CardDefaults.cardElevation(2.dp)) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+                Image(painterResource(R.drawable.game_collect_stars), contentDescription = "مكافأة تحدي اليوم", modifier = Modifier.size(62.dp), contentScale = ContentScale.Fit)
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("تحدي اليوم", color = Color(0xFF113A7A), fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
+                    Text("اكتشف صوتًا جديدًا", color = Color(0xFF53627A), fontSize = 13.sp)
+                }
+                Icon(Icons.Default.PlayArrow, contentDescription = "فتح تحدي اليوم", tint = Color(0xFF113A7A), modifier = Modifier.size(30.dp))
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        NativeHomeAd(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp).clip(RoundedCornerShape(18.dp)))
+        Spacer(Modifier.height(18.dp))
     }
 }
 
+@Composable
+private fun RowScope.HomeSectionCard(title: String, subtitle: String, imageRes: Int, tint: Color, onClick: () -> Unit) {
+    Card(modifier = Modifier.weight(1f).height(158.dp).clickable(onClick = onClick), shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+        Box(Modifier.fillMaxSize()) {
+            Image(painterResource(imageRes), contentDescription = title, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+            Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xDD06245A)))))
+            Column(modifier = Modifier.align(Alignment.BottomStart).padding(11.dp)) {
+                Text(title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                Text(subtitle, color = Color.White.copy(alpha = 0.86f), fontSize = 11.sp, fontWeight = FontWeight.Medium)
+            }
+            Box(modifier = Modifier.align(Alignment.TopEnd).padding(9.dp).size(31.dp).clip(CircleShape).background(tint), contentAlignment = Alignment.Center) {
+                Icon(Icons.Default.PlayArrow, contentDescription = "فتح $title", tint = Color.White, modifier = Modifier.size(19.dp))
+            }
+        }
+    }
+}
 @Composable
 private fun HomeActionCard(
     title: String,
