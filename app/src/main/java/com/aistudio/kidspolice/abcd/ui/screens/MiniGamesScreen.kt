@@ -1,5 +1,8 @@
 package com.aistudio.kidspolice.abcd.ui.screens
 
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.SoundPool
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -40,13 +44,17 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
@@ -72,9 +80,68 @@ private enum class MiniGame(
     STARS("اجمع النجوم", "اجمع أكبر عدد خلال 15 ثانية", "⭐", Color(0xFF2E7D32))
 }
 
+private enum class GameSound {
+    TAP,
+    MATCH,
+    STAR,
+    WIN
+}
+
+private class MiniGameSoundPlayer(context: Context) {
+    private val loadedSamples = java.util.concurrent.ConcurrentHashMap.newKeySet<Int>()
+    private val soundPool = SoundPool.Builder()
+        .setMaxStreams(4)
+        .setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+        )
+        .build()
+    private val soundIds: Map<GameSound, Int>
+
+    init {
+        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (status == 0) loadedSamples.add(sampleId)
+        }
+        soundIds = mapOf(
+            GameSound.TAP to soundPool.load(context, com.aistudio.kidspolice.abcd.R.raw.toy_bubble_pop, 1),
+            GameSound.MATCH to soundPool.load(context, com.aistudio.kidspolice.abcd.R.raw.toy_sonic_pulse, 1),
+            GameSound.STAR to soundPool.load(context, com.aistudio.kidspolice.abcd.R.raw.toy_laser_zap, 1),
+            GameSound.WIN to soundPool.load(context, com.aistudio.kidspolice.abcd.R.raw.toy_confetti_burst, 1)
+        )
+    }
+
+    fun play(sound: GameSound, enabled: Boolean) {
+        if (!enabled) return
+        val sampleId = soundIds[sound] ?: return
+        if (sampleId in loadedSamples) {
+            soundPool.play(sampleId, 0.48f, 0.48f, 1, 0, 1f)
+        }
+    }
+
+    fun release() {
+        soundPool.setOnLoadCompleteListener(null)
+        loadedSamples.clear()
+        soundPool.release()
+    }
+}
+
+@Composable
+private fun rememberMiniGameSoundPlayer(): MiniGameSoundPlayer {
+    val context = LocalContext.current.applicationContext
+    val player = remember(context) { MiniGameSoundPlayer(context) }
+    DisposableEffect(player) {
+        onDispose { player.release() }
+    }
+    return player
+}
+
 @Composable
 fun MiniGamesScreen(onBack: () -> Unit) {
     var selectedGame by remember { mutableStateOf<MiniGame?>(null) }
+    var soundEnabled by remember { mutableStateOf(true) }
+    val soundPlayer = rememberMiniGameSoundPlayer()
 
     BackHandler(enabled = selectedGame != null) {
         selectedGame = null
@@ -130,6 +197,18 @@ fun MiniGamesScreen(onBack: () -> Unit) {
                         fontSize = 12.sp
                     )
                 }
+                IconButton(
+                    onClick = { soundEnabled = !soundEnabled },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.16f))
+                        .semantics {
+                            contentDescription = if (soundEnabled) "إيقاف الأصوات" else "تشغيل الأصوات"
+                        }
+                ) {
+                    Text(text = if (soundEnabled) "🔊" else "🔇", fontSize = 19.sp)
+                }
                 Text(
                     text = selectedGame?.emoji ?: "🎮",
                     fontSize = 30.sp,
@@ -146,6 +225,8 @@ fun MiniGamesScreen(onBack: () -> Unit) {
                 key(selectedGame) {
                     MiniGameContent(
                         game = selectedGame!!,
+                        soundPlayer = soundPlayer,
+                        soundEnabled = soundEnabled,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -230,17 +311,26 @@ private fun MiniGamesLibrary(
 }
 
 @Composable
-private fun MiniGameContent(game: MiniGame, modifier: Modifier = Modifier) {
+private fun MiniGameContent(
+    game: MiniGame,
+    soundPlayer: MiniGameSoundPlayer,
+    soundEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
     when (game) {
-        MiniGame.FIND_CAR -> FindPoliceCarGame(modifier)
-        MiniGame.MEMORY -> BadgeMemoryGame(modifier)
-        MiniGame.PUZZLE -> BadgePuzzleGame(modifier)
-        MiniGame.STARS -> CollectStarsGame(modifier)
+        MiniGame.FIND_CAR -> FindPoliceCarGame(soundPlayer, soundEnabled, modifier)
+        MiniGame.MEMORY -> BadgeMemoryGame(soundPlayer, soundEnabled, modifier)
+        MiniGame.PUZZLE -> BadgePuzzleGame(soundPlayer, soundEnabled, modifier)
+        MiniGame.STARS -> CollectStarsGame(soundPlayer, soundEnabled, modifier)
     }
 }
 
 @Composable
-private fun FindPoliceCarGame(modifier: Modifier = Modifier) {
+private fun FindPoliceCarGame(
+    soundPlayer: MiniGameSoundPlayer,
+    soundEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
     var round by remember { mutableIntStateOf(0) }
     val cards = remember(round) {
         val targetIndex = Random.nextInt(9)
@@ -276,9 +366,11 @@ private fun FindPoliceCarGame(modifier: Modifier = Modifier) {
                         .height(82.dp)
                         .clickable(enabled = !found) {
                             if (emoji == "🚓") {
+                                soundPlayer.play(GameSound.WIN, soundEnabled)
                                 found = true
                                 feedback = "رائع! وجدت السيارة الصحيحة."
                             } else {
+                                soundPlayer.play(GameSound.TAP, soundEnabled)
                                 feedback = "ليست هي، حاول مرة أخرى."
                             }
                         },
@@ -304,7 +396,11 @@ private fun FindPoliceCarGame(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BadgeMemoryGame(modifier: Modifier = Modifier) {
+private fun BadgeMemoryGame(
+    soundPlayer: MiniGameSoundPlayer,
+    soundEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
     var round by remember { mutableIntStateOf(0) }
     val symbols = remember(round) {
         listOf("🚓", "🛡️", "🚨", "⭐", "📻", "🏅")
@@ -343,14 +439,21 @@ private fun BadgeMemoryGame(modifier: Modifier = Modifier) {
                         .clickable(enabled = !isWaiting && !isVisible) {
                             if (revealed.isEmpty()) {
                                 revealed = listOf(index)
+                                soundPlayer.play(GameSound.TAP, soundEnabled)
                             } else {
                                 val first = revealed.first()
                                 revealed = listOf(first, index)
                                 moves++
                                 if (symbols[first] == symbol) {
-                                    matched = matched + first + index
+                                    val updatedMatched = matched + first + index
+                                    matched = updatedMatched
                                     revealed = emptyList()
+                                    soundPlayer.play(
+                                        if (updatedMatched.size == symbols.size) GameSound.WIN else GameSound.MATCH,
+                                        soundEnabled
+                                    )
                                 } else {
+                                    soundPlayer.play(GameSound.TAP, soundEnabled)
                                     isWaiting = true
                                     scope.launch {
                                         delay(700)
@@ -391,7 +494,11 @@ private fun BadgeMemoryGame(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BadgePuzzleGame(modifier: Modifier = Modifier) {
+private fun BadgePuzzleGame(
+    soundPlayer: MiniGameSoundPlayer,
+    soundEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
     var round by remember { mutableIntStateOf(0) }
     var tiles by remember(round) { mutableStateOf(shufflePuzzle()) }
     var moves by remember(round) { mutableIntStateOf(0) }
@@ -425,6 +532,8 @@ private fun BadgePuzzleGame(modifier: Modifier = Modifier) {
                             val updated = tiles.toMutableList()
                             updated[emptyIndex] = updated[index]
                             updated[index] = 0
+                            val completed = updated == listOf(1, 2, 3, 4, 5, 6, 7, 8, 0)
+                            soundPlayer.play(if (completed) GameSound.WIN else GameSound.TAP, soundEnabled)
                             tiles = updated
                             moves++
                         },
@@ -453,11 +562,16 @@ private fun BadgePuzzleGame(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun CollectStarsGame(modifier: Modifier = Modifier) {
+private fun CollectStarsGame(
+    soundPlayer: MiniGameSoundPlayer,
+    soundEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
     var round by remember { mutableIntStateOf(0) }
     var isRunning by remember { mutableStateOf(false) }
     var secondsLeft by remember { mutableIntStateOf(15) }
     var score by remember { mutableIntStateOf(0) }
+    val currentSoundEnabled by rememberUpdatedState(soundEnabled)
 
     LaunchedEffect(round, isRunning) {
         if (isRunning) {
@@ -467,6 +581,7 @@ private fun CollectStarsGame(modifier: Modifier = Modifier) {
                 secondsLeft = (secondsLeft - 1).coerceAtLeast(0)
             }
             isRunning = false
+            soundPlayer.play(GameSound.WIN, currentSoundEnabled)
         }
     }
 
@@ -480,7 +595,12 @@ private fun CollectStarsGame(modifier: Modifier = Modifier) {
             subtitle = "نجومك: $score"
         )
         Button(
-            onClick = { if (isRunning) score++ },
+            onClick = {
+                if (isRunning) {
+                    score++
+                    soundPlayer.play(GameSound.STAR, soundEnabled)
+                }
+            },
             enabled = isRunning,
             modifier = Modifier
                 .size(190.dp)
@@ -508,6 +628,7 @@ private fun CollectStarsGame(modifier: Modifier = Modifier) {
                     score = 0
                     secondsLeft = 15
                     round++
+                    soundPlayer.play(GameSound.MATCH, soundEnabled)
                     isRunning = true
                 }
             },
