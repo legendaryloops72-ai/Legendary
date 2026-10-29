@@ -37,6 +37,7 @@ import com.aistudio.kidspolice.abcd.ui.screens.CertificateScreen
 import com.aistudio.kidspolice.abcd.ui.screens.DialerScreen
 import com.aistudio.kidspolice.abcd.ui.screens.HomeScreen
 import com.aistudio.kidspolice.abcd.ui.screens.MissionsScreen
+import com.aistudio.kidspolice.abcd.ui.screens.MiniGamesScreen
 import com.aistudio.kidspolice.abcd.ui.screens.SoundsScreen
 import com.aistudio.kidspolice.abcd.ui.theme.KidsPoliceTheme
 import com.aistudio.kidspolice.abcd.ui.theme.PoliceNavy
@@ -186,6 +187,7 @@ fun KidsPoliceApp(
                 onOpenMissions = { navController.navigate("missions") },
                 onOpenCertificate = { navController.navigate("certificate") },
                 onOpenToys = { navController.navigate("toys") },
+                onOpenGames = { navController.navigate("mini_games") },
                 onOpenFunnySounds = { navController.navigate("funny_sounds") },
                 onOpenCartoonVoices = { navController.navigate("cartoon_voices") },
                 userScore = userScore,
@@ -208,6 +210,10 @@ fun KidsPoliceApp(
             com.aistudio.kidspolice.abcd.ui.screens.ToySimulatorScreen(
                 onBack = { navController.popBackStack() }
             )
+        }
+
+        composable("mini_games") {
+            MiniGamesScreen(onBack = { navController.popBackStack() })
         }
 
         composable("call") {

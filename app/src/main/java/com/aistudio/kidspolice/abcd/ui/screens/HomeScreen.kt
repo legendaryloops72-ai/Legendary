@@ -86,6 +86,7 @@ fun HomeScreen(
     onOpenMissions: () -> Unit,
     onOpenCertificate: () -> Unit,
     onOpenToys: () -> Unit = {},
+    onOpenGames: () -> Unit = {},
     onOpenFunnySounds: () -> Unit = {},
     onOpenCartoonVoices: () -> Unit = {},
     userScore: Int,
@@ -141,6 +142,7 @@ fun HomeScreen(
                 DrawerItem("عالم الأصوات المضحكة", Icons.Default.PlayArrow) { player.stopSpeaking(); onOpenFunnySounds(); scope.launch { drawerState.close() } }
                 DrawerItem("أصوات الشخصيات الكرتونية", painterResource(R.drawable.ic_sound_wave)) { player.stopSpeaking(); onOpenCartoonVoices(); scope.launch { drawerState.close() } }
                 DrawerItem("سيارات الشرطة", painterResource(R.drawable.ic_section_cars)) { if (tab != 2) player.stopSpeaking(); tab = 2; scope.launch { drawerState.close() } }
+                DrawerItem("ألعاب الأبطال", painterResource(R.drawable.ic_section_games)) { player.stopSpeaking(); onOpenGames(); scope.launch { drawerState.close() } }
                 DrawerItem("محاكي الأسلحة", Icons.Default.PlayArrow) { player.stopSpeaking(); onOpenToys(); scope.launch { drawerState.close() } }
                 DrawerItem("مشاركة التطبيق", Icons.Default.Share) { shareApp(); scope.launch { drawerState.close() } }
                 DrawerItem("سياسة الخصوصية", Icons.Default.Info) {
@@ -167,9 +169,9 @@ fun HomeScreen(
                                 if (tab != 2) player.stopSpeaking()
                                 tab = 2
                             },
-                            onToys = {
+                            onGames = {
                                 player.stopSpeaking()
-                                onOpenToys()
+                                onOpenGames()
                             },
                             onFunnySounds = {
                                 player.stopSpeaking()
@@ -255,7 +257,7 @@ private fun HomeLanding(
     onMenu: () -> Unit,
     onSounds: () -> Unit,
     onCars: () -> Unit,
-    onToys: () -> Unit,
+    onGames: () -> Unit,
     onFunnySounds: () -> Unit,
     onCartoonVoices: () -> Unit,
     onShare: () -> Unit
@@ -326,7 +328,7 @@ private fun HomeLanding(
         }
         Spacer(Modifier.height(12.dp))
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            HomeSectionCard("محاكي الألعاب", "ألعاب آمنة", R.drawable.toy_item_laser, Color(0xFFE91E63), onToys)
+            HomeSectionCard("ألعاب الأبطال", "4 ألعاب قصيرة", R.drawable.game_collect_stars, Color(0xFF2E7D32), onGames)
             HomeSectionCard("أصوات الشخصيات", "20 شخصية أصلية", R.drawable.funny_photo_11, Color(0xFF7B1FA2), onCartoonVoices)
         }
 
