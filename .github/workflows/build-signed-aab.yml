@@ -38,10 +38,11 @@ jobs:
       - name: Restore private upload keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > app/release-upload.jks
           test -s app/release-upload.jks
-          keytool -list -keystore app/release-upload.jks -storepass "${{ secrets.RELEASE_STORE_PASSWORD }}" -alias upload
+          keytool -list -keystore app/release-upload.jks -storepass "$STORE_PASSWORD" -alias upload
 
       - name: Build signed release AAB
         env:
