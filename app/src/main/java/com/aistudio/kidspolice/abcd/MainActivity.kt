@@ -131,8 +131,6 @@ class MainActivity : ComponentActivity() {
     private var activeAudioPlayer: PoliceAudioPlayer? = null
     private var currentDestination: String = ROUTE_HOME
 
-    private val adPrefs by lazy { getSharedPreferences("ads_state", Context.MODE_PRIVATE) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         debugLog("MainActivity onCreate")
@@ -142,8 +140,8 @@ class MainActivity : ComponentActivity() {
                 val player = activeAudioPlayer
                 (player?.isSpeaking?.value == true) || (player?.isSirenPlaying?.value == true)
             }
-            // الإعلان فقط في الشاشة الرئيسية
-            isSafeScreenToDisplayProvider = { currentDestination == ROUTE_HOME }
+            // Allow App Open on safe app screens, while suppressing it during active calls.
+            isSafeScreenToDisplayProvider = { currentDestination != ROUTE_CALL }
             currentActivityProvider = { this@MainActivity }
         }
 
@@ -185,7 +183,8 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         debugLog("MainActivity onResume")
-        if (::appOpenAdManager.isInitialized && shouldTryAppOpenAd()) {
+        if (::appOpenAdManager.isInitialized) {
+            // Evaluate App Open whenever the app returns to foreground, regardless of the current route.
             appOpenAdManager.showAdIfAvailable(this)
         }
     }
@@ -203,33 +202,6 @@ class MainActivity : ComponentActivity() {
         debugLog("MainActivity onDestroy")
     }
 
-    /**
-     * بوابة تردد لإعلان App Open:
-     *  - أول تشغيل للتطبيق: بدون إعلان.
-     *  - بعدها: مرة كل 4 ساعات كحد أقصى.
-     * ملاحظة: الوقت يُسجَّل عند المحاولة، حتى لو لم يكن الإعلان جاهزاً.
-     * الأدق نقل هذا المنطق داخل AppOpenAdManager وتسجيل الوقت عند ظهور الإعلان فعلاً.
-     */
-    private fun shouldTryAppOpenAd(): Boolean {
-        if (currentDestination != ROUTE_HOME) return false
-
-        val now = System.currentTimeMillis()
-        val last = adPrefs.getLong(KEY_LAST_AD_ATTEMPT, 0L)
-
-        if (last == 0L) {
-            adPrefs.edit().putLong(KEY_LAST_AD_ATTEMPT, now).apply()
-            return false
-        }
-        if (now - last < AD_MIN_INTERVAL_MS) return false
-
-        adPrefs.edit().putLong(KEY_LAST_AD_ATTEMPT, now).apply()
-        return true
-    }
-
-    private companion object {
-        const val KEY_LAST_AD_ATTEMPT = "last_app_open_attempt"
-        const val AD_MIN_INTERVAL_MS = 4L * 60 * 60 * 1000 // 4 ساعات
-    }
 }
 
 /* ------------------------------------------------------------------ */
