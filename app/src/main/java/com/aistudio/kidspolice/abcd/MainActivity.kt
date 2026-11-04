@@ -130,6 +130,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var appOpenAdManager: AppOpenAdManager
     private var activeAudioPlayer: PoliceAudioPlayer? = null
     private var currentDestination: String = ROUTE_HOME
+    private var hasCompletedInitialResume: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -184,8 +185,13 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         debugLog("MainActivity onResume")
         if (::appOpenAdManager.isInitialized) {
-            // Evaluate App Open whenever the app returns to foreground, regardless of the current route.
-            appOpenAdManager.showAdIfAvailable(this)
+            if (hasCompletedInitialResume) {
+                // Show only when returning from background, on any safe route.
+                appOpenAdManager.showAdIfAvailable(this)
+            } else {
+                // Keep the very first launch ad-free and use it to preload the next App Open ad.
+                hasCompletedInitialResume = true
+            }
         }
     }
 
