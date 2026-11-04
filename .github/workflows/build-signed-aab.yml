@@ -1,15 +1,6 @@
 name: Build Kids Police Signed AAB
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'app/**'
-      - 'gradle/**'
-      - '*.gradle.kts'
-      - 'gradle/libs.versions.toml'
-      - '.github/workflows/build-signed-aab.yml'
   workflow_dispatch:
 
 permissions:
