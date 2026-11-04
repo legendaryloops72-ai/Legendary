@@ -175,10 +175,6 @@ fun HomeScreen(
                                 player.stopSpeaking()
                                 onOpenFunnySounds()
                             },
-                            onCartoonVoices = {
-                                player.stopSpeaking()
-                                onOpenCartoonVoices()
-                            },
                             onShare = ::shareApp
                         )
                         1 -> SoundsScreen(audioPlayer = player, onBack = ::handleBackToHome)
@@ -257,7 +253,6 @@ private fun HomeLanding(
     onCars: () -> Unit,
     onToys: () -> Unit,
     onFunnySounds: () -> Unit,
-    onCartoonVoices: () -> Unit,
     onShare: () -> Unit
 ) {
     Column(
@@ -325,9 +320,8 @@ private fun HomeLanding(
             HomeSectionCard("عالم الأصوات", "أصوات مرحة", R.drawable.funny_category_hero, Color(0xFFE17800), onFunnySounds)
         }
         Spacer(Modifier.height(12.dp))
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp)) {
             HomeSectionCard("محاكي الألعاب", "ألعاب آمنة", R.drawable.toy_item_laser, Color(0xFFE91E63), onToys)
-            HomeSectionCard("أصوات الشخصيات", "20 شخصية أصلية", R.drawable.funny_photo_11, Color(0xFF7B1FA2), onCartoonVoices)
         }
 
         Spacer(Modifier.height(16.dp))
