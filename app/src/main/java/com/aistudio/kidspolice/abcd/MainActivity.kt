@@ -184,14 +184,14 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         debugLog("MainActivity onResume")
+        if (!hasCompletedInitialResume) {
+            // Keep the very first launch ad-free and use it to preload the next App Open ad.
+            hasCompletedInitialResume = true
+            return
+        }
         if (::appOpenAdManager.isInitialized) {
-            if (hasCompletedInitialResume) {
-                // Show only when returning from background, on any safe route.
-                appOpenAdManager.showAdIfAvailable(this)
-            } else {
-                // Keep the very first launch ad-free and use it to preload the next App Open ad.
-                hasCompletedInitialResume = true
-            }
+            // Show only when returning from background, on any safe route.
+            appOpenAdManager.showAdIfAvailable(this)
         }
     }
 
