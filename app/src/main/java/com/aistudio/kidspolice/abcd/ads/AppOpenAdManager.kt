@@ -21,8 +21,6 @@ class AppOpenAdManager(private val context: Context) {
         // Production Ad Unit ID
         const val PRODUCTION_AD_UNIT_ID = "ca-app-pub-4760027279848820/1995705924"
 
-        private const val PREFS_NAME = "app_open_ad_prefs"
-        private const val KEY_APP_OPEN_COUNT = "app_open_count"
         private const val FOUR_HOURS_IN_MILLIS = 4 * 60 * 60 * 1000L
         private const val MIN_INTERVAL_BETWEEN_ADS_MS = 60 * 1000L // At least 60 seconds between App Open ads
     }
@@ -40,23 +38,6 @@ class AppOpenAdManager(private val context: Context) {
     var isSafeScreenToDisplayProvider: (() -> Boolean)? = null
     // Callback provider to get current active Activity if in foreground
     var currentActivityProvider: (() -> Activity?)? = null
-
-    init {
-        val count = incrementAppOpenCount()
-        Log.d(TAG, "AppOpenAdManager initialized. App session count: $count")
-    }
-
-    private fun incrementAppOpenCount(): Int {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val currentCount = prefs.getInt(KEY_APP_OPEN_COUNT, 0) + 1
-        prefs.edit().putInt(KEY_APP_OPEN_COUNT, currentCount).apply()
-        return currentCount
-    }
-
-    private fun getAppOpenCount(): Int {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getInt(KEY_APP_OPEN_COUNT, 0)
-    }
 
     private fun isAdAvailable(): Boolean {
         val ad = appOpenAd ?: return false
@@ -162,14 +143,6 @@ class AppOpenAdManager(private val context: Context) {
             return
         }
 
-        // Requirement: Do not show on first launch (count <= 1).
-        val openCount = getAppOpenCount()
-        if (openCount <= 1) {
-            Log.d(TAG, "[SHOW_SUPPRESSED] First launch of the app (count=$openCount). Preserving child onboarding experience. Preloading for future sessions.")
-            loadAd()
-            return
-        }
-
         // Requirement: Check audio, sounds, siren, or call speech
         val isAudioPlaying = isAudioActiveProvider?.invoke() ?: false
         if (isAudioPlaying) {
@@ -216,8 +189,8 @@ class AppOpenAdManager(private val context: Context) {
                 isShowingAd = false
                 isShowPending = false
                 lastAdDismissedTime = Date().time
-                // Do not auto-reload immediately while user is in active session to avoid repeated ads.
-                // Preload can happen on next background-to-foreground or resume.
+                // Preload the next ad for a later foreground return.
+                loadAd()
             }
 
             override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
