@@ -132,7 +132,7 @@ fun TestBannerAdView(modifier: Modifier = Modifier) {
                                         Log.d(
                                             TAG,
                                             "[BANNER_LOAD_SUCCESS] Adaptive banner loaded. " +
-                                                "size=${ad.adSize.width}x${ad.adSize.height}"
+                                                "requestedSize=${bannerAdSize.width}x${bannerAdSize.height}"
                                         )
                                         ad.adEventCallback = object : BannerAdEventCallback {
                                             override fun onAdImpression() {
