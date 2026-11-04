@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentSize
@@ -48,7 +49,6 @@ private fun Context.findActivity(): Activity? {
 @Composable
 fun TestBannerAdView(modifier: Modifier = Modifier) {
     var isSdkInitialized by remember { mutableStateOf(MobileAds.isInitialized) }
-    var isAdLoaded by remember { mutableStateOf(false) }
     var adViewInstance by remember { mutableStateOf<AdView?>(null) }
     val localContext = LocalContext.current
 
@@ -57,6 +57,7 @@ fun TestBannerAdView(modifier: Modifier = Modifier) {
             delay(100)
         }
         isSdkInitialized = true
+        Log.d(TAG, "[BANNER_SDK_READY] Mobile Ads SDK initialized.")
     }
 
     DisposableEffect(Unit) {
@@ -65,85 +66,102 @@ fun TestBannerAdView(modifier: Modifier = Modifier) {
                 adViewInstance?.destroy()
                 adViewInstance = null
             } catch (e: Exception) {
-                Log.e(TAG, "Error destroying AdView: ${e.message}")
+                Log.e(TAG, "Error destroying AdView: ${e.message}", e)
             }
         }
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(50.dp),
+    BoxWithConstraints(
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        if (isSdkInitialized) {
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center),
-                factory = { context ->
-                    val activity = context.findActivity() ?: localContext.findActivity()
-                    val adUnitId = if (com.aistudio.kidspolice.abcd.BuildConfig.DEBUG) {
-                        "ca-app-pub-3940256099942544/6300978111"
-                    } else {
-                        "ca-app-pub-4760027279848820/5268836214"
-                    }
+        // Use the actual width available inside the banner card. A fixed 320dp
+        // banner can be wider than the card on compact phones.
+        val bannerWidthDp = maxWidth.value.toInt().coerceAtLeast(1)
+        val bannerAdSize = remember(localContext, bannerWidthDp) {
+            AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+                localContext,
+                bannerWidthDp
+            )
+        }
 
-                    Log.d(TAG, "[BANNER_INIT] Initializing AdView with unitId: $adUnitId (isDebug=${com.aistudio.kidspolice.abcd.BuildConfig.DEBUG})")
-
-                    val adView = AdView(activity ?: context).apply {
-                        layoutParams = FrameLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        ).apply {
-                            gravity = android.view.Gravity.CENTER
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(bannerAdSize.height.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isSdkInitialized) {
+                AndroidView(
+                    modifier = Modifier.wrapContentSize(Alignment.Center),
+                    factory = { context ->
+                        val activity = context.findActivity() ?: localContext.findActivity()
+                        val adUnitId = if (com.aistudio.kidspolice.abcd.BuildConfig.DEBUG) {
+                            "ca-app-pub-3940256099942544/6300978111"
+                        } else {
+                            "ca-app-pub-4760027279848820/5268836214"
                         }
-                    }
-                    adViewInstance = adView
 
-                    try {
-                        val adRequest = BannerAdRequest.Builder(
-                            adUnitId,
-                            AdSize.BANNER
-                        ).build()
+                        Log.d(
+                            TAG,
+                            "[BANNER_INIT] unitId=$adUnitId, widthDp=$bannerWidthDp, " +
+                                "heightDp=${bannerAdSize.height}, isDebug=${com.aistudio.kidspolice.abcd.BuildConfig.DEBUG}"
+                        )
 
-                        Log.d(TAG, "[BANNER_LOAD_START] Requesting banner ad for size 320x50...")
-                        adView.loadAd(
-                            adRequest,
-                            object : AdLoadCallback<BannerAd> {
-                                override fun onAdLoaded(ad: BannerAd) {
-                                    isAdLoaded = true
-                                    Log.d(
-                                        TAG,
-                                        "[BANNER_LOAD_SUCCESS] Banner ad loaded successfully into AdView (Size: 320x50)."
-                                    )
-                                    ad.adEventCallback = object : BannerAdEventCallback {
-                                        override fun onAdImpression() {
-                                            Log.d(TAG, "[BANNER_EVENT] Banner impression recorded.")
-                                        }
-                                        override fun onAdClicked() {
-                                            Log.d(TAG, "[BANNER_EVENT] Banner clicked.")
+                        val adView = AdView(activity ?: context).apply {
+                            layoutParams = FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            ).apply {
+                                gravity = android.view.Gravity.CENTER
+                            }
+                        }
+                        adViewInstance = adView
+
+                        try {
+                            val adRequest = BannerAdRequest.Builder(
+                                adUnitId,
+                                bannerAdSize
+                            ).build()
+
+                            Log.d(TAG, "[BANNER_LOAD_START] Requesting adaptive banner.")
+                            adView.loadAd(
+                                adRequest,
+                                object : AdLoadCallback<BannerAd> {
+                                    override fun onAdLoaded(ad: BannerAd) {
+                                        Log.d(
+                                            TAG,
+                                            "[BANNER_LOAD_SUCCESS] Adaptive banner loaded. " +
+                                                "size=${ad.adSize.width}x${ad.adSize.height}"
+                                        )
+                                        ad.adEventCallback = object : BannerAdEventCallback {
+                                            override fun onAdImpression() {
+                                                Log.d(TAG, "[BANNER_EVENT] Banner impression recorded.")
+                                            }
+
+                                            override fun onAdClicked() {
+                                                Log.d(TAG, "[BANNER_EVENT] Banner clicked.")
+                                            }
                                         }
                                     }
-                                }
 
-                                override fun onAdFailedToLoad(error: LoadAdError) {
-                                    isAdLoaded = false
-                                    Log.e(
-                                        TAG,
-                                        "[BANNER_LOAD_FAILED] Code=${error.code}, Message='${error.message}', ResponseInfo=${error.responseInfo}"
-                                    )
+                                    override fun onAdFailedToLoad(error: LoadAdError) {
+                                        Log.e(
+                                            TAG,
+                                            "[BANNER_LOAD_FAILED] Code=${error.code}, " +
+                                                "Message='${error.message}', ResponseInfo=${error.responseInfo}"
+                                        )
+                                    }
                                 }
-                            }
-                        )
-                    } catch (e: Throwable) {
-                        Log.e(TAG, "[BANNER_EXCEPTION] Exception during banner load: ${e.message}", e)
+                            )
+                        } catch (e: Throwable) {
+                            Log.e(TAG, "[BANNER_EXCEPTION] Exception during banner load: ${e.message}", e)
+                        }
+
+                        adView
                     }
-
-                    adView
-                }
-            )
+                )
+            }
         }
     }
 }
-
